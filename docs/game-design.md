@@ -64,6 +64,5 @@ Inspired by Magic: The Gathering, Runeterra, Hearthstone, and 40K Warpforge.
 
 ### Technical architecture
 
-- State machines with XState everywhere
-- Spawned machines that communicate with each other
-- Client/server architecture
+- A central event bus which accepts events, using RXJS
+- ECS (entiy component system) architecture
