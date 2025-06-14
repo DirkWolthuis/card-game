@@ -7,22 +7,24 @@ import {
   PlayerInputSystem,
   System,
 } from '@card-game/game-engine';
-import { Subject, tap } from 'rxjs';
+import { ReplaySubject, tap, concatMap } from 'rxjs';
 
 @Injectable()
 export class EventBusService implements OnModuleInit {
-  eventBus = new Subject<GameEvent>();
+  eventBus = new ReplaySubject<GameEvent>(Infinity);
   ecs = new ECS();
   systems: System[] = [DamageSystem, PlayCardSystem, PlayerInputSystem];
 
   onModuleInit() {
+    console.log('sdsd');
     this.eventBus
       .pipe(
-        tap((event) => {
+        concatMap(async (event) => {
           for (const system of this.systems) {
-            const newEvents = system.handle(event, this.ecs);
+            const newEvents = await system.handle(event, this.ecs);
             newEvents.forEach((e) => this.eventBus.next(e));
           }
+          return event;
         }),
         tap((event) => {
           console.log('Event processed:', event);

@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@card-game/game-engine": ["libs/game-engine/index.ts"]
+      "@card-game/game-engine": [
+        "apps/card-game/src/app/libs/game-engine/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

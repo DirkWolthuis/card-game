@@ -10,7 +10,7 @@ export type ComponentStore = Map<EntityId, Component[]>;
 
 export interface System {
   name: string;
-  handle(event: GameEvent, ecs: ECS): GameEvent[];
+  handle: (event: GameEvent, ecs: ECS) => Promise<GameEvent[]>;
 }
 
 export class ECS {
