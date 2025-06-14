@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
-import { EventBusService } from './event-bus.service';
-
+import { EventBusService } from '@card-game/game-engine';
 @Controller()
 export class AppController {
   constructor(

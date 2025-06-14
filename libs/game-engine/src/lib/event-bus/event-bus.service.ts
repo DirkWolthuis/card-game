@@ -1,13 +1,13 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
+
+import { ReplaySubject, tap, concatMap } from 'rxjs';
+import { GameEvent } from '../events/events';
 import {
   DamageSystem,
-  ECS,
-  GameEvent,
   PlayCardSystem,
   PlayerInputSystem,
-  System,
-} from '@card-game/game-engine';
-import { ReplaySubject, tap, concatMap } from 'rxjs';
+} from '../systems/systems';
+import { ECS, System } from './store';
 
 @Injectable()
 export class EventBusService implements OnModuleInit {
@@ -16,7 +16,6 @@ export class EventBusService implements OnModuleInit {
   systems: System[] = [DamageSystem, PlayCardSystem, PlayerInputSystem];
 
   onModuleInit() {
-    console.log('sdsd');
     this.eventBus
       .pipe(
         concatMap(async (event) => {
