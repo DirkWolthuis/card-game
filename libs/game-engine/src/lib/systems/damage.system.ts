@@ -1,10 +1,11 @@
-import { System } from '../event-bus/store';
+import { GameEvent, GameEventType } from '../models/game-event.model';
+import { System } from '../models/system.model';
 
-export const DamageSystem: System = {
-  name: 'DamageSystem',
-  handle: async (event, ecs) => {
-    console.log('No log:', event);
-    if (event.type !== 'Damage') return [];
+export class DamageSystem implements System {
+  name = 'DamageSystem';
+  handlesEventTypes = [GameEventType.Damage];
+
+  async handle(event: GameEvent, ecs: any): Promise<any[]> {
     return new Promise((resolve) =>
       setTimeout(
         () =>
@@ -16,5 +17,5 @@ export const DamageSystem: System = {
         1000
       )
     );
-  },
-};
+  }
+}

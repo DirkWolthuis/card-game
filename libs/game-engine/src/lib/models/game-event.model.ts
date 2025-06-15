@@ -1,5 +1,5 @@
 export interface GameEvent {
-  type: string;
+  type: GameEventType;
   [key: string]: any;
 }
 
