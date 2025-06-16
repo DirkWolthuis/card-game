@@ -1,16 +1,22 @@
 export interface GameEvent {
+  name: GameEventName;
   type: GameEventType;
   [key: string]: any;
 }
 
+export enum GameEventName {
+  StartGame = 'Start',
+  PlayCard = 'Play Card',
+  Damage = 'Damage',
+}
+
 export enum GameEventType {
-  StartGame = '[GAME] Start',
-  PlayCard = '[GAME] Play Card',
-  Damage = '[EFFECT] Damage',
+  EFFECT = 'EFFECT',
 }
 
 export class DamageEvent implements GameEvent {
-  type = GameEventType.Damage;
+  name: GameEventName.Damage;
+  type = GameEventType.EFFECT;
   constructor(
     public fromEntityId: string,
     public targetEntityId: string,

@@ -1,7 +1,7 @@
-import { GameEvent, GameEventType } from './game-event.model';
+import { GameEvent, GameEventName } from './game-event.model';
 
 export class System {
   name: string;
-  handlesEventTypes: GameEventType[];
+  handlesEvents: GameEventName[];
   handle: (event: GameEvent, ecs: any) => Promise<GameEvent[]>;
 }

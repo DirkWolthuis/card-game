@@ -9,7 +9,7 @@ export async function systemHandler(
   ecs: any
 ): Promise<any[]> {
   const relevantSystems = systems.filter((system) =>
-    system.handlesEventTypes.includes(event.type)
+    system.handlesEvents.includes(event.name)
   );
 
   let newEvents: any[] = [];

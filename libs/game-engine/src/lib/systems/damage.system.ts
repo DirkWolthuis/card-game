@@ -1,17 +1,22 @@
-import { GameEvent, GameEventType } from '../models/game-event.model';
+import {
+  GameEvent,
+  GameEventName,
+  GameEventType,
+} from '../models/game-event.model';
 import { System } from '../models/system.model';
 
 export class DamageSystem implements System {
   name = 'DamageSystem';
-  handlesEventTypes = [GameEventType.Damage];
+  handlesEvents = [GameEventName.Damage];
 
-  async handle(event: GameEvent, ecs: any): Promise<any[]> {
+  async handle(event: GameEvent, ecs: any): Promise<GameEvent[]> {
     return new Promise((resolve) =>
       setTimeout(
         () =>
           resolve([
             {
-              type: 'DamageApplied',
+              name: GameEventName.StartGame,
+              type: GameEventType.EFFECT,
             },
           ]),
         1000
