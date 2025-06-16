@@ -1,28 +1,13 @@
-export type EntityId = string;
+import { Entity, EntityId } from '../models/entity.model';
 
-export interface Component {
-  type: string;
-}
+export class Store {
+  store = new Map<EntityId, Entity>();
 
-export type ComponentStore = Map<EntityId, Component[]>;
-
-export class ECS {
-  components: ComponentStore = new Map();
-
-  getComponents<T extends Component>(entityId: EntityId, type: string): T[] {
-    return (this.components.get(entityId) || []).filter(
-      (c) => c.type === type
-    ) as T[];
+  getEntity<T extends Entity>(entityId: EntityId): T {
+    return this.store.get(entityId) as T;
   }
 
-  addComponent(entityId: EntityId, component: Component) {
-    if (!this.components.has(entityId)) this.components.set(entityId, []);
-    this.components.get(entityId)!.push(component);
-  }
-
-  getAllEntitiesWith(type: string): EntityId[] {
-    return [...this.components.entries()]
-      .filter(([_, comps]) => comps.some((c) => c.type === type))
-      .map(([id]) => id);
+  addEntity(entity: Entity): void {
+    this.store.set(entity.id, entity);
   }
 }

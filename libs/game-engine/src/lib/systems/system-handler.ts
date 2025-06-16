@@ -1,3 +1,4 @@
+import { Store } from '../event-bus/store';
 import { GameEvent } from '../models/game-event.model';
 import { System } from '../models/system.model';
 import { DamageSystem } from './damage.system';
@@ -6,7 +7,7 @@ const systems: System[] = [new DamageSystem()];
 
 export async function systemHandler(
   event: GameEvent,
-  ecs: any
+  ecs: Store
 ): Promise<any[]> {
   const relevantSystems = systems.filter((system) =>
     system.handlesEvents.includes(event.name)

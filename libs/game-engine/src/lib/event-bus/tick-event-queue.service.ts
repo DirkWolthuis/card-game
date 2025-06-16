@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { ECS } from './store';
+import { Store } from './store';
 import { GameEvent } from '../models/game-event.model';
 import { systemHandler } from '../systems/system-handler';
 
@@ -10,7 +10,8 @@ import { systemHandler } from '../systems/system-handler';
 @Injectable()
 export class TickEventQueueService implements OnModuleInit {
   private queue: GameEvent[] = [];
-  private ecs = new ECS();
+  private resolvedEvents: GameEvent[] = []; // Track resolved events
+  private store = new Store();
   private tickInterval: NodeJS.Timeout | null = null;
   private isTicking = false;
 
@@ -37,17 +38,17 @@ export class TickEventQueueService implements OnModuleInit {
    * Any new events generated during processing are added to the next tick.
    */
   async tick() {
-    console.log('Tick');
     const currentQueue = this.queue;
     this.queue = [];
     for (const event of currentQueue) {
       console.log('Tick processing:', event.type);
-      const newEvents = await systemHandler(event, this.ecs);
+      const newEvents = await systemHandler(event, this.store);
       if (Array.isArray(newEvents)) {
         for (const newEvent of newEvents) {
           this.emit(newEvent);
         }
       }
+      this.resolvedEvents.push(event); // Track resolved event
       console.log('Tick processed:', event.type);
     }
   }
@@ -57,6 +58,13 @@ export class TickEventQueueService implements OnModuleInit {
    */
   hasPendingEvents() {
     return this.queue.length > 0;
+  }
+
+  /**
+   * Get the list of resolved events.
+   */
+  getResolvedEvents(): GameEvent[] {
+    return this.resolvedEvents;
   }
 
   /**
