@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { Store } from './store';
+import { Store } from '../store/store';
 import { GameEvent } from '../models/game-event.model';
 import { systemHandler } from '../systems/system-handler';
 
@@ -8,12 +8,13 @@ import { systemHandler } from '../systems/system-handler';
  * Call tick() to process all queued events in order.
  */
 @Injectable()
-export class TickEventQueueService implements OnModuleInit {
+export class GameEventQueueService implements OnModuleInit {
   private queue: GameEvent[] = [];
   private resolvedEvents: GameEvent[] = []; // Track resolved events
   private store = new Store();
   private tickInterval: NodeJS.Timeout | null = null;
   private isTicking = false;
+  private resolvedStates: any[] = []; // Store a copy of the state after each resolved event
 
   onModuleInit() {
     this.start();
@@ -48,7 +49,10 @@ export class TickEventQueueService implements OnModuleInit {
           this.emit(newEvent);
         }
       }
+      console.log('storevalues', JSON.stringify(this.store.store.values()));
       this.resolvedEvents.push(event); // Track resolved event
+      // Save a copy of the state after resolving the event
+      this.resolvedStates.push(this.cloneState());
       console.log('Tick processed:', event.type);
     }
   }
@@ -65,6 +69,19 @@ export class TickEventQueueService implements OnModuleInit {
    */
   getResolvedEvents(): GameEvent[] {
     return this.resolvedEvents;
+  }
+
+  /**
+   * Get the list of resolved states (deep copies after each event).
+   */
+  getResolvedStates(): any[] {
+    return this.resolvedStates;
+  }
+
+  /** Deep clone the current state of the store. */
+  private cloneState(): any {
+    // Simple deep clone using JSON (replace with a more robust method if needed)
+    return JSON.parse(JSON.stringify(Array.from(this.store.store.entries())));
   }
 
   /**

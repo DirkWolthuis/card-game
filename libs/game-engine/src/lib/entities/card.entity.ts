@@ -1,15 +1,11 @@
-import { BasicCardInformationComponent } from '../components/basic-card.component';
-import { UnitAttributesComponent } from '../components/unit-stats.component';
+import { CardAttributesComponent } from '../components/card-attributes.component';
+import { UnitAttributesComponent } from '../components/unit-attributes.component';
 import { Entity } from '../models/entity.model';
 
 export class CardEntity implements Entity {
-  id: string;
-
   constructor(
-    id: string,
-    public basicCardInformationComponent: BasicCardInformationComponent,
+    public id: string,
+    public basicCardInformationComponent: CardAttributesComponent,
     public unitAttributesComponent?: UnitAttributesComponent
-  ) {
-    this.id = id;
-  }
+  ) {}
 }

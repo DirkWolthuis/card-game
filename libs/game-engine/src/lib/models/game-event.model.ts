@@ -5,17 +5,18 @@ export interface GameEvent {
 }
 
 export enum GameEventName {
-  StartGame = 'Start',
-  PlayCard = 'Play Card',
-  Damage = 'Damage',
+  START_GAME = 'START_GAME',
+  PLAY_CARD = 'PLAY_CARD',
+  DAMAGE = 'DAMAGE',
 }
 
 export enum GameEventType {
+  GAME_STATE = 'GAME_STATE',
   EFFECT = 'EFFECT',
 }
 
 export class DamageEvent implements GameEvent {
-  name: GameEventName.Damage;
+  name = GameEventName.DAMAGE;
   type = GameEventType.EFFECT;
   constructor(
     public fromEntityId: string,

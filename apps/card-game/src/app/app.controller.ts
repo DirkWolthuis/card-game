@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
-import { TickEventQueueService } from '@card-game/game-engine';
+import { GameEventQueueService } from '@card-game/game-engine';
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly tickEventQueueService: TickEventQueueService
+    private readonly tickEventQueueService: GameEventQueueService
   ) {}
 
   @Get()
@@ -17,5 +17,12 @@ export class AppController {
   receiveEvent(@Body() event: any) {
     this.tickEventQueueService.emit(event);
     return { status: 'Event emitted' };
+  }
+
+  @Get('debug')
+  getResolvedEventsWithStates() {
+    const events = this.tickEventQueueService.getResolvedEvents();
+    const states = this.tickEventQueueService.getResolvedStates();
+    return events.map((event, idx) => ({ event, state: states[idx] }));
   }
 }

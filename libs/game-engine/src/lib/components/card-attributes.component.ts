@@ -1,7 +1,7 @@
 import { CardType } from '../models/card-type.model';
 import { Component } from '../models/component.model';
 
-export type BasicCardInformationData = {
+export type CardAttributesData = {
   manaValue: number;
   cardName: string;
   descriptionText: string;
@@ -9,10 +9,10 @@ export type BasicCardInformationData = {
   cardType: CardType;
 };
 
-export class BasicCardInformationComponent implements Component {
-  id = 'BASIC_CARD_INFORMATION';
-  data: BasicCardInformationData;
-  constructor(data: BasicCardInformationData) {
+export class CardAttributesComponent implements Component {
+  id = 'CARD_ATTRIBUTES';
+  data: CardAttributesData;
+  constructor(data: CardAttributesData) {
     this.data = data;
   }
 }

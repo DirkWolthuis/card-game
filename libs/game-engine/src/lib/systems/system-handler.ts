@@ -1,9 +1,10 @@
-import { Store } from '../event-bus/store';
 import { GameEvent } from '../models/game-event.model';
 import { System } from '../models/system.model';
+import { Store } from '../store/store';
 import { DamageSystem } from './damage.system';
+import { GameSetupSystem } from './game-setup.system';
 
-const systems: System[] = [new DamageSystem()];
+const systems: System[] = [new DamageSystem(), new GameSetupSystem()];
 
 export async function systemHandler(
   event: GameEvent,

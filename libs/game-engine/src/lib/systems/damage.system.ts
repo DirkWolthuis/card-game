@@ -7,7 +7,7 @@ import { System } from '../models/system.model';
 
 export class DamageSystem implements System {
   name = 'DamageSystem';
-  handlesEvents = [GameEventName.Damage];
+  handlesEvents = [GameEventName.DAMAGE];
 
   async handle(event: GameEvent, ecs: any): Promise<GameEvent[]> {
     return new Promise((resolve) =>
@@ -15,7 +15,7 @@ export class DamageSystem implements System {
         () =>
           resolve([
             {
-              name: GameEventName.StartGame,
+              name: GameEventName.PLAY_CARD,
               type: GameEventType.EFFECT,
             },
           ]),
