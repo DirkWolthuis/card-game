@@ -1,11 +1,15 @@
 import { BattlefieldLanesComponent } from '../components/battlefield-lanes.component';
+import { CardAttributesComponent } from '../components/card-attributes.component';
 import { DeckComponent } from '../components/deck.component';
 import { ExileComponent } from '../components/exile.component';
 import { GraveyardComponent } from '../components/graveyard.component';
 import { HandComponent } from '../components/hand.component';
 import { ManaResourceComponent } from '../components/mana-resource.component';
 import { PlayerComponent } from '../components/player.component';
+import { UnitAttributesComponent } from '../components/unit-attributes.component';
+import { cardsData } from '../data/cards.data';
 import { BattlefieldEntity } from '../entities/battlefield.entity';
+import { CardEntity } from '../entities/card.entity';
 import { PlayerEntity } from '../entities/player.entity';
 import { GameEvent, GameEventName } from '../models/game-event.model';
 import { System } from '../models/system.model';
@@ -33,6 +37,20 @@ export class GameSetupSystem implements System {
     // create battlefield entity
     const battlefield = this.createBattlefieldEntity([player1.id, player2.id]);
     store.addEntity(battlefield);
+
+    // update hands with initial cards
+    store.updateEntityComponent(
+      'player1',
+      new HandComponent({
+        cards: [this.createCardEntity('card-1')],
+      })
+    );
+    store.updateEntityComponent(
+      'player2',
+      new HandComponent({
+        cards: [this.createCardEntity('card-2')],
+      })
+    );
     return [];
   }
 
@@ -61,6 +79,15 @@ export class GameSetupSystem implements System {
     return new BattlefieldEntity(
       'battlefield-entity',
       new BattlefieldLanesComponent(lanes)
+    );
+  }
+
+  createCardEntity(cardId: string): CardEntity {
+    const card = cardsData.find((card) => card.id === cardId);
+    return new CardEntity(
+      cardId,
+      new CardAttributesComponent(card.cardAttributes),
+      new UnitAttributesComponent(card.unitAttributes)
     );
   }
 }

@@ -1,8 +1,8 @@
+import { CardEntity } from '../entities/card.entity';
 import { Component } from '../models/component.model';
-import { EntityId } from '../models/entity.model';
 
 export type HandData = {
-  cards: EntityId[];
+  cards: CardEntity[];
 };
 
 export class HandComponent implements Component {

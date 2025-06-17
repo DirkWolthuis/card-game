@@ -5,7 +5,7 @@ import { Entity } from '../models/entity.model';
 export class CardEntity implements Entity {
   constructor(
     public id: string,
-    public basicCardInformationComponent: CardAttributesComponent,
+    public cardAttributesComponent: CardAttributesComponent,
     public unitAttributesComponent?: UnitAttributesComponent
   ) {}
 }
