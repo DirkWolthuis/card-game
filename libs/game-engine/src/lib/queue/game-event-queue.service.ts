@@ -1,6 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Store } from '../store/store';
-import { GameEvent } from '../models/game-event.model';
+import {
+  GameEvent,
+  GameEventName,
+  GameEventType,
+} from '../models/game-event.model';
 import { systemHandler } from '../systems/system-handler';
 
 /**
@@ -15,6 +19,9 @@ export class GameEventQueueService implements OnModuleInit {
   private tickInterval: NodeJS.Timeout | null = null;
   private isTicking = false;
   private resolvedStates: any[] = []; // Store a copy of the state after each resolved event
+  private isWaitingForPlayerInput = false;
+  private allowedPlayerInputEvents: string[] = [];
+  private playerInputTimeout: NodeJS.Timeout | null = null;
 
   onModuleInit() {
     this.start();
@@ -24,6 +31,13 @@ export class GameEventQueueService implements OnModuleInit {
    * Add an event to the end of the queue.
    */
   emit(event: GameEvent) {
+    if (
+      this.isWaitingForPlayerInput &&
+      !this.allowedPlayerInputEvents.includes(event.name)
+    ) {
+      // Ignore events not allowed during player input
+      return;
+    }
     this.queue.push(event);
   }
 
@@ -39,11 +53,12 @@ export class GameEventQueueService implements OnModuleInit {
    * Any new events generated during processing are added to the next tick.
    */
   async tick() {
+    if (this.isWaitingForPlayerInput) return;
     const currentQueue = this.queue;
     this.queue = [];
     for (const event of currentQueue) {
-      console.log('Tick processing:', event.type);
-      const newEvents = await systemHandler(event, this.store);
+      console.log('Tick processing:', event.name);
+      const newEvents = await systemHandler(event, this.store, this);
       if (Array.isArray(newEvents)) {
         for (const newEvent of newEvents) {
           this.emit(newEvent);
@@ -53,7 +68,7 @@ export class GameEventQueueService implements OnModuleInit {
       this.resolvedEvents.push(event); // Track resolved event
       // Save a copy of the state after resolving the event
       this.resolvedStates.push(this.cloneState());
-      console.log('Tick processed:', event.type);
+      console.log('Tick processed:', event.name);
     }
   }
 
@@ -109,6 +124,31 @@ export class GameEventQueueService implements OnModuleInit {
     if (this.tickInterval) {
       clearInterval(this.tickInterval);
       this.tickInterval = null;
+    }
+  }
+
+  waitingForPlayerInput(allowedEvents: string[], timeoutMs = 60000) {
+    this.isWaitingForPlayerInput = true;
+    this.allowedPlayerInputEvents = allowedEvents;
+    if (this.playerInputTimeout) clearTimeout(this.playerInputTimeout);
+    this.playerInputTimeout = setTimeout(() => {
+      if (this.isWaitingForPlayerInput) {
+        // Default to PLAYER_SKIPPED_ATTACKERS if no input
+        this.emit({
+          name: GameEventName.PLAYER_SKIPPED_ATTACKERS,
+          type: GameEventType.PLAYER_INPUT,
+        });
+        this.resumeFromPlayerInput();
+      }
+    }, timeoutMs);
+  }
+
+  resumeFromPlayerInput() {
+    this.isWaitingForPlayerInput = false;
+    this.allowedPlayerInputEvents = [];
+    if (this.playerInputTimeout) {
+      clearTimeout(this.playerInputTimeout);
+      this.playerInputTimeout = null;
     }
   }
 }

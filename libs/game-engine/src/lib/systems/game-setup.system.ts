@@ -11,6 +11,7 @@ import { cardsData } from '../data/cards.data';
 import { BattlefieldEntity } from '../entities/battlefield.entity';
 import { CardEntity } from '../entities/card.entity';
 import { PlayerEntity } from '../entities/player.entity';
+import { StartCombatPhaseEvent } from '../events/combat.event';
 import { GameEvent, GameEventName } from '../models/game-event.model';
 import { System } from '../models/system.model';
 import { Store } from '../store/store';
@@ -51,7 +52,7 @@ export class GameSetupSystem implements System {
         cards: [this.createCardEntity('card-2')],
       })
     );
-    return [];
+    return [new StartCombatPhaseEvent()];
   }
 
   createPlayerEntity(name: string, playerId: string): PlayerEntity {

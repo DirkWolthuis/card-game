@@ -9,7 +9,7 @@ export class DamageSystem implements System {
   name = 'DamageSystem';
   handlesEvents = [GameEventName.DAMAGE];
 
-  async handle(event: GameEvent, ecs: any): Promise<GameEvent[]> {
+  async handle(event: GameEvent, store: any): Promise<GameEvent[]> {
     return new Promise((resolve) =>
       setTimeout(
         () =>
