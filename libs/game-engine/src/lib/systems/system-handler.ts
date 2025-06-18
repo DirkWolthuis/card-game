@@ -16,18 +16,17 @@ export async function systemHandler(
   event: GameEvent,
   store: Store,
   gameEventQueueService: GameEventQueueService
-): Promise<any[]> {
+): Promise<GameEvent[]> {
   const relevantSystems = systems.filter((system) =>
     system.handlesEvents.includes(event.name)
   );
 
-  let newEvents: any[] = [];
+  let newEvents: GameEvent[] = [];
   for (const system of relevantSystems) {
     // Each system's handle may return an array of events
     const result = await system.handle(event, store, gameEventQueueService);
-    if (Array.isArray(result)) {
-      newEvents = newEvents.concat(result);
-    }
+
+    newEvents = newEvents.concat(result);
   }
   return newEvents;
 }

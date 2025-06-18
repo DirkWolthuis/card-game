@@ -15,7 +15,7 @@ export class AppController {
 
   @Post('events')
   receiveEvent(@Body() event: any) {
-    this.tickEventQueueService.emit(event);
+    this.tickEventQueueService.emit([event]);
     return { status: 'Event emitted' };
   }
 

@@ -3,6 +3,7 @@ import { GameEvent, GameEventName } from '../models/game-event.model';
 import { Store } from '../store/store';
 import {
   EndCombatPhaseEvent,
+  PlayerSkippedAttackersEvent,
   SelectAttackersEvent,
   WaitingForPlayerToSelectAttackersEvent,
 } from '../events/combat.event';
@@ -10,7 +11,13 @@ import { GameEventQueueService } from '../queue/game-event-queue.service';
 
 export class CombatPhaseSystem implements System {
   name = 'CombatPhaseSystem';
-  handlesEvents = [GameEventName.START_COMBAT_PHASE];
+  handlesEvents = [
+    GameEventName.START_COMBAT_PHASE,
+    GameEventName.SELECT_ATTACKERS,
+    GameEventName.WAITING_FOR_PLAYER_TO_SELECT_ATTACKERS,
+    GameEventName.PLAYER_SELECTS_ATTACKERS,
+    GameEventName.PLAYER_SKIPPED_ATTACKERS,
+  ];
 
   async handle(
     event: GameEvent,
@@ -50,6 +57,7 @@ export class CombatPhaseSystem implements System {
   }
 
   selectAttackers(event: GameEvent, store: Store): GameEvent[] {
+    console.log('[CombatPhaseSystem] selectAttackers called');
     // check if there are valid attackers for the current player
     // if so, waiting for player input to select attackers event
     if (!this.validAttackers(store)) {
@@ -65,10 +73,13 @@ export class CombatPhaseSystem implements System {
     gameEventQueueService: GameEventQueueService
   ): GameEvent[] {
     // Pause the event queue and allow only the two events
-    gameEventQueueService.waitingForPlayerInput([
-      GameEventName.PLAYER_SELECTS_ATTACKERS,
-      GameEventName.PLAYER_SKIPPED_ATTACKERS,
-    ]);
+    gameEventQueueService.waitingForPlayerInput(
+      [
+        GameEventName.PLAYER_SELECTS_ATTACKERS,
+        GameEventName.PLAYER_SKIPPED_ATTACKERS,
+      ],
+      [new PlayerSkippedAttackersEvent()]
+    );
     return [];
   }
 

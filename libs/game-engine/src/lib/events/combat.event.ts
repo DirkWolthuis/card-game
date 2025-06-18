@@ -26,10 +26,10 @@ export class WaitingForPlayerToSelectAttackersEvent implements GameEvent {
 export class PlayerSelectsAttackersEvent implements GameEvent {
   name = GameEventName.PLAYER_SELECTS_ATTACKERS;
   type = GameEventType.PLAYER_INPUT;
-  constructor(public playerId: string, public attackers: string[]) {}
+  constructor() {}
 }
 export class PlayerSkippedAttackersEvent implements GameEvent {
   name = GameEventName.PLAYER_SKIPPED_ATTACKERS;
   type = GameEventType.PLAYER_INPUT;
-  constructor(public playerId: string) {}
+  constructor() {}
 }

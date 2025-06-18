@@ -1,10 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Store } from '../store/store';
-import {
-  GameEvent,
-  GameEventName,
-  GameEventType,
-} from '../models/game-event.model';
+import { GameEvent, GameEventName } from '../models/game-event.model';
 import { systemHandler } from '../systems/system-handler';
 
 /**
@@ -17,8 +13,7 @@ export class GameEventQueueService implements OnModuleInit {
   private resolvedEvents: GameEvent[] = []; // Track resolved events
   private store = new Store();
   private tickInterval: NodeJS.Timeout | null = null;
-  private isTicking = false;
-  private resolvedStates: any[] = []; // Store a copy of the state after each resolved event
+  private resolvedStates: [string, unknown][][] = []; // Store a copy of the state after each resolved event
   private isWaitingForPlayerInput = false;
   private allowedPlayerInputEvents: string[] = [];
   private playerInputTimeout: NodeJS.Timeout | null = null;
@@ -30,15 +25,25 @@ export class GameEventQueueService implements OnModuleInit {
   /**
    * Add an event to the end of the queue.
    */
-  emit(event: GameEvent) {
-    if (
-      this.isWaitingForPlayerInput &&
-      !this.allowedPlayerInputEvents.includes(event.name)
-    ) {
-      // Ignore events not allowed during player input
-      return;
+  emit(events: GameEvent[]) {
+    if (this.isWaitingForPlayerInput) {
+      // Filter out events not allowed during player input
+      if (
+        !events.every((event) =>
+          this.allowedPlayerInputEvents.includes(event.name)
+        )
+      ) {
+        console.log(
+          '[GameEventQueueService] Received unexpected event while waiting for player input, skipping:',
+          events
+        );
+        return;
+      }
     }
-    this.queue.push(event);
+    for (const event of events) {
+      this.queue.push(event);
+      console.log('[GameEventQueueService] Event added to queue:', event);
+    }
   }
 
   /**
@@ -46,6 +51,10 @@ export class GameEventQueueService implements OnModuleInit {
    */
   emitFirst(event: GameEvent) {
     this.queue.unshift(event);
+    console.log(
+      '[GameEventQueueService] Event added to front of queue:',
+      event
+    );
   }
 
   /**
@@ -53,68 +62,84 @@ export class GameEventQueueService implements OnModuleInit {
    * Any new events generated during processing are added to the next tick.
    */
   async tick() {
-    if (this.isWaitingForPlayerInput) return;
-    const currentQueue = this.queue;
-    this.queue = [];
-    for (const event of currentQueue) {
-      console.log('Tick processing:', event.name);
-      const newEvents = await systemHandler(event, this.store, this);
-      if (Array.isArray(newEvents)) {
-        for (const newEvent of newEvents) {
-          this.emit(newEvent);
-        }
-      }
-      console.log('storevalues', JSON.stringify(this.store.store.values()));
-      this.resolvedEvents.push(event); // Track resolved event
-      // Save a copy of the state after resolving the event
-      this.resolvedStates.push(this.cloneState());
-      console.log('Tick processed:', event.name);
+    if (!this.shouldProcessNextEvent()) {
+      console.log(
+        '[GameEventQueueService] Waiting for player input, skipping event handling'
+      );
+      return;
     }
+    const eventToHandle = this.dequeueFirstEvent();
+    if (!eventToHandle) {
+      return; // Nothing to process
+    }
+    console.log('[GameEventQueueService] Handling event:', eventToHandle);
+    const newEvents = await systemHandler(eventToHandle, this.store, this);
+
+    this.emit(newEvents);
+
+    this.resolvedEvents.push(eventToHandle); // Track resolved event
+    this.resolvedStates.push(this.cloneState());
+    console.log('[GameEventQueueService] Tick processed:', eventToHandle.name);
   }
 
   /**
    * Returns true if there are events waiting to be processed.
    */
   hasPendingEvents() {
-    return this.queue.length > 0;
+    if (this.queue.length > 0) {
+      console.log(
+        '[GameEventQueueService] There are pending events in the queue'
+      );
+      return true;
+    } else {
+      console.log('[GameEventQueueService] No pending events in the queue');
+      return false;
+    }
   }
 
   /**
    * Get the list of resolved events.
    */
   getResolvedEvents(): GameEvent[] {
+    console.log(
+      '[GameEventQueueService] Returning resolved events:',
+      this.resolvedEvents
+    );
     return this.resolvedEvents;
   }
 
   /**
    * Get the list of resolved states (deep copies after each event).
    */
-  getResolvedStates(): any[] {
+  getResolvedStates(): [string, unknown][][] {
+    console.log(
+      '[GameEventQueueService] Returning resolved states:',
+      this.resolvedStates
+    );
     return this.resolvedStates;
   }
 
   /** Deep clone the current state of the store. */
-  private cloneState(): any {
-    // Simple deep clone using JSON (replace with a more robust method if needed)
-    return JSON.parse(JSON.stringify(Array.from(this.store.store.entries())));
+  private cloneState(): [string, unknown][] {
+    const state = JSON.parse(
+      JSON.stringify(Array.from(this.store.store.entries()))
+    );
+
+    return state;
   }
 
   /**
    * Start processing events every 500ms.
    */
   start() {
-    if (this.tickInterval) return; // Already started
+    if (this.tickInterval) {
+      console.log('[GameEventQueueService] Tick interval already started');
+      return; // Already started
+    }
     this.tickInterval = setInterval(async () => {
-      if (this.isTicking) return;
-      if (this.hasPendingEvents()) {
-        this.isTicking = true;
-        try {
-          await this.tick();
-        } finally {
-          this.isTicking = false;
-        }
-      }
-    }, 500);
+      await this.tick();
+    }, 1 * 1000);
+    console.log('[GameEventQueueService] Started tick interval');
   }
 
   /**
@@ -124,23 +149,41 @@ export class GameEventQueueService implements OnModuleInit {
     if (this.tickInterval) {
       clearInterval(this.tickInterval);
       this.tickInterval = null;
+      console.log('[GameEventQueueService] Stopped tick interval');
+    } else {
+      console.log('[GameEventQueueService] No tick interval to stop');
     }
   }
 
-  waitingForPlayerInput(allowedEvents: string[], timeoutMs = 60000) {
+  waitingForPlayerInput(
+    allowedEvents: GameEventName[],
+    timeoutEvents: GameEvent[],
+    timeoutMs = 60 * 1000 // Default to 60 seconds
+  ) {
     this.isWaitingForPlayerInput = true;
     this.allowedPlayerInputEvents = allowedEvents;
-    if (this.playerInputTimeout) clearTimeout(this.playerInputTimeout);
+    if (this.playerInputTimeout) {
+      clearTimeout(this.playerInputTimeout);
+      console.log(
+        '[GameEventQueueService] Cleared previous player input timeout'
+      );
+    }
     this.playerInputTimeout = setTimeout(() => {
       if (this.isWaitingForPlayerInput) {
-        // Default to PLAYER_SKIPPED_ATTACKERS if no input
-        this.emit({
-          name: GameEventName.PLAYER_SKIPPED_ATTACKERS,
-          type: GameEventType.PLAYER_INPUT,
-        });
+        console.log(
+          '[GameEventQueueService] Player input timeout reached, emitting timeout events:',
+          timeoutEvents
+        );
+        this.emit(timeoutEvents);
         this.resumeFromPlayerInput();
       }
     }, timeoutMs);
+    console.log(
+      '[GameEventQueueService] Waiting for player input. Allowed events:',
+      allowedEvents,
+      'Timeout in ms:',
+      timeoutMs
+    );
   }
 
   resumeFromPlayerInput() {
@@ -149,6 +192,38 @@ export class GameEventQueueService implements OnModuleInit {
     if (this.playerInputTimeout) {
       clearTimeout(this.playerInputTimeout);
       this.playerInputTimeout = null;
+      console.log(
+        '[GameEventQueueService] Cleared player input timeout and resumed from player input'
+      );
+    } else {
+      console.log(
+        '[GameEventQueueService] Resumed from player input (no timeout was set)'
+      );
     }
+  }
+
+  /**
+   * Get and remove the first event in the queue.
+   */
+  dequeueFirstEvent(): GameEvent | undefined {
+    if (this.queue.length === 0) {
+      return undefined;
+    }
+    const event = this.queue.shift();
+    console.log(
+      '[GameEventQueueService] dequeueFirstEvent removed event:',
+      event
+    );
+    return event;
+  }
+
+  /**
+   * Check if the next event in the queue is allowed during player input and, if so, process it immediately.
+   */
+  shouldProcessNextEvent(): boolean {
+    if (this.isWaitingForPlayerInput) {
+      return this.allowedPlayerInputEvents.includes(this.queue?.[0]?.name);
+    }
+    return true;
   }
 }
