@@ -2,6 +2,8 @@
 
 Inspired by Magic: The Gathering, Runeterra, Hearthstone, and 40K Warpforge.
 
+Work title: Lords of Estraven
+
 ## Unique gameplay:
 
 - Players get the same starting deck, but cards evolve based on how they are used in game. Players will create a more unique deck over time. Simple cards get traits, while complex cards evolve into new and unique cards.
