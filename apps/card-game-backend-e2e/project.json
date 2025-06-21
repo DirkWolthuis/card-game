@@ -1,14 +1,14 @@
 {
-  "name": "card-game-e2e",
+  "name": "card-game-backend-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "implicitDependencies": ["card-game"],
+  "implicitDependencies": ["card-game-backend"],
   "targets": {
     "e2e": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{e2eProjectRoot}"],
       "options": {
-        "jestConfig": "apps/card-game-e2e/jest.config.ts",
+        "jestConfig": "apps/card-game-backend-e2e/jest.config.ts",
         "passWithNoTests": true
       },
       "dependsOn": ["card-game:build", "card-game:serve"]

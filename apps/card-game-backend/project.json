@@ -1,7 +1,7 @@
 {
-  "name": "card-game",
+  "name": "card-game-backend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/card-game/src",
+  "sourceRoot": "apps/card-game-backend/src",
   "projectType": "application",
   "tags": [],
   "targets": {
@@ -23,15 +23,15 @@
       "defaultConfiguration": "development",
       "dependsOn": ["build"],
       "options": {
-        "buildTarget": "card-game:build",
+        "buildTarget": "card-game-backend:build",
         "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "card-game:build:development"
+          "buildTarget": "card-game-backend:build:development"
         },
         "production": {
-          "buildTarget": "card-game:build:production"
+          "buildTarget": "card-game-backend:build:production"
         }
       }
     },
