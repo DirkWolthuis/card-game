@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@card-game/feature-game-interface": [
+        "libs/feature-game-interface/src/index.ts"
+      ],
       "@card-game/game-engine": ["libs/game-engine/src/index.ts"],
       "@card-game/state-machine": ["libs/ui-state-machine/src/index.ts"]
     }
