@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@card-game/data-access-state-machine": [
+        "libs/data-access-state-machine/src/index.ts"
+      ],
       "@card-game/feature-game-interface": [
         "libs/feature-game-interface/src/index.ts"
       ],
