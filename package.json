@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "nx run-many -t serve",
     "backend:serve": "nx run card-game-frontend:serve:development",
-    "frontend:serve": "nx run card-game-backend:serve:development"
+    "frontend:serve": "nx run card-game-backend:serve:development",
+    "reset": "nx reset"
   },
   "private": true,
   "dependencies": {
