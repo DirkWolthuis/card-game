@@ -4,7 +4,7 @@ Inspired by Magic: The Gathering, Runeterra, Hearthstone, and 40K Warpforge.
 
 Work title: Lords of Estraven
 
-## Unique gameplay:
+## Gameplay:
 
 - Players get the same starting deck, but cards evolve based on how they are used in game. Players will create a more unique deck over time. Simple cards get traits, while complex cards evolve into new and unique cards.
 - Objective of the game: reduce the enemy commander to 0 health.
@@ -34,8 +34,9 @@ Work title: Lords of Estraven
 - The stack is created when an ability is triggered and the other player can react to that ability by casting spells or triggering other abilities. When both players pass, the stacked abilities are resolved in reverse order (the last one added is resolved first).
 - Ability:
   - Types:
-  - Passive: continuous effect while the card is in play
-  - Active: an effect that triggers, or is activated
+    - Aura: continuous passive effect while the card is in play
+    - Activated: an ability that needs to be activated
+    - Triggered: an effect that is triggered by a trigger (like other effects or game states)
   - Template:
     - Costs [COSTS]
     - When [TRIGGER]
@@ -64,7 +65,32 @@ Work title: Lords of Estraven
 - Combat:
   - Player with initiative declares which cards attack, defending player chooses which units block. A unit can only block when its speed is more than half the attacker's speed. If a creature's damage goes unblocked, the attacking player can choose the leader to allocate the damage to.
 
-### Technical architecture
+### MVP
 
-- A central event bus which accepts events, using RXJS
-- ECS (entiy component system) architecture
+We are working on a MVP with the main goal of playtesting the mechanics of the game. The front-end application should only focus on allowing for the necessary interaction and debugging. Design and flavour is out of context.
+
+Requirements:
+
+- A backend with an queue mechanism that functions as the core game engine
+- The core game engine is build with the ECS (entiy component system) architecture
+- A frontend that can receive/send events
+- Two players can connect via a game id
+- A endpoint that should return a mock deck based on an user id
+- All phases are implemented and player can:
+  - Draw cards
+  - Play cards
+    - Play rituals
+    - Sumon troops to the battlefield
+  - Combat
+    - Declare attackers
+    - Declare blockers
+    - Assign damage
+    - Pass combat
+
+Ideas:
+
+- ACTION points that can be spend on abilites or combat
+- EXP earning, for individual cards, leaders or players -> to mutate cards or buy abilities
+- Players can tweak the visuals of their own cards, for example naming and art, providing flavour / themes
+- Lords of Estraven, when starting players choose a lord and a province (province === starting deck) (lord === their commander)
+- Troops can evolve into lords? Something like Shadows of Mordor
