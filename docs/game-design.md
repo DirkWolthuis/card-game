@@ -2,95 +2,144 @@
 
 Inspired by Magic: The Gathering, Runeterra, Hearthstone, and 40K Warpforge.
 
-Work title: Lords of Estraven
+Working title: Lords of Estraven
 
-## Gameplay:
+## Game design:
 
-- Players get the same starting deck, but cards evolve based on how they are used in game. Players will create a more unique deck over time. Simple cards get traits, while complex cards evolve into new and unique cards.
-- Objective of the game: reduce the enemy commander to 0 health.
-- Non-traditional battlefield with two lanes: the battle lane (for troops/captains that are cast in the battle lane) and the support lane (for leaders and captains cast in the support lane).
-- Every player has a commander (functions the same as a leader), that starts the battle in the support lane, but if their commander hits zero health they lose the game.
-- All cards have a mana cost.
-- Players earn mana each turn, starting with 1 for turn one, ramping up to a max of ten per turn. Players lose mana at the start of their turn, and then gain mana for their turn. If they had mana left when gaining mana, they will receive one extra mana.
+### Game
+
+- The game is played 1 vs 1
+- Players have unique decks
+- Before playing, a player chooses a lord and starting deck (flavoured as province the lords rules over)
+- Some cards will evolve based on how they are used in-game. In time, players will create a more unique deck. Simple cards gain traits, while complex cards evolve into new and unique cards.
+- The objective of the game: reduce the enemy lord to 0 health.
+- Players earn mana each turn, starting with 1 on turn one, ramping up to a maximum of ten per turn. Players lose mana at the start of their turn, then gain mana for their turn. If they had mana left when gaining mana, they receive one extra mana.
+- Players have:
+  - A deck of nth cards
+  - A hand of drawn cards
+  - A graveyard pile
+  - A exile pile
+
+### Cards in hand
+
+- Player can have max n cards in their hand at the beginning of the end phase
+- If they exceed the maximum, they discard cards (send to the graveyard pile) untul they reach the maximum size
+
+### The battlefield
+
+- The battlefield is divided into two sections for each player. A section has two lanes: the battle lane (for troops/captains cast in the battle lane) and the support lane (for leaders and captains cast in the support lane).
+- Every player has a lord (functions the same as a leader), who starts the battle in the support lane.
+
+### Phases
+
+- The game is divided in sequential turns
+- The player going first is chosen at random
+- No max amount of turns
+- Turn structure:
+  - Restore phase:
+    - Restore mana
+    - Restore action tokens
+    - Draw card
+  - Magic phase:
+    - Cast cards
+    - Activate abilities
+  - End phase:
+    - Discard card
+
+### Cards
+
+- All cards have a mana cost (can be 0)
+- Card types:
+  - Unit (permanent):
+    - Troop (fighting units)
+    - Captain (can be cast as troop or leader)
+    - Leader (support units)
+  - Spell (non-permanent):
+    - Ritual (default spell)
+    - Reaction (a spell that can be cast on a specific trigger)
+    - Blitz (a spell that can't be countered)
+  - Rift (permanent): cards with abilities that affect (part of) the battlefield
+  - Boons/Relics (permanent): cards with abilities that affect units
 - Unit card attributes:
   - Speed
   - Health
   - Resistance
   - Power
-- Permanent cards are cards that are kept in play until an ability says otherwise.
-- Spells are one-time effects that are moved to the graveyard when resolved.
-- Cards in play receive an action token, that can be spent on an action, like fighting/blocking in combat, or activating an ability.
-- Card types:
-  - Unit:
-    - Troop (fighting units)
-    - Captain (can be cast as troop or leader)
-    - Leader (support units)
-  - Spell:
-    - Ritual (default spell)
-    - Reaction (a spell that can be cast on a specific trigger)
-    - Blitz (a spell that can't be countered)
-  - Rift: permanent cards with abilities that affect (part of) the battlefield
-  - Boons/Relics: permanent cards with abilities that affect units
-- The stack is created when an ability is triggered and the other player can react to that ability by casting spells or triggering other abilities. When both players pass, the stacked abilities are resolved in reverse order (the last one added is resolved first).
-- Ability:
-  - Types:
-    - Aura: continuous passive effect while the card is in play
-    - Activated: an ability that needs to be activated
-    - Triggered: an effect that is triggered by a trigger (like other effects or game states)
-  - Template:
-    - Costs [COSTS]
-    - When [TRIGGER]
-    - Then [EFFECT]
-    - Only [RESTRICTION]
-- Turn structure:
-  - Begin phase:
-    - Start of begin phase effects
-    - Restore mana
-    - Restore action tokens
-    - Draw card
-    - End of begin phase effects
-  - Magic Phase:
-    - Start of magic phase effects
-    - Cast cards
-    - Trigger abilities
-    - End of magic phase effects
-  - Combat phase:
-    - Start of combat phase effects
-    - Combat
-    - End of combat phase effects
-  - End phase:
-    - Start of end phase effects
-    - Trigger abilities
-    - End of end phase effects
-- Combat:
-  - Player with initiative declares which cards attack, defending player chooses which units block. A unit can only block when its speed is more than half the attacker's speed. If a creature's damage goes unblocked, the attacking player can choose the leader to allocate the damage to.
+- Permanent cards remain in play until an ability says otherwise
+- Spells are one-time effects that are moved to the graveyard when resolved
+- When unit cards loose health, it's permanent. If their health hits 0, the unit is killed and send to the graveyard
+
+### Abilities and effects
+
+- Every card has abilities, there a no actions in the game that are not abilities
+- Abilities have effects, effects change the game state
+- Ability types:
+  - Aura: continuous passive effect while the ability is in play
+  - Activated: an ability that needs to be activated and the produces an effect
+  - Triggered: an ability that is triggered by a trigger (such as other effects or game states) and produces an effect
+- Before effect of an ability is resolved, the ability is placed on a stack. Other abilities can react to this ability. Those abilities are also placed on the stack. When both players pass, the stacked abilities are resolved in reverse order (the last one added is resolved first)
+- Ability template:
+  - Cost [COSTS]
+  - When [TRIGGER]
+  - Then [EFFECT]
+  - Only [RESTRICTION]
+
+Example:
+Fight ability:
+
+- Cost [1 Action token]
+- Then [Deal damage (equal to strength - resitance)]
+
+Block ability:
+
+- When [A fight ability is added to the stack]
+- Then [Assign blocker to fight ability]
+
+Counter spell ability as part of a ritual card
+
+- When [A spell card ability is added to the stack]
+- Effect [Remove that card from the stack]
+
+Notes:
+
+- No costs, because the mana value is already payed for this card
+- Blitz spells are not excluded in the Counter spell ability, because those spell abilites do not create a stack
 
 ### MVP
 
-We are working on a MVP with the main goal of playtesting the mechanics of the game. The front-end application should only focus on allowing for the necessary interaction and debugging. Design and flavour is out of context.
+We are working on an MVP with the main goal of playtesting the mechanics of the game. The front-end application should only focus on allowing for the necessary interaction and debugging. Design and flavour are out of scope.
 
 Requirements:
 
-- A backend with an queue mechanism that functions as the core game engine
-- The core game engine is build with the ECS (entiy component system) architecture
+- A backend with a queue mechanism that functions as the core game engine
+- The core game engine is built with the ECS (entity component system) architecture
 - A frontend that can receive/send events
-- Two players can connect via a game id
-- A endpoint that should return a mock deck based on an user id
-- All phases are implemented and player can:
+- Two players can connect via a game ID
+- An endpoint that returns a mock deck based on a user ID
+- All phases are implemented and players can:
   - Draw cards
   - Play cards
     - Play rituals
-    - Sumon troops to the battlefield
+    - Summon troops to the battlefield
   - Combat
     - Declare attackers
     - Declare blockers
     - Assign damage
     - Pass combat
 
+Tech stack:
+
+- Frontend:
+  - React
+  - Xstate
+  - TailwindCSS
+- Backend:
+  - NodeJS
+  - Game engine queue / ECS
+
 Ideas:
 
-- ACTION points that can be spend on abilites or combat
-- EXP earning, for individual cards, leaders or players -> to mutate cards or buy abilities
-- Players can tweak the visuals of their own cards, for example naming and art, providing flavour / themes
-- Lords of Estraven, when starting players choose a lord and a province (province === starting deck) (lord === their commander)
+- EXP earning, for individual cards, leaders, or players → to mutate cards or buy abilities
+- Players can tweak the visuals of their own cards, for example naming and art, providing flavour/themes
+- Lords of Estraven: when starting, players choose a lord and a province (province = starting deck, lord = their commander)
 - Troops can evolve into lords? Something like Shadows of Mordor
