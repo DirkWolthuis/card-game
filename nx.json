@@ -36,10 +36,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": [
-        "apps/card-game-backend-e2e/**/*",
-        "apps/card-game-frontend-e2e/**/*"
-      ]
+      "exclude": ["apps/card-game-backend-e2e/**/*"]
     },
     {
       "plugin": "@nx/react/router-plugin",

@@ -1,5 +1,5 @@
 {
-  "name": "@card-game/source",
+  "name": "@loe/source",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-devkit/core": "^20.0.4",
     "@nestjs/common": "^11.1.3",
     "@nestjs/core": "^11.1.3",
     "@nestjs/platform-express": "^11.1.3",

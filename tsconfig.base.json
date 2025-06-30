@@ -15,8 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@card-game/game-engine-old": ["libs/game-engine-old/src/index.ts"],
-      "@card-game/game-types": ["libs/shared/game-types/src/index.ts"]
+      "@loe/game-engine-old": ["libs/game-engine-old/src/index.ts"],
+      "@loe/game-types": ["libs/shared/game-types/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

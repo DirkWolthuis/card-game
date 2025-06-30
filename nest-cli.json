@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "game-engine": {
+      "type": "library",
+      "root": "libs/game-engine",
+      "entryFile": "index",
+      "sourceRoot": "libs/game-engine/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/game-engine/tsconfig.lib.json"
+      }
+    }
+  },
+  "compilerOptions": {
+    "webpack": true
+  }
+}
