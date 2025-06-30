@@ -15,8 +15,12 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@loe/shared/game-blueprints": [
+        "libs/shared/game-blueprints/src/index.ts"
+      ],
+      "@loe/game-engine": ["libs/backend/game-engine/src/index.ts"],
       "@loe/game-engine-old": ["libs/game-engine-old/src/index.ts"],
-      "@loe/game-types": ["libs/shared/game-types/src/index.ts"]
+      "@loe/shared/game-types": ["libs/shared/game-types/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
