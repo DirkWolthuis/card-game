@@ -21,7 +21,8 @@
       "@card-game/feature-game-interface": [
         "libs/feature-game-interface/src/index.ts"
       ],
-      "@card-game/game-engine": ["libs/game-engine/src/index.ts"]
+      "@card-game/game-engine-old": ["libs/game-engine-old/src/index.ts"],
+      "@card-game/game-types": ["libs/shared/game-types/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,4 +1,4 @@
-import { GameEventQueueService } from '@card-game/game-engine';
+import { GameEventQueueService } from '@card-game/game-engine-old';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,

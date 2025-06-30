@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
-import { GameEventQueueService } from '@card-game/game-engine';
+import { GameEventQueueService } from '@card-game/game-engine-old';
 
 @Controller()
 export class AppController {
