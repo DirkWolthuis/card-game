@@ -4,33 +4,38 @@ export type Ability =
   | AuraAbility
   | ReactionAbility;
 
-export type TriggeredAbility<E = any, R = any> = {
+export interface BaseAbility {
+  name?: string;
+  description: string;
+}
+
+export interface TriggeredAbility<E = any, R = any> extends BaseAbility {
   type: AbillityType.TRIGGERED;
   trigger: TriggerType[];
   effect: Effect<E>;
   restriction?: Restriction<R>;
-};
+}
 
-export type ActionAbility<E = any, R = any> = {
+export interface ActionAbility<E = any, R = any> extends BaseAbility {
   type: AbillityType.ACTION;
   effect: Effect<E>;
   restriction?: Restriction<R>;
   cost?: Cost;
-};
+}
 
-export type ReactionAbility<E = any, R = any> = {
+export interface ReactionAbility<E = any, R = any> extends BaseAbility {
   type: AbillityType.REACTION;
   trigger: TriggerType[];
   effect: Effect<E>;
   restriction?: Restriction<R>;
   cost?: Cost;
-};
+}
 
-export type AuraAbility = {
+export interface AuraAbility extends BaseAbility {
   type: AbillityType.AURA;
   effect: Effect;
   restriction?: Restriction;
-};
+}
 
 export type Effect<T = any> = { type: EffectType; value?: T };
 

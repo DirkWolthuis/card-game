@@ -29,6 +29,7 @@ export const cardBlueprints: CardBlueprint[] = [
     cardType: CardType.REACTION,
     abilities: [
       {
+        description: 'Counter target ritual',
         type: AbillityType.REACTION,
         trigger: [TriggerType.RITUAL_ENTERS_STACK],
         effect: {
