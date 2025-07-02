@@ -73,7 +73,8 @@ Inspired by Magic: The Gathering, Runeterra, Hearthstone, and 40K Warpforge.
 - Abilities have effects; effects change the game state.
 - Ability types:
   - Aura: continuous passive effect while the ability is in play
-  - Activated: an ability that needs to be activated and then produces an effect
+  - Action: an ability that needs to be activated and then produces an effect
+  - Reaction: an ability that needs to be activated in reaction to a trigger and then produces an effect
   - Triggered: an ability that is triggered by a trigger (such as other effects or game states) and produces an effect
 - Before the effect of an ability is resolved, the ability is placed on a stack. Other abilities can react to this ability. Those abilities are also placed on the stack. When both players pass, the stacked abilities are resolved in reverse order (the last one added is resolved first).
 - Ability template:
