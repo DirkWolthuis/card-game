@@ -3,11 +3,11 @@ import { GameEvent } from '@loe/shared/game-types';
 export class EventQueueService {
   private queue: GameEvent[] = [];
 
-  enqueue(event: any): void {
-    this.queue.push(event);
+  addEvents(event: GameEvent[]): void {
+    this.queue.push(...event);
   }
 
-  dequeue(): GameEvent | undefined {
+  getNextEvent(): GameEvent | undefined {
     return this.queue.shift();
   }
 
