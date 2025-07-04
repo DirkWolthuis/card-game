@@ -1,15 +1,13 @@
-import { Ability } from './ability.model';
-
 export type CardBlueprint = NonUnitCard | UnitCard;
 
-interface NonUnitCard extends CardAttributes, Abilities {
+export interface NonUnitCard extends CardAttributes, Abilities {
   cardType: Exclude<
     CardType,
     CardType.TROOP | CardType.CAPTAIN | CardType.LEADER
   >;
 }
 
-interface UnitCard extends CardAttributes, Abilities {
+export interface UnitCard extends CardAttributes, Abilities {
   cardType: CardType.TROOP | CardType.CAPTAIN | CardType.LEADER;
   speed: number;
   health: number;
@@ -18,7 +16,7 @@ interface UnitCard extends CardAttributes, Abilities {
 }
 
 interface Abilities {
-  abilities?: Ability[];
+  abilityIds?: number[];
 }
 
 export interface CardAttributes {

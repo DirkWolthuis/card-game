@@ -1,11 +1,5 @@
-import {
-  AbillityType,
-  CardBlueprint,
-  CardKeyword,
-  CardType,
-  EffectType,
-  TriggerType,
-} from '@loe/shared/game-types';
+import { CardBlueprint, CardKeyword, CardType } from '@loe/shared/game-types';
+
 export const cardBlueprints = new Map<number, CardBlueprint>([
   [
     1,
@@ -16,7 +10,7 @@ export const cardBlueprints = new Map<number, CardBlueprint>([
       manaCost: 2,
       keywords: [CardKeyword.ATTACKER],
       cardType: CardType.TROOP,
-      abilities: [],
+      abilityIds: [],
       speed: 2,
       health: 1,
       resistance: 2,
@@ -32,16 +26,7 @@ export const cardBlueprints = new Map<number, CardBlueprint>([
       manaCost: 2,
       keywords: [],
       cardType: CardType.REACTION,
-      abilities: [
-        {
-          description: 'Counter target ritual',
-          type: AbillityType.REACTION,
-          trigger: [TriggerType.RITUAL_ENTERS_STACK],
-          effect: {
-            type: EffectType.COUNTER_RITUAL,
-          },
-        },
-      ],
+      abilityIds: [1],
     },
   ],
   [
@@ -53,7 +38,7 @@ export const cardBlueprints = new Map<number, CardBlueprint>([
       manaCost: 2,
       keywords: [CardKeyword.ATTACKER, CardKeyword.BLOCKER],
       cardType: CardType.TROOP,
-      abilities: [],
+      abilityIds: [],
       speed: 1,
       health: 2,
       resistance: 2,

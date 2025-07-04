@@ -9,25 +9,25 @@ export interface BaseAbility {
   description: string;
 }
 
-export interface TriggeredAbility<E = any, R = any> extends BaseAbility {
+export interface TriggeredAbility extends BaseAbility {
   type: AbillityType.TRIGGERED;
   trigger: TriggerType[];
-  effect: Effect<E>;
-  restriction?: Restriction<R>;
+  effect: Effect;
+  restriction?: Restriction;
 }
 
-export interface ActionAbility<E = any, R = any> extends BaseAbility {
+export interface ActionAbility extends BaseAbility {
   type: AbillityType.ACTION;
-  effect: Effect<E>;
-  restriction?: Restriction<R>;
+  effect: Effect;
+  restriction?: Restriction;
   cost?: Cost;
 }
 
-export interface ReactionAbility<E = any, R = any> extends BaseAbility {
+export interface ReactionAbility extends BaseAbility {
   type: AbillityType.REACTION;
   trigger: TriggerType[];
-  effect: Effect<E>;
-  restriction?: Restriction<R>;
+  effect: Effect;
+  restriction?: Restriction;
   cost?: Cost;
 }
 
@@ -37,11 +37,11 @@ export interface AuraAbility extends BaseAbility {
   restriction?: Restriction;
 }
 
-export type Effect<T = any> = { type: EffectType; value?: T };
+export type Effect = { type: EffectType; value?: number };
 
-export type Restriction<T = any> = { type: RestrictionType; value?: T };
+export type Restriction = { type: RestrictionType; value?: number };
 
-export type Cost<T = any> = { type: CostType; value?: T };
+export type Cost = { type: CostType; value?: number };
 
 export enum TriggerType {
   ON_ENTER_PLAY,
