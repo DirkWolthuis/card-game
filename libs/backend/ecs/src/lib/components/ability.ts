@@ -1,9 +1,13 @@
 import { defineComponent, Types } from 'bitecs';
 
+export const TriggeredAbilityTag = defineComponent();
+export const ActionAbilityTag = defineComponent();
+export const ReactionAbilityTag = defineComponent();
+export const AuraAbilityTag = defineComponent();
+
 export const AbilityDataComponent = defineComponent({
   cardEntity: Types.eid,
   abilityBlueprintId: Types.ui32,
-  type: Types.ui8,
 });
 
 export const AbilityTrigger = defineComponent({

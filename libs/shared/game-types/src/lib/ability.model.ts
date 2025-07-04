@@ -1,10 +1,11 @@
-export type Ability =
+export type AbilityBlueprint =
   | TriggeredAbility
   | ActionAbility
   | AuraAbility
   | ReactionAbility;
 
 export interface BaseAbility {
+  id: number;
   name?: string;
   description: string;
 }

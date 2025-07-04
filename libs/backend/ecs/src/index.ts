@@ -1,3 +1,4 @@
+export * from './lib/components/ability';
 export * from './lib/components/card-collection';
 export * from './lib/components/card-data';
 export * from './lib/components/card-owner';
