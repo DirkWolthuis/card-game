@@ -110,3 +110,5 @@ Ideas:
 - Players can tweak the visuals of their own cards, for example naming and art, providing flavor/themes
 - Lords of Estraven: when starting, players choose a lord and a province (province = starting deck, lord = their commander)
 - Troops can evolve into lords? Something like Shadows of Mordor
+- No users, only deck ids, play with your deck code or a random deck from made by someone else?
+- Maybe lords have some kind of resource, something they can use to ult / as wincon
