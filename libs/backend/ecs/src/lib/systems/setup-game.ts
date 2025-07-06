@@ -1,4 +1,4 @@
-import { SetupDeckEvent, SetupGameEvent } from '@loe/shared/game-types';
+import { GameEvent, SetupGameEvent } from '@loe/shared/game-types';
 import { GameSystem } from './system.model';
 import { addComponent, addEntity } from 'bitecs';
 import { Player } from '../components/player-tag';
@@ -14,7 +14,7 @@ export const setupGameSystem: GameSystem<SetupGameEvent> = async (
   world,
   engine
 ) => {
-  let newEvents: SetupDeckEvent[] = [];
+  let newEvents: GameEvent[] = [];
   event.payload.players.forEach((player) => {
     const playerEntity = addEntity(world);
     addComponent(world, Player, playerEntity);
