@@ -1,4 +1,4 @@
-import { createWorld, IWorld } from 'bitecs';
+import { createWorld, IWorld, defineSerializer, Serializer } from 'bitecs';
 import { EventQueueService } from '../event-queue/event-queue.service';
 import { SystemEventMap } from '@loe/ecs';
 import { GameEvent } from '@loe/shared/game-types';
@@ -11,15 +11,23 @@ type GameState =
   | 'READY_FOR_NEW_EVENT';
 
 export class GameEngineService {
+  // Return a serializable snapshot of the ECS world state
+  public getWorldState(): ArrayBuffer {
+    const packet = this.serializeWorld(this.world);
+    console.log(packet);
+    return packet;
+  }
   private eventQueueService = new EventQueueService();
   private gameState: GameState = 'READY_FOR_NEW_EVENT';
   private tickInterval: NodeJS.Timeout | null = null;
   private tickDuration = 1 * 1000;
   private systemEventMap = SystemEventMap;
   private world!: IWorld;
+  private serializeWorld: Serializer<IWorld>;
 
   constructor() {
     this.world = createWorld();
+    this.serializeWorld = defineSerializer(this.world);
     this.startGameLoop();
     this.eventQueueService.addEvents([
       {

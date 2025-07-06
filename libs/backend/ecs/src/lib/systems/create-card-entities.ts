@@ -15,7 +15,12 @@ export const createCardEntities: GameSystem<CreateCardEntitiesEvent> = async (
     return;
   }
   deck.forEach((cardId) => {
+    console.log(`Creating entity for card ID: ${cardId}`);
     const cardBlueprint = cardBlueprints.get(cardId);
+    if (!cardBlueprint) {
+      console.error(`Card blueprint with ID ${cardId} not found.`);
+      return;
+    }
     const cardEntity = addEntity(world);
     createCardComponents(cardEntity, world, cardBlueprint);
   });
