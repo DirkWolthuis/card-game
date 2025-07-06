@@ -1,7 +1,9 @@
 import {
   AbilityBlueprint,
   AbillityType,
+  ActionAbility,
   CardBlueprint,
+  TriggeredAbility,
   UnitCard,
 } from '@loe/shared/game-types';
 import { IWorld, addComponent, addEntity } from 'bitecs';
@@ -10,7 +12,11 @@ import { UnitAttributesComponent } from '../components/unit-attributes';
 import { isUnitCard } from '@loe/shared/game-utils';
 import { abilityBlueprints } from '@loe/shared/game-blueprints';
 import {
+  AbilityCostComponent,
   AbilityDataComponent,
+  AbilityEffectComponent,
+  AbilityRestrictionComponent,
+  AbilityTriggerComponent,
   ActionAbilityTag,
   AuraAbilityTag,
   ReactionAbilityTag,
@@ -68,5 +74,33 @@ const createAbilityComponents = (
     case AbillityType.AURA:
       addComponent(world, AuraAbilityTag, abilityEntity);
       break;
+  }
+
+  if ((abilityBlueprint as TriggeredAbility).trigger) {
+    addComponent(world, AbilityTriggerComponent, abilityEntity);
+    AbilityTriggerComponent[abilityEntity] = (
+      abilityBlueprint as TriggeredAbility
+    ).trigger;
+  }
+  if (abilityBlueprint.effect) {
+    addComponent(world, AbilityEffectComponent, abilityEntity);
+    AbilityEffectComponent.type[abilityEntity] = abilityBlueprint.effect.type;
+    AbilityEffectComponent.value[abilityEntity] = abilityBlueprint.effect.value;
+  }
+  if (abilityBlueprint.restriction) {
+    addComponent(world, AbilityRestrictionComponent, abilityEntity);
+    AbilityRestrictionComponent.type[abilityEntity] =
+      abilityBlueprint.restriction.type;
+    AbilityRestrictionComponent.value[abilityEntity] =
+      abilityBlueprint.restriction.value;
+  }
+  if ((abilityBlueprint as ActionAbility).cost) {
+    addComponent(world, AbilityCostComponent, abilityEntity);
+    AbilityCostComponent.type[abilityEntity] = (
+      abilityBlueprint as ActionAbility
+    ).cost.type;
+    AbilityCostComponent.value[abilityEntity] = (
+      abilityBlueprint as ActionAbility
+    ).cost.value;
   }
 };

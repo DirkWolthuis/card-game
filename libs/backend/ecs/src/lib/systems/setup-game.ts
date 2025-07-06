@@ -24,10 +24,16 @@ export const setupGameSystem: GameSystem<SetupGameEvent> = async (
     addComponent(world, HandComponent, playerEntity);
 
     newEvents.push({
-      type: 'INTERNAL::SETUP_DECK',
+      type: 'INTERNAL::CREATE_CARD_ENTITIES',
       payload: {
         playerId: player.id,
         deckId: player.deckId,
+      },
+    });
+    newEvents.push({
+      type: 'INTERNAL::CREATE_CARD_COLLECTIONS',
+      payload: {
+        playerId: player.id,
       },
     });
   });

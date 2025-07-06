@@ -10,7 +10,7 @@ export const AbilityDataComponent = defineComponent({
   abilityBlueprintId: Types.ui32,
 });
 
-export const AbilityTrigger = defineComponent({
+export const AbilityTriggerComponent = defineComponent({
   trigger: [Types.ui8, 16],
 });
 

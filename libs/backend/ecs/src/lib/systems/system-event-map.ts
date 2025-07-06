@@ -1,12 +1,14 @@
 import { GameEvent } from '@loe/shared/game-types';
 import { GameSystem } from './system.model';
 import { setupGameSystem } from './setup-game';
-import { setupDeckSystem } from './setup-deck';
+import { createCardEntities } from './create-card-entities';
+import { createCardCollections } from './setup-card-collections';
 
 export const SystemEventMap = new Map<
   GameEvent['type'],
   GameSystem<GameEvent>[]
 >([
   ['INTERNAL::SETUP_GAME', [setupGameSystem]],
-  ['INTERNAL::SETUP_DECK', [setupDeckSystem]],
+  ['INTERNAL::CREATE_CARD_ENTITIES', [createCardEntities]],
+  ['INTERNAL::CREATE_CARD_COLLECTIONS', [createCardCollections]],
 ]);

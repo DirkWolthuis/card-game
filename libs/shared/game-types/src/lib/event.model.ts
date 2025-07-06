@@ -1,4 +1,7 @@
-export type GameEvent = SetupGameEvent | SetupDeckEvent;
+export type GameEvent =
+  | SetupGameEvent
+  | CreateCardEntitiesEvent
+  | CreateCardCollectionsEvent;
 
 export type SetupGameEvent = {
   type: 'INTERNAL::SETUP_GAME';
@@ -10,10 +13,17 @@ export type SetupGameEvent = {
   };
 };
 
-export type SetupDeckEvent = {
-  type: 'INTERNAL::SETUP_DECK';
+export type CreateCardEntitiesEvent = {
+  type: 'INTERNAL::CREATE_CARD_ENTITIES';
   payload: {
     playerId: number;
     deckId: number;
+  };
+};
+
+export type CreateCardCollectionsEvent = {
+  type: 'INTERNAL::CREATE_CARD_COLLECTIONS';
+  payload: {
+    playerId: number;
   };
 };

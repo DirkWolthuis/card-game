@@ -7,7 +7,7 @@ export * from './lib/components/game-phase';
 export * from './lib/components/game-state';
 export * from './lib/components/player-tag';
 export * from './lib/components/unit-attributes';
-export * from './lib/systems/setup-deck';
+export * from './lib/systems/create-card-entities';
 export * from './lib/systems/setup-game';
 export * from './lib/systems/system-event-map';
 export * from './lib/systems/system.model';

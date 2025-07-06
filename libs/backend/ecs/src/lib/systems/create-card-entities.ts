@@ -1,10 +1,10 @@
-import { SetupDeckEvent } from '@loe/shared/game-types';
+import { CreateCardEntitiesEvent } from '@loe/shared/game-types';
 import { GameSystem } from './system.model';
 import { cardBlueprints, deckBlueprints } from '@loe/shared/game-blueprints';
 import { addEntity } from 'bitecs';
 import { createCardComponents } from '../utils/component.util';
 
-export const setupDeckSystem: GameSystem<SetupDeckEvent> = async (
+export const createCardEntities: GameSystem<CreateCardEntitiesEvent> = async (
   event,
   world,
   engine
