@@ -1,106 +1,78 @@
 # Lords of Estraven card game design
-
-Lords of Estraven (LOE) is a 2-4 player card game. The game is designed to be played with physical cards. Players play as a lord in charge of a province of the continent Estraven, fighting and plotting to gain control over other provinces. The core elements of the game are the lord (the main card of the player, with special abilities determinates the play style the most), up to 4 dukes (smaller character cards that support the lord) and a victory card (a win condition). Goal of the game is either to reduce your opponents lords life totals to less than one or to play your victory card.
-
+Lords of Estraven (LOE) is a 2-4 player card game. The game is designed to be played with physical cards. Players play as a lord in charge of a province of the continent Estraven, fighting and plotting to gain control over other provinces.
+## Design Philosophy
+The intended feel of the game is strategic and methodical. With key information like a player's Dukes and Victory card hidden at the start, the gameplay should encourage a "cloak and dagger" style of play, rewarding careful planning, bluffing, and deduction over raw aggression. It is designed to be a slower, more thoughtful experience than many other card games. The choice of Lord and Dukes is intended to support various playstyle archetypes, such as control, combo, and mid-range strategies.
 ## Game setup
-
-- Player cards:
-  - 1 Lord card
-  - Up to 4 Duke cards
-  - 1 Victory card
-- Player zones:
-  - Play zone
-  - Cards in their hand (refered to as hand)
-- Shared zones:
-  - Deck/Library
-  - Discard zone
-  - Market zone
-
-## Card types
-
-### How do cards work?
-
-#### Council
-
-The combination of your Lord and Duke cards are refered to as your council.
-
-#### Lord
-
-The lord card is revealed at the start of the game. The lord cards have a cost, but is only used for the sake of abilities and effects. Lords always start in play unless its rules specify otherwise.
-
-#### Duke
-
-Duke cards start the game face down and can be activated by paying their cost. You can only activate Duke cards during your turn unless an effect specifically allows you otherwise.
-
-#### Resources
-
-Resource cards are used to pay for abilities or needed to meet a Victory card condition. When a card mentions a resource as a cost, it means you must spend that resource by placing a fatigue token on it. Players can only play one resource card per turn. Most resource cards have an additional effect that can be activated or triggers when played. Type or resource cards include Subjects, Materials, and Influence.
-
-#### Victories
-
-Victory cards represent a (alternative) win condition for the game. Each player can only have one victory card in play at a time. To win the game, a player must fulfill the conditions specified on their victory card. If a player's victory card is successfully played and its conditions are met when the card resolves, that player wins the game. When the conditions are not met when the card resolves, the card is returned to the player and is kept revealed for the rest of the game.
-
-#### Spells
-
-Spells are cards with a one time effect, can be played by paying their cost. Spells can only be cast during your turn unless an effect specifically allows you otherwise.
-
-#### Reactions
-
-Reactions are cards that can be played in response to an ability or effect. The timing and conditions for playing a reaction are specified on the card.
-
-#### Items
-
-Item cards represent various objects or equipment. All items are coupled to a specific Lord or Duke card in play. Type or item cards include Artifacts, Gear, Classes, Boons
-
-#### Rituals
-
-Rituals cards produce a continuous effect as long as they are in play. Usually a symmetrical effect.
-
-## Main mechanics
-
-- Cards can be played by paying their cost (visualized on the card with a number and powerstone symbol) and additional cost if relevant
-- Some cards have a health value, which represents their durability or resistance. Cards with a health value can be the target of damage or other effects that interact with health. When a card with a health value is dealt damage, it receives a number of damage counters equal to the damage dealt. If a card's health value is reduced to zero or below, it is destroyed and sent to the discard pile. Health value is tracked using damage counters and not automatically removed unless an effect specifies otherwise.
-- When the effect of cards break the game rules, the effect takes precedence
-- When an card has 'spend' as an effect or cost, then place a fatigue token on relevant card
-- Cards with a fatigue token cannot activate abilities with spend as cost
-- Reactions can be played in reaction to an ability or card/effect, the reaction will define when it can be played
-- Resolving effects/cards is done with a stack, last in -- first out
-- Dukes can be played by paying the cost. When playing reveal/flip the card
-- You can play your victory card, if it resolves you win the game and other players loose. Opponents can react to playing a victory card in the same way as other cards. When your victory card resolves, but the conditions on the card are no longer met, the card returns face up under control of its owner. You can only play victory cards once a turn
-
-## Play modes
-
-- Everything constructed
-  - All players construct a 20 card deck
-  - All players a council of 1 lord and up to 4 dukes
-  - All players construct (pick) a victory card
-- Everything constructed except victory
-  - All players construct a 20 card deck
-  - All players a council of 1 lord and up to 4 dukes
-  - All victories are shuffled and each player draws 3 victory cards, then pick one
-- Constructed council and victory, random decks
-  - A deck booster is opened for each player and shuffled into the shared deck
-  - All players a council of 1 lord and up to 4 dukes
-  - All players construct (pick) a victory card
-- Draft
-  - A lords and dukes booster is opened and each player chooses one card to go into their council and discards another card, repeat proces until all players have a full council or all players pass their turn to pick
-  - A deck booster is opened and each player chooses one card to go in the deck and discards another card, repeat the proces until their are 20 cards for each player in the shared deck
-  - All victories are shuffled and each player draws 3 victory cards, then pick one
-
-## Main mechanics
-
-- Before the game
-  - All council cards start face down
-  - Victory cards start face down
-  - Shared deck is suffled
-  - The top 5 cards of the deck are placed face up in the market zone
-  - Each player flips their lord card
-  - Each player draws 5 cards
-- Player turn
-  - Player removes all fatigue tokens
-  - Player looses all powerbeads but one
-  - Player draws a card
-  - Player can trade one card from their hand with a card from the market, but need to pay one powerstone
-  - Player receives one powerstone for each turn number, to a max of 10.
-  - Player can play cards and activate abilities
-  - At any moment the player can pass their turn or automatcally pass when they can't play any cards or activate any abilities
+Player cards:
+1 Lord card
+Up to 4 Duke cards
+1 Victory card
+Player zones:
+Play zone (where a player's council, resources, items, and rituals are placed)
+Hand (cards held by the player, hidden from others)
+Shared zones:
+Deck/Library (a single deck shared by all players)
+Discard pile
+Market zone
+Card types
+How do cards work?
+Council
+The combination of your Lord and Duke cards are referred to as your council.
+Lord
+The lord card is revealed at the start of the game. The lord cards have a cost, but this is only used for the sake of abilities and effects. Lords always start in play unless their rules specify otherwise. A Lord's starting health is printed on the card and can be different for each Lord. Lords have no inherent actions (like a default attack); everything a Lord can do is printed on the card.
+Duke
+Duke cards start the game face down and can be activated (flipped face up) by paying their cost. You can only activate Duke cards during your turn unless an effect specifically allows you otherwise. While face down, Dukes cannot be targeted by abilities or effects unless a card rule specifically allows it. Like Lords, Dukes can only perform actions described on their card.
+Resources
+Resource cards are used to pay for abilities or meet a Victory card condition. When a card mentions a resource as a cost (e.g., "Spend 1 Influence"), it means you must place a fatigue token on a corresponding resource card you control. Players can only play one resource card per turn. Most resource cards have an additional effect that can be activated or triggers when played. A resource card can be spent on the same turn it is played. Types of resource cards include Subjects, Materials, and Influence.
+Victories
+Victory cards represent an alternative win condition. Each player has one Victory card. To win via this method, a player must play the card and successfully fulfill the conditions specified on it when the card resolves.
+Playing a Victory card: The first attempt to play your Victory card costs 1 powerstone. Each subsequent attempt costs 1 more powerstone than the last (e.g., 1, then 2, then 3).
+Resolution: Opponents can react to a Victory card being played. If the card resolves and its conditions are met, that player wins the game. If the conditions are no longer met when it resolves, the card is returned to its owner's play zone, face up, and it remains revealed for the rest of the game.
+Spells
+Spells are cards with a one-time effect, played by paying their cost. Spells can only be cast during your turn unless an effect specifically allows you otherwise.
+Reactions
+Reactions are cards that can be played in response to an ability or effect, using the stack. The timing and conditions for playing a reaction are specified on the card.
+Items
+Item cards represent objects or equipment. To play an Item, you pay its cost and couple it to a specific Lord or Duke card in play, placing it next to that card. There is no limit to how many Items can be coupled to one character. If a Lord or Duke is destroyed, any Items coupled to it are also sent to the discard pile. Types of item cards include Artifacts, Gear, Classes, and Boons.
+Rituals
+Ritual cards produce a continuous, and usually symmetrical, effect as long as they are in play.
+Main mechanics
+Paying Costs: Cards are played by paying their powerstone cost (visualized on the card with a number and powerstone symbol) and any additional costs (like spending resources).
+Health and Damage: Some cards have a health value. Damage is dealt through card abilities. When a card is dealt damage, it receives an equal number of damage counters. If a card's damage counters equal or exceed its health, it is destroyed and sent to the discard pile. Damage counters are not removed unless an effect specifies otherwise.
+Combat: There is no dedicated combat phase. All damage and interaction between cards are handled exclusively through card abilities and effects.
+Golden Rule: When the effect of a card breaks the game rules, the card's effect takes precedence.
+Spending: When an effect or cost says to 'spend' a card (e.g., a Resource), you place one fatigue token on that card.
+Fatigue: Cards with a fatigue token cannot be spent again or use abilities that require spending as a cost.
+The Stack: Resolving effects, spells, and reactions is done with a stack. The last card or ability added to the stack is the first one to resolve (Last In, First Out). Players can play a Reaction in response to another Reaction, with the stack depth limited only by player resources.
+Targeting: Unless a card specifies otherwise (e.g., "cannot be targeted"), any card can be targeted by an ability that could logically affect it (e.g., a damage spell can target any card with a health value).
+Hand Size: Players have a maximum hand size of 7 cards. At the end of their turn, if a player has more than 7 cards, they must discard down to the limit.
+Deck Depletion: If the shared deck runs out of cards, the discard pile is shuffled to create a new deck.
+Play modes
+The shared deck is not constructed by individual players. It is formed at the start of the game using one of the following methods.
+Sealed Deck: Each player opens a number of "deck boosters" and all cards from these boosters are shuffled together to form the shared deck. Players construct their council and pick a victory card from their personal collection.
+Council Constructed: The game uses a pre-defined, themed shared deck that all players draw from. Players bring their own pre-constructed council and victory card.
+Full Draft:
+Council Draft: A "lords and dukes booster" is opened. Each player chooses one card to add to their council, then passes the remaining cards. This repeats until all players have a full council.
+Sealed Deck: Each player opens a number of "deck boosters" and all cards from these boosters are shuffled together to form the shared deck.
+Victory Draft: All victory cards are shuffled. Each player is dealt 3, and secretly chooses one to use.
+Turn Sequence
+Before the game:
+All council cards start face down.
+Victory cards start face down.
+The shared deck is shuffled.
+The top 5 cards of the deck are placed face up in the market zone.
+Each player flips their Lord card face up.
+Each player draws 5 cards.
+Start of a Player's Turn:
+Untap: The player removes all fatigue tokens from cards they control.
+Upkeep: The player loses all but one of their unspent powerstones from the previous turn.
+Draw: The player draws a card.
+Main Phase:
+The player receives powerstones equal to the current turn number, to a maximum of 10 (1 on turn 1, 2 on turn 2, ..., 10 on turn 10 and beyond).
+The player can perform the following actions in any order:
+Play cards from their hand.
+Activate abilities on cards they control.
+Trade with the Market (once per turn): Pay 1 powerstone to swap one card from their hand with one card in the market. The card from their hand is placed into the empty market slot.
+End of Turn:
+If the player can take no more actions or chooses to pass, their turn ends.
+Market Refresh: The card that has been in the market the longest is sent to the discard pile. A new card is revealed from the top of the deck to fill the empty slot.
