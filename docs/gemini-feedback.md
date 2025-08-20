@@ -66,53 +66,72 @@ Q: What is their role in combat? Can they attack? Can they intercept damage mean
 A: There is no combat phase. They can only do what their card abilities mention.
 
 Q: What happens to Items attached to a Duke if the Duke is destroyed?
+A: idk they could be re-equipt I guess but that might be too much like magic. Can you suggest a solution?
 
 Items:
 
-How is an Item "coupled" to a Lord or Duke? Is it played from hand by paying its cost and placed next to the character?
+Q: How is an Item "coupled" to a Lord or Duke? Is it played from hand by paying its cost and placed next to the character?
+A: Yes, maybe an extra cost if we do re-equiping.
 
-Is there a limit to how many Items can be coupled to one character? (e.g., only one Gear, one Artifact, etc.)?
+Q: Is there a limit to how many Items can be coupled to one character? (e.g., only one Gear, one Artifact, etc.)?
+A: No.
 
 Victory Cards:
 
-Does it cost powerstones to attempt to play your Victory card?
+Q: Does it cost powerstones to attempt to play your Victory card?
+A: No, but it maybe should? 1 for the first time and one more for each attempt?
 
-You mention the card is returned revealed if the conditions aren't met on resolution. Is there any other penalty? If not, what prevents a player from trying to play it every single turn for free once the conditions are close?
+Q: You mention the card is returned revealed if the conditions aren't met on resolution. Is there any other penalty? If not, what prevents a player from trying to play it every single turn for free once the conditions are close?
+A: See above. 
 
-Can an opponent's Reaction card specifically target and "counter" a Victory card, sending it to the discard pile and effectively eliminating that win condition for the player?
+Q: Can an opponent's Reaction card specifically target and "counter" a Victory card, sending it to the discard pile and effectively eliminating that win condition for the player?
+A: In theory, but I'm not sure I would design that card.
 
 Spells & Reactions:
 
-Since Reactions use a stack, can players play a Reaction in response to another Reaction? How deep can the stack go?
+Q: Since Reactions use a stack, can players play a Reaction in response to another Reaction? How deep can the stack go?
+A: Yes, infinite if there were infinite resources. 
 
-Is there a general rule for targeting? Can any damage spell target any card with a health value (Lords and Dukes), or are there restrictions?
+Q: Is there a general rule for targeting? Can any damage spell target any card with a health value (Lords and Dukes), or are there restrictions?
+A: No restrictions other than abilities that have an effect on this. 
 
 Main Mechanics & Turn Flow
-Dealing Damage: How is damage primarily dealt in the game?
+Q: Dealing Damage: How is damage primarily dealt in the game?
+A: By activating abilities that deal damage. 
 
-Is it mainly through Spells and abilities?
+Q: Is it mainly through Spells and abilities?
+A: Yes. 
 
-Is there a dedicated "Combat Phase" where Lords/Dukes can attack each other? If so, how does it work? (e.g., Player declares attackers, opponent declares blockers).
+Q: Is there a dedicated "Combat Phase" where Lords/Dukes can attack each other? If so, how does it work? (e.g., Player declares attackers, opponent declares blockers).
+A: No.
 
-Hand Size: Is there a maximum hand size? If so, what happens if a player ends their turn with more cards than the maximum?
+Q: Hand Size: Is there a maximum hand size? If so, what happens if a player ends their turn with more cards than the maximum?
+A: I guess there should. 5?
 
-Deck Depletion: What happens when the shared deck runs out of cards? Does the game end in a draw? Do players lose? Is the discard pile shuffled to become a new deck?
+Q: Deck Depletion: What happens when the shared deck runs out of cards? Does the game end in a draw? Do players lose? Is the discard pile shuffled to become a new deck?
+A: the cards are shuffled back in.
 
 Passing the Turn:
 
-The turn passes automatically if a player can't do anything. Does this include not having enough powerstones for any action, even if they have playable cards in hand?
+Q: The turn passes automatically if a player can't do anything. Does this include not having enough powerstones for any action, even if they have playable cards in hand?
+A: Yes. 
 
-If a player can take actions but chooses to pass, do they get to keep their unspent powerstones (up to the one carryover)?
+Q: If a player can take actions but chooses to pass, do they get to keep their unspent powerstones (up to the one carryover)?
+A: Yes they can spend them on reactions for example. 
 
 Play Modes & Construction Rules
 Deck Construction:
 
-Are there any restrictions on deck building besides the 20-card count? (e.g., "no more than 2 copies of any single card").
+Q: Are there any restrictions on deck building besides the 20-card count? (e.g., "no more than 2 copies of any single card").
+A: See earlier awnser, the deck is not longer comstructable. 
 
-In constructed modes, how do players ensure their deck functions if it's being shuffled with 1-3 other players' decks? This seems like the most critical area to clarify.
+Q: In constructed modes, how do players ensure their deck functions if it's being shuffled with 1-3 other players' decks? This seems like the most critical area to clarify.
+A: See above
 
 Drafting:
 
-In the draft, what is a "booster"? How many cards are in it?
+Q: In the draft, what is a "booster"? How many cards are in it?
+A: Don't know yet, first need to make card designs. 
 
-When drafting the shared deck, the rule says "discards another card." Where does this discarded card go? Is it removed from the game entirely? This is important as it affects the total card pool.
+Q: When drafting the shared deck, the rule says "discards another card." Where does this discarded card go? Is it removed from the game entirely? This is important as it affects the total card pool.
+A: Don't know yet. 
