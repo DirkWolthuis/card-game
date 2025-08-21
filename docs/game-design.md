@@ -91,4 +91,4 @@ The shared deck is formed at the start of the game using one of the following me
 
 #### End of Turn:
 * Your turn ends when you have no more actions or choose to pass.
-* **Market Refresh:** The card that has been in the market the longest is sent to the discard pile, and a new card is revealed from the top of the deck.
+* **Market Refresh:** The card that has been in the market the longest (the card on the left if the deck is on the right) is sent to the discard pile, and a new card is revealed from the top of the deck and placed on the right side of the market. 
