@@ -36,7 +36,8 @@ The game is intended to feel **strategic and methodical**. The hidden nature of 
 * **Spells:** Cards with a one-time effect, cast by paying their cost during your turn.
 * **Reactions:** Cards that can be played in response to an ability or effect, using the stack.
 * **Items:** Represent objects or equipment. When played, an Item is coupled to a specific Lord or Duke. If the character is destroyed, any attached Items are also sent to the discard pile. Types include **Artifacts, Gear, Classes,** and **Boons**.
-* **Rituals:** Ritual cards produce a continuous, and usually symmetrical, effect as long as they are in play.
+* **Rituals:** Ritual cards produce a continuous effect, and usually symmetrical, effect as long as they are in play.
+* **Events:** Event cards have different effects for a set duration of time, usually symmetrical and escalating in impact. They are discarded when their last effect is resolved. 
 
 ---
 
@@ -82,7 +83,7 @@ The shared deck is formed at the start of the game using one of the following me
 * **Draw:** Draw one card.
 
 #### Main Phase:
-1.  Receive powerstones equal to the current turn number, up to a maximum of 10.
+1.  Receive powerstones equal to the their current turn number, up to a maximum of 10.
 2.  Perform any of the following actions in any order:
     * Play cards from your hand.
     * Activate abilities on cards you control.
