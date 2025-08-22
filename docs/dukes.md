@@ -1,6 +1,6 @@
 # Dukes
 
-## Micha, degenerate gambler
+## Galbreght, degenerate gambler
 Health: 10
 Cost: 2P
 Abilities:
