@@ -10,6 +10,13 @@ The game is intended to feel **strategic and methodical**. The hidden nature of 
 
 ### Game Setup
 
+#### Game Attributes:
+- 2x 10 Lord cards
+- 2x 20 Duke cards
+- 2x 10 Victory cards
+- 2x 30 card Core deck
+- 2x 5x 30 card theme decks
+
 #### Player Cards:
 * **1 Lord card**
 * **Up to 4 Duke cards**
@@ -18,11 +25,10 @@ The game is intended to feel **strategic and methodical**. The hidden nature of 
 #### Player Zones:
 * **Play zone:** Where a player's council, resources, items, and rituals are placed.
 * **Hand:** Cards held by the player, hidden from others.
+* **Deck:** Stack of cards from which player draws.
 
 #### Shared Zones:
-* **Deck/Library:** A single deck shared by all players.
-* **Discard pile**
-* **Market zone**
+* **Market zone:** 5 face up cards and deck created from cards from all players.
 
 ---
 
@@ -59,12 +65,7 @@ The game is intended to feel **strategic and methodical**. The hidden nature of 
 
 The shared deck is formed at the start of the game using one of the following methods:
 
-* **Sealed Deck:** Players open "deck boosters" and shuffle all cards together to form the shared deck. Players construct their council and choose a victory card from their personal collection.
-* **Council Constructed:** A pre-defined shared deck is used. Players bring their own pre-constructed council and victory card.
-* **Full Draft:**
-    * **Council Draft:** Players draft cards for their council from a "lords and dukes booster."
-    * **Sealed Deck:** Players open "deck boosters" and shuffle all cards to form the shared deck.
-    * **Victory Draft:** Players draft a Victory card from a selection of three.
+* **xxx:** Players choose construct their council by picking 1 Lord, 4 Dukes and 1 Victory card in secret. Then they pick one of the preconstructed decks. They combine that deck with the default deck and that will make up their player deck. 
 
 ---
 
