@@ -4,8 +4,17 @@ Lords of Estraven (LOE) is a 2-4 player card game played with physical cards. As
 
 ---
 
-## Design Philosophy
+## Table of Contents
+- [Design Philosophy](#design-philosophy)  
+- [Game Setup](#game-setup)  
+- [Card Types](#card-types)  
+- [Main Mechanics](#main-mechanics)  
+- [Play Modes](#play-modes)  
+- [Turn Sequence](#turn-sequence)  
 
+---
+
+## Design Philosophy
 The game is intended to feel strategic and methodical.  
 The hidden nature of key information, like a player’s Dukes and Victory card, promotes a *“cloak and dagger”* style of play.  
 
@@ -88,9 +97,9 @@ The shared market deck is formed at the start of the game using the following me
 5. Each player draws 5 cards.  
 
 **Start of a Player’s Turn:**
-- Remove all fatigue tokens from your cards.  
-- Lose all but one of your unspent powerstones.  
-- Draw one card.  
+- **Restore**: Remove all fatigue tokens from your cards.  
+- **Repower**: Lose all but one of your unspent powerstones.  
+- **Draw**: Draw one card.  
 
 **Main Phase:**
 1. Gain **X powerstones**, where **X = that player’s current turn number** (not cumulative), up to a maximum of 10.  
