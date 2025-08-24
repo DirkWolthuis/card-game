@@ -65,7 +65,7 @@ The game is intended to feel **strategic and methodical**. The hidden nature of 
 
 The shared deck is formed at the start of the game using one of the following methods:
 
-* **xxx:** Players choose construct their council by picking 1 Lord, 4 Dukes and 1 Victory card in secret. Then they pick one of the preconstructed decks. They combine that deck with the default deck and that will make up their player deck. 
+* **xxx:** Players choose construct their council by picking 1 Lord, 4 Dukes and 1 Victory card in secret. Then they pick one of the theme decks. They combine that deck with the default deck and that will make up their player deck. 
 
 ---
 
