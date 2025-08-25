@@ -86,7 +86,8 @@ The Core Deck provides the foundation from which Theme decks build more speciali
 ---
 
 ### Main Mechanics
-- **Votes**: ritual or event cards that do different things based on how the group votes. 
+- **Votes**: ritual or event cards that do different things based on how the group votes. Based on Prisoner's dilemma, trust is an important factor.
+- 
 ---
 
 ### Resource cards
