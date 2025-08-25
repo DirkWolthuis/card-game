@@ -1,4 +1,4 @@
-# Politics in Estraven – Vision Design (Core Deck)
+# Politics in Estraven (Core Deck)
 
 ## Vision Design
 
