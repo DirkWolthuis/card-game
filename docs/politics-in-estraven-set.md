@@ -85,6 +85,10 @@ The Core Deck provides the foundation from which Theme decks build more speciali
 
 ---
 
+### Main Mechanics
+- **Votes**: ritual or event cards that do different things based on how the group votes. 
+---
+
 ### Resource cards
 
 #### Subjects
