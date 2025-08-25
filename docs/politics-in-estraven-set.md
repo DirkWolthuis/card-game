@@ -72,4 +72,23 @@ The Core Deck provides the foundation from which Theme decks build more speciali
 - Acts as a **neutral canvas** onto which Theme decks layer factional or cultural flavor.  
 - Ensures all games have an underlying “political drama,” even if themes differ (war, religion, economics).
 
+---
+
 ## Card Design
+
+### Set Outline (30 cards)
+- 12 resource cards
+- 8 spells/reactions
+- 4 events
+- 4 rituals
+- 2 items
+
+---
+
+### Resource cards
+
+#### Subjects
+
+#### Materials
+
+#### Influence
