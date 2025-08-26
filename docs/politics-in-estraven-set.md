@@ -97,6 +97,18 @@ The Core Deck provides the foundation from which Theme decks build more speciali
 
 #### Subjects
 
+##### Swept-up mob
+Spend: Deal one damage to any target
+
+##### Core demographic
+Spend, sacrafice this card: search your deck for an Influence card and put it into play with a fatigue token. Shuffle your deck. 
+
+##### Protestors
+Spend, sacrafice this card: nullify any one source of damage.
+
+##### City guard
+Spend: Deal one damage to any target.
+
 #### Materials
 
 #### Influence
