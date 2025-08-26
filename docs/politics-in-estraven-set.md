@@ -77,16 +77,19 @@ The Core Deck provides the foundation from which Theme decks build more speciali
 ## Card Design
 
 ### Set Outline (30 cards)
-- 12 resource cards
-- 8 spells/reactions
-- 4 events
-- 4 rituals
-- 2 items
+- 2 Lord cards
+- 5 Duke cards
+- 12 Resource cards
+- 8 Spells/Reactions
+- 4 Events
+- 4 Rituals
+- 2 Items
 
 ---
 
 ### Main Mechanics
-- **Votes**: ritual or event cards that do different things based on how the group votes. Based on Prisoner's dilemma, trust is an important factor.
+- **Pact**: Target players must secretly vote X or Y. When all vote X, each gain [small benefit]. When only one player votes Y, that player gains [large benefit] and other players [medium punishment]. Other result, all players [medium punishment]. 
+- **Sway**: Target player must do X, before the end of their next turn. If not [medium punishment].
 - 
 ---
 
