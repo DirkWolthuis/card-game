@@ -98,7 +98,7 @@ The Core Deck provides the foundation from which Theme decks build more speciali
 #### Subjects
 
 ##### Swept-up mob
-Spend: Deal two damage to any target
+Spend, spend one influence: Deal two damage to any target
 
 ##### Core demographic
 Spend, sacrafice this card: search your deck for an Influence card and put it into play with a fatigue token. Shuffle your deck. 
