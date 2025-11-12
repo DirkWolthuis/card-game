@@ -1,0 +1,9 @@
+{
+  "name": "game-ui",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/game-ui/src",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project game-ui --web",
+  "targets": {}
+}
