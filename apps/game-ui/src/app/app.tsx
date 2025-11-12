@@ -4,7 +4,7 @@ import NxWelcome from './nx-welcome';
 
 export function App() {
   return (
-    <div>
+    <div className='bg-red-500'>
       <NxWelcome title="game-ui" />
     </div>
   );
