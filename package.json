@@ -2,7 +2,10 @@
   "name": "@lords-of-estraven-game/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "serve:ui": "nx run game-ui:dev",
+    "reset": "nx reset"
+  },
   "private": true,
   "devDependencies": {
     "@eslint/js": "^9.8.0",
