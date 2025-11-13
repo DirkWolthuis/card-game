@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@game/core": ["libs/game-core/src/index.ts"],
+      "@game/models": ["libs/game-models/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
