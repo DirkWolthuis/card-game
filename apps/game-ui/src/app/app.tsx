@@ -1,13 +1,11 @@
-// Uncomment this line to use CSS modules
-// import styles from './app.module.css';
-import NxWelcome from './nx-welcome';
+// App.tsx
+import { Client } from 'boardgame.io/react';
 
-export function App() {
-  return (
-    <div className='bg-red-500'>
-      <NxWelcome title="game-ui" />
-    </div>
-  );
-}
+import { MyGame } from '@game/core';
+import MyGameBoard from '../board/board';
 
+const App = Client({
+  game: MyGame,
+  board: MyGameBoard,
+});
 export default App;
