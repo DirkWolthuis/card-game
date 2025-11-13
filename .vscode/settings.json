@@ -1,0 +1,21 @@
+{
+  "jest.runMode": "on-demand",
+  "restoreTerminals.terminals": [
+    {
+      "splitTerminals": [
+        {
+          "name": "serve",
+          "commands": ["nvm use 25", "pnpm i", "pnpm serve:ui"]
+        },
+        {
+          "name": "custom",
+          "commands": ["nvm use 25"]
+        }
+      ]
+    }
+  ],
+  "files.associations": {
+    "*.scenarios": "feature"
+  },
+  "angular.enable-strict-mode-prompt": false
+}
