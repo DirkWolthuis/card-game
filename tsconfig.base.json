@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@game/core": ["libs/game-core/src/index.ts"],
-      "@game/models": ["libs/game-models/src/index.ts"]
+      "@game/models": ["libs/game-models/src/index.ts"],
+      "@game/data": ["libs/game-data/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
