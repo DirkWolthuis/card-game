@@ -1,12 +1,5 @@
 // Game.ts
-import type { Game, Move } from 'boardgame.io';
+import type { Game } from 'boardgame.io';
+import { GameState } from '@game/models';
 
-export interface MyGameState {
-  // aka 'G', your game's state
-}
-
-const move: Move<MyGameState> = ({ G, ctx }) => {};
-
-export const MyGame: Game<MyGameState> = {
-  // ...
-};
+export const MyGame: Game<GameState> = {};
