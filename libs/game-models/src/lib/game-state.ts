@@ -1,9 +1,9 @@
 import { Deck } from './deck';
-import { Player } from './player';
+import { Player, PlayerId } from './player';
 import { Zones } from './zone';
 
 export interface GameState {
-  players: Player[];
-  zones: Zones[];
-  decks: Deck[];
+  players: Record<PlayerId, Player>;
+  zones: Record<PlayerId, Zones>;
+  decks: Record<PlayerId, Deck>;
 }

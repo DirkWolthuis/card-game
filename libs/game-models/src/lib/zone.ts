@@ -19,7 +19,6 @@ export interface Library {
 }
 
 export interface Zones {
-  playerId: string;
   hand: HandZone;
   battlefield: BattlefieldZone;
   graveyards: GraveyardZone;

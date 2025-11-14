@@ -1,12 +1,17 @@
 export type Effect = DamageEffect | HealEffect;
 
-export interface DamageEffect {
+interface BaseEffect {
+  type: EffectType;
+  ownerId: string;
+}
+
+export interface DamageEffect extends BaseEffect {
   type: EffectType.DEAL_DAMAGE;
   target: TargetType;
   value: number;
 }
 
-export interface HealEffect {
+export interface HealEffect extends BaseEffect {
   type: EffectType.HEAL;
   target: TargetType.SELF;
   value: number;
