@@ -2,7 +2,6 @@ export type Effect = DamageEffect | HealEffect;
 
 interface BaseEffect {
   type: EffectType;
-  ownerId: string;
 }
 
 export interface DamageEffect extends BaseEffect {
