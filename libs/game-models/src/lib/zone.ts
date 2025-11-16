@@ -21,6 +21,6 @@ export interface Library {
 export interface Zones {
   hand: HandZone;
   battlefield: BattlefieldZone;
-  graveyards: GraveyardZone;
+  graveyard: GraveyardZone;
   exile: ExileZone;
 }
