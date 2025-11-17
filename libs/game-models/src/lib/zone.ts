@@ -1,26 +1,11 @@
-export interface HandZone {
-  cardIds: string[];
-}
-
-export interface BattlefieldZone {
-  cardIds: string[];
-}
-
-export interface GraveyardZone {
-  cardIds: string[];
-}
-
-export interface ExileZone {
-  cardIds: string[];
-}
-
-export interface Library {
-  cardIds: string[];
+export interface Zone {
+  entityIds: string[];
 }
 
 export interface Zones {
-  hand: HandZone;
-  battlefield: BattlefieldZone;
-  graveyard: GraveyardZone;
-  exile: ExileZone;
+  hand: Zone;
+  battlefield: Zone;
+  graveyard: Zone;
+  exile: Zone;
+  deck: Zone;
 }

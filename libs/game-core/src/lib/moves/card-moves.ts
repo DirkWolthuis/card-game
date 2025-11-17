@@ -1,28 +1,27 @@
+import { getCardById } from '@game/data';
 import { GameState } from '@game/models';
 import { Move } from 'boardgame.io';
 import { executeEffect } from '../effects/execute-effect';
-import { getCardById } from '@game/data';
+import { INVALID_MOVE } from 'boardgame.io/core';
 
 export const playCardFromHand: Move<GameState> = (
   { G, ctx, playerID },
-  cardId
+  entityId: string
 ) => {
-  console.log('PLAY_CARD_MOVE', cardId);
-  // find card in hand
-  const hand = G.zones[playerID].hand;
-  const hasCardInHand = !!hand.cardIds.find(
-    (handCardId) => handCardId === cardId
+  const playerState = G.players[playerID];
+  const hasCardInHand = playerState.zones.hand.entityIds.find(
+    (handEntityId) => handEntityId === entityId
   );
-  const card = getCardById(cardId);
+  const cardId = playerState.entities[entityId]?.cardId;
 
-  console.log('Debug', G, card);
+  const card = getCardById(cardId);
+  if (!card) {
+    return INVALID_MOVE;
+  }
 
   if (hasCardInHand && card) {
     // resolve effects
-    const states = card.effects.forEach((effect) =>
-      executeEffect(G, ctx, effect)
-    );
-    console.log('new states', states);
+    card.effects.forEach((effect) => executeEffect(G, ctx, effect));
   }
 
   return G;

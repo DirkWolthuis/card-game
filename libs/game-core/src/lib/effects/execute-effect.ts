@@ -1,24 +1,20 @@
 import { Effect, EffectType, GameState } from '@game/models';
 import { Ctx } from 'boardgame.io';
-import { produce } from 'immer';
 
 export const executeEffect = (
   gameState: GameState,
   ctx: Ctx,
   effect: Effect
-): GameState => {
+): void => {
   switch (effect.type) {
-    case EffectType.DEAL_DAMAGE:
-      return produce(gameState, (draftState: GameState) => {
-        const currentPlayerId = ctx.currentPlayer;
-        const opponentId = ctx.playOrder.find(
-          (playerId) => playerId !== currentPlayerId
-        );
-        if (opponentId) {
-          draftState.players[opponentId].life -= effect.value;
-        }
-      });
-    default:
-      return gameState;
+    case EffectType.DEAL_DAMAGE: {
+      const opponentIds = Object.keys(gameState.players).filter(
+        (id) => id !== ctx.currentPlayer
+      );
+      const targetOpponentId =
+        opponentIds[Math.floor(Math.random() * opponentIds.length)];
+      gameState.players[targetOpponentId].resources.life -= effect.value;
+      break;
+    }
   }
 };

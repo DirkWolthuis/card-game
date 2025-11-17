@@ -1,9 +1,17 @@
-import { Deck } from './deck';
-import { Player, PlayerId } from './player';
+import { Entity } from './entity';
+import { PlayerId } from './player';
 import { Zones } from './zone';
 
 export interface GameState {
-  players: Record<PlayerId, Player>;
-  zones: Record<PlayerId, Zones>;
-  decks: Record<PlayerId, Deck>;
+  players: Record<PlayerId, PlayerState>;
+}
+
+export interface PlayerState {
+  resources: Resources;
+  zones: Zones;
+  entities: Record<string, Entity>;
+}
+
+export interface Resources {
+  life: number;
 }
