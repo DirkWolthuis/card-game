@@ -1,7 +1,6 @@
 // Game.ts
 import type { Game } from 'boardgame.io';
 import { GameState } from '@game/models';
-
 // // define a function to initialize each player’s state
 // const playerSetup = (playerID: string): Player => ({
 //   id: playerID,
@@ -56,6 +55,11 @@ export const GameEngine: Game<GameState> = {
       decks: decks,
       zones: zones,
     };
+  },
+  moves: {
+    playCardFromHand: (x, y) => {
+      console.log('debug', x, y);
+    },
   },
   //   plugins: [
   //     // pass your function to the player plugin

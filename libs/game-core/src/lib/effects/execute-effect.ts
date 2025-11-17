@@ -9,7 +9,7 @@ export const executeEffect = (
 ): GameState => {
   switch (effect.type) {
     case EffectType.DEAL_DAMAGE:
-      return produce(gameState, (draftState) => {
+      return produce(gameState, (draftState: GameState) => {
         const currentPlayerId = ctx.currentPlayer;
         const opponentId = ctx.playOrder.find(
           (playerId) => playerId !== currentPlayerId
