@@ -3,11 +3,11 @@ import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
 
 import { GameEngine } from '@game/core';
-import MyGameBoard from '../board/board';
+import Board from '../board/Board';
 
 const CardGameClient = Client({
   game: GameEngine,
-  board: MyGameBoard,
+  board: Board,
   multiplayer: Local(),
 });
 

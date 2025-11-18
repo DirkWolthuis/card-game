@@ -1,7 +1,13 @@
-export function Card() {
+import { Card as CardModel } from '@game/models';
+
+interface CardProps {
+  card: CardModel;
+}
+
+export function Card(props: CardProps) {
   return (
-    <div>
-      <h1>Welcome to Card!</h1>
+    <div className="border-solid border-black bg-white rounded-md flex flex-col items-center justify-center p-4 shadow-md">
+      <h1>{props.card.name}</h1>
     </div>
   );
 }

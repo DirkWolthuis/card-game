@@ -1,11 +1,18 @@
 import { GameState } from '@game/models';
 import type { BoardProps } from 'boardgame.io/react';
+import { HandZone } from './zones/HandZone';
 
 export function Board(props: BoardProps<GameState>) {
-  console.log(props);
+  const { playerID, G } = props;
+  const { zones, entities } = G.players[playerID ?? '0'];
+  const { hand } = zones;
+
+  const entitiesInHand = hand.entityIds.map((id) => entities[id]);
+
   return (
     <div>
-      <h1>Welcome to Board!</h1>
+      <p>Player ID: {playerID}</p>
+      <HandZone entities={entitiesInHand}></HandZone>
     </div>
   );
 }
