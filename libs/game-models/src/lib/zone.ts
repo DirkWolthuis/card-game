@@ -1,5 +1,7 @@
+import { EntityId } from './entity';
+
 export interface Zone {
-  entityIds: string[];
+  entityIds: EntityId[];
 }
 
 export interface Zones {

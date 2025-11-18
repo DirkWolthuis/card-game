@@ -1,4 +1,11 @@
+import { CardId } from './card';
+import { PlayerId } from './player';
+
+export type EntityId = string;
+
 export interface Entity {
-  id: string;
-  cardId: string;
+  id: EntityId;
+  cardId: CardId;
+  ownerId: PlayerId;
+  controllerId: PlayerId;
 }

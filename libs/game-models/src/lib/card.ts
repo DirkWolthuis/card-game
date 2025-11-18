@@ -1,7 +1,9 @@
 import { Effect } from './effect';
 
+export type CardId = string;
+
 export interface Card {
-  id: string;
+  id: CardId;
   name: string;
   displayText: string;
   effects: Effect[];
