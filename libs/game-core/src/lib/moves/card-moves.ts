@@ -24,5 +24,10 @@ export const playCardFromHand: Move<GameState> = (
     card.effects.forEach((effect) => executeEffect(G, ctx, effect));
   }
 
+  // Remove card from hand
+  playerState.zones.hand.entityIds = playerState.zones.hand.entityIds.filter(
+    (handEntityId) => handEntityId !== entityId
+  );
+
   return G;
 };
