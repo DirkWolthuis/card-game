@@ -1,8 +1,10 @@
-import { Card as CardModel, Entity } from '@game/models';
+import { Card as CardModel, Entity, GameState, MoveType } from '@game/models';
 import { getCardById } from '@game/data';
 import Card from '../components/Card';
+import { BoardProps } from 'boardgame.io/dist/types/packages/react';
 
 interface HandZoneProps {
+  board: BoardProps<GameState>;
   entities: Entity[];
 }
 
@@ -16,7 +18,13 @@ export function HandZone(props: HandZoneProps) {
 
   const renderCards = () => {
     return cardsToRender.map(([entity, card]) => (
-      <Card key={entity.id} card={card}></Card>
+      <Card
+        key={entity.id}
+        card={card}
+        onPlayCard={() =>
+          props.board.moves[MoveType.PLAY_CARD_FROM_HAND](entity.id)
+        }
+      ></Card>
     ));
   };
 

@@ -12,7 +12,7 @@ export function Board(props: BoardProps<GameState>) {
   return (
     <div>
       <p>Player ID: {playerID}</p>
-      <HandZone entities={entitiesInHand}></HandZone>
+      <HandZone board={props} entities={entitiesInHand}></HandZone>
     </div>
   );
 }

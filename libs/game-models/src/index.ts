@@ -3,5 +3,6 @@ export * from './lib/deck';
 export * from './lib/effect';
 export * from './lib/entity';
 export * from './lib/game-state';
+export * from './lib/moves';
 export * from './lib/player';
 export * from './lib/zone';
