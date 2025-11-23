@@ -2,9 +2,12 @@ import { GameState, MoveType } from '@game/models';
 import type { BoardProps } from 'boardgame.io/react';
 import { HandZone } from './zones/HandZone';
 
+const DEFAULT_PLAYER_ID = '0';
+
 export function Board(props: BoardProps<GameState>) {
   const { playerID, G, ctx, moves } = props;
-  const { zones, entities } = G.players[playerID ?? '0'];
+  const currentPlayerID = playerID ?? DEFAULT_PLAYER_ID;
+  const { zones, entities } = G.players[currentPlayerID];
   const { hand } = zones;
 
   const entitiesInHand = hand.entityIds.map((id) => entities[id]);

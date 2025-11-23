@@ -1,5 +1,5 @@
 import { GameEngine } from './game';
-import { MoveType } from '@game/models';
+import { GameState, MoveType } from '@game/models';
 
 describe('GameEngine', () => {
   describe('endTurn move', () => {
@@ -13,9 +13,10 @@ describe('GameEngine', () => {
 
       if (move && typeof move === 'function') {
         const mockContext = {
-          G: { players: {} },
+          G: { players: {} } as GameState,
           events: mockEvents,
         };
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         move(mockContext as any);
         expect(mockEvents.endTurn).toHaveBeenCalled();
       }
