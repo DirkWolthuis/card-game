@@ -1,6 +1,8 @@
 import { GameState, MoveType } from '@game/models';
 import type { BoardProps } from 'boardgame.io/react';
 import { HandZone } from './zones/HandZone';
+import { TargetSelectionModal } from './components/TargetSelectionModal';
+import { getValidTargets } from '@game/core';
 
 const DEFAULT_PLAYER_ID = '0';
 
@@ -12,6 +14,13 @@ export function Board(props: BoardProps<GameState>) {
 
   const entitiesInHand = hand.entityIds.map((id) => entities[id]);
   const isMyTurn = ctx.currentPlayer === playerID;
+
+  // Check if there's a pending target selection
+  const pendingSelection = G.pendingTargetSelection;
+  const showTargetModal = !!pendingSelection && isMyTurn;
+  const validTargets = pendingSelection
+    ? getValidTargets(pendingSelection.effect, G, ctx.currentPlayer)
+    : [];
 
   return (
     <div>
@@ -27,6 +36,14 @@ export function Board(props: BoardProps<GameState>) {
           End Turn
         </button>
       </div>
+      
+      {showTargetModal && (
+        <TargetSelectionModal
+          gameState={G}
+          validTargets={validTargets}
+          onSelectTarget={(targetId) => moves[MoveType.SELECT_TARGET](targetId)}
+        />
+      )}
     </div>
   );
 }
