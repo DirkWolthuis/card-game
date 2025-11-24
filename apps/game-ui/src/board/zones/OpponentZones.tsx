@@ -1,23 +1,27 @@
 interface OpponentZonesProps {
   opponentIds: string[];
-  activeOpponentId?: string;
+  currentTurnPlayerId: string;
   currentPlayerId: string;
 }
 
 export function OpponentZones({
   opponentIds,
-  activeOpponentId,
+  currentTurnPlayerId,
   currentPlayerId,
 }: OpponentZonesProps) {
-  // Filter out the current player
+  // Filter out the current player - they should never appear as their own opponent
   const opponents = opponentIds.filter((id) => id !== currentPlayerId);
 
   if (opponents.length === 0) {
     return null;
   }
 
-  // Determine active opponent (first opponent by default)
-  const activeOpponent = activeOpponentId || opponents[0];
+  // Determine active opponent:
+  // If the current turn player is an opponent, show them as active
+  // Otherwise, default to the first opponent
+  const activeOpponent = opponents.includes(currentTurnPlayerId)
+    ? currentTurnPlayerId
+    : opponents[0];
   const otherOpponents = opponents.filter((id) => id !== activeOpponent);
 
   return (

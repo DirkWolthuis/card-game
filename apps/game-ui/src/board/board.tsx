@@ -52,7 +52,7 @@ export function Board(props: BoardProps<GameState>) {
       <div style={{ gridArea: 'opponents' }} className="overflow-hidden">
         <OpponentZones
           opponentIds={allPlayerIds}
-          activeOpponentId={ctx.currentPlayer}
+          currentTurnPlayerId={ctx.currentPlayer}
           currentPlayerId={currentPlayerID}
         />
       </div>
@@ -79,15 +79,11 @@ export function Board(props: BoardProps<GameState>) {
         />
       </div>
 
-      {/* Graveyard/Exile zones - Bottom left (stacked) */}
-      <div style={{ gridArea: 'zones' }} className="flex flex-col gap-2 overflow-auto">
+      {/* Card Zones (Deck, Graveyard, Exile) - Bottom right */}
+      <div style={{ gridArea: 'card-zones' }} className="flex flex-col gap-1 overflow-auto">
+        <DeckZone />
         <GraveyardZone />
         <ExileZone />
-      </div>
-
-      {/* Deck - Bottom right */}
-      <div style={{ gridArea: 'deck' }} className="overflow-auto">
-        <DeckZone />
       </div>
 
       {/* Hand - Bottom */}
