@@ -6,7 +6,7 @@ import Board from './board';
 
 describe('Board', () => {
   it('should render successfully', () => {
-    const mockBoard: BoardProps<GameState> = {
+    const mockBoard = {
       G: {
         players: {
           '0': {
