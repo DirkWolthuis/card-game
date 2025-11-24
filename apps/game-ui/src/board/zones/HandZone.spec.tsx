@@ -1,15 +1,15 @@
 import { render } from '@testing-library/react';
-import { Entity } from '@game/models';
-import { BoardProps } from 'boardgame.io/dist/types/packages/react';
+import { Entity, GameState } from '@game/models';
+import type { BoardProps } from 'boardgame.io/react';
 
 import HandZone from './HandZone';
 
 describe('HandZone', () => {
   it('should render successfully', () => {
     const mockEntities: Entity[] = [];
-    const mockBoard = {
+    const mockBoard: BoardProps<GameState> = {
       moves: {},
-    } as unknown as BoardProps;
+    } as BoardProps<GameState>;
 
     const { baseElement } = render(
       <HandZone board={mockBoard} entities={mockEntities} />
