@@ -1,4 +1,5 @@
 // App.tsx
+import { useState } from 'react';
 import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
 
@@ -11,11 +12,44 @@ const CardGameClient = Client({
   multiplayer: Local(),
 });
 
-const App = () => (
-  <div>
-    <CardGameClient playerID="0" />
-    <CardGameClient playerID="1" />
-  </div>
-);
+const App = () => {
+  const playerIDs = ['0', '1'];
+  const [activePlayer, setActivePlayer] = useState<string>(playerIDs[0]);
+
+  return (
+    <div>
+      <div className="flex gap-2 mb-4" role="tablist">
+        {playerIDs.map((playerID) => (
+          <button
+            key={playerID}
+            id={`player-${playerID}-tab`}
+            role="tab"
+            aria-selected={activePlayer === playerID}
+            aria-controls={`player-${playerID}-panel`}
+            onClick={() => setActivePlayer(playerID)}
+            className={`px-4 py-2 rounded ${
+              activePlayer === playerID
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Player {playerID}
+          </button>
+        ))}
+      </div>
+      {playerIDs.map((playerID) => (
+        <div
+          key={playerID}
+          id={`player-${playerID}-panel`}
+          role="tabpanel"
+          aria-labelledby={`player-${playerID}-tab`}
+          className={activePlayer !== playerID ? 'hidden' : ''}
+        >
+          {activePlayer === playerID && <CardGameClient playerID={playerID} />}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default App;
