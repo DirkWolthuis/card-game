@@ -14,6 +14,9 @@ export const executeEffect = (
           `Target player ID is required for ${EffectType[effect.type]} effect with target type ${TargetType[effect.target]}`
         );
       }
+      if (!gameState.players[targetPlayerId]) {
+        throw new Error(`Invalid target player ID: ${targetPlayerId}`);
+      }
       gameState.players[targetPlayerId].resources.life -= effect.value;
       break;
     }
