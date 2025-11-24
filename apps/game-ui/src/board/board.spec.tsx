@@ -1,10 +1,34 @@
 import { render } from '@testing-library/react';
+import { GameState } from '@game/models';
+import type { BoardProps } from 'boardgame.io/react';
 
-import Board from './Board';
+import Board from './board';
 
 describe('Board', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<Board />);
+    const mockBoard = {
+      G: {
+        players: {
+          '0': {
+            zones: {
+              hand: { entityIds: [] },
+              deck: { entityIds: [] },
+              graveyard: { entityIds: [] },
+              battlefield: { entityIds: [] },
+              exile: { entityIds: [] },
+            },
+            entities: {},
+          },
+        },
+      },
+      ctx: {
+        currentPlayer: '0',
+      },
+      moves: {},
+      playerID: '0',
+    } as BoardProps<GameState>;
+
+    const { baseElement } = render(<Board {...mockBoard} />);
     expect(baseElement).toBeTruthy();
   });
 });
