@@ -18,11 +18,15 @@ describe('Board', () => {
               exile: { entityIds: [] },
             },
             entities: {},
+            resources: {
+              life: 20,
+            },
           },
         },
       },
       ctx: {
         currentPlayer: '0',
+        turn: 1,
       },
       moves: {},
       playerID: '0',
