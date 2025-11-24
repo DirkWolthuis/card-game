@@ -16,7 +16,7 @@ export interface GameState {
 export interface PendingTargetSelection {
   /** The current effect waiting for a target to be selected */
   effect: Effect;
-  /** Effects that will be executed after the current effect is resolved */
+  /** Remaining effects from the same card that will be executed after the current effect is resolved */
   remainingEffects: Effect[];
 }
 
