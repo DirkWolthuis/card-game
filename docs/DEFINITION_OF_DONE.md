@@ -51,7 +51,7 @@ This document outlines the acceptance criteria that all contributions to the Lor
 
 ### Test Quality
 - [ ] Tests are meaningful and test actual behavior, not implementation details
-- [ ] Tests follow existing patterns (Jest for libs, Vitest for UI components)
+- [ ] Tests follow existing patterns in the codebase (Jest or Vitest as appropriate)
 - [ ] Test descriptions clearly state what is being tested
 - [ ] Tests are isolated and do not depend on execution order
 - [ ] Mock dependencies appropriately
@@ -71,7 +71,7 @@ This document outlines the acceptance criteria that all contributions to the Lor
 
 ### Project Documentation
 - [ ] Changes to game mechanics are reflected in `docs/game-design.md`
-- [ ] New card types or politics are documented in relevant docs
+- [ ] New card types or politics are documented in relevant docs (e.g., `docs/politics-in-estraven-set.md`)
 - [ ] Breaking changes are documented in PR description
 
 ### User-Facing Documentation
