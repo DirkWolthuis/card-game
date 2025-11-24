@@ -14,7 +14,7 @@ const CardGameClient = Client({
 
 const App = () => {
   const playerIDs = ['0', '1'];
-  const [activePlayer, setActivePlayer] = useState(playerIDs[0]);
+  const [activePlayer, setActivePlayer] = useState<string>(playerIDs[0]);
 
   return (
     <div>
@@ -43,7 +43,7 @@ const App = () => {
           id={`player-${playerID}-panel`}
           role="tabpanel"
           aria-labelledby={`player-${playerID}-tab`}
-          hidden={activePlayer !== playerID}
+          className={activePlayer !== playerID ? 'hidden' : ''}
         >
           {activePlayer === playerID && <CardGameClient playerID={playerID} />}
         </div>
