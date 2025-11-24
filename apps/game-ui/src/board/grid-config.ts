@@ -35,7 +35,7 @@ export const DEFAULT_GRID_CONFIG: BoardGridConfig = {
   gridTemplateAreas: `
     "opponents opponents opponents"
     "game-stats battlefield resources"
-    "graveyard battlefield deck"
+    "zones battlefield deck"
     "hand hand hand"
   `,
   gridTemplateColumns: '200px 1fr 200px',
@@ -52,7 +52,7 @@ export const FOUR_PLAYER_GRID_CONFIG: BoardGridConfig = {
     "opponents opponents opponents"
     "opponents opponents opponents"
     "game-stats battlefield resources"
-    "graveyard battlefield deck"
+    "zones battlefield deck"
     "hand hand hand"
   `,
   gridTemplateColumns: '200px 1fr 200px',

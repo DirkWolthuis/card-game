@@ -79,8 +79,8 @@ export function Board(props: BoardProps<GameState>) {
         />
       </div>
 
-      {/* Graveyard/Exile - Bottom left (stacked) */}
-      <div style={{ gridArea: 'graveyard' }} className="flex flex-col gap-2 overflow-auto">
+      {/* Graveyard/Exile zones - Bottom left (stacked) */}
+      <div style={{ gridArea: 'zones' }} className="flex flex-col gap-2 overflow-auto">
         <GraveyardZone />
         <ExileZone />
       </div>
