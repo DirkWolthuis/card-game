@@ -22,6 +22,7 @@ const App = () => {
         {playerIDs.map((playerID) => (
           <button
             key={playerID}
+            id={`player-${playerID}-tab`}
             role="tab"
             aria-selected={activePlayer === playerID}
             aria-controls={`player-${playerID}-panel`}
