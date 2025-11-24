@@ -10,8 +10,10 @@ export const executeEffect = (
   switch (effect.type) {
     case EffectType.DEAL_DAMAGE: {
       if (!targetPlayerId) {
+        const effectTypeName = EffectType[effect.type];
+        const targetTypeName = TargetType[effect.target];
         throw new Error(
-          `Target player ID is required for ${EffectType[effect.type]} effect with target type ${TargetType[effect.target]}`
+          `Target player ID is required for ${effectTypeName} effect with target type ${targetTypeName}`
         );
       }
       if (!gameState.players[targetPlayerId]) {

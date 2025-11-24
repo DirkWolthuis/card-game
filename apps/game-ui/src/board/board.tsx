@@ -16,9 +16,10 @@ export function Board(props: BoardProps<GameState>) {
   const isMyTurn = ctx.currentPlayer === playerID;
 
   // Check if there's a pending target selection
-  const showTargetModal = !!G.pendingTargetSelection && isMyTurn;
-  const validTargets = showTargetModal
-    ? getValidTargets(G.pendingTargetSelection!.effect, G, currentPlayerID)
+  const pendingSelection = G.pendingTargetSelection;
+  const showTargetModal = !!pendingSelection && isMyTurn;
+  const validTargets = pendingSelection
+    ? getValidTargets(pendingSelection.effect, G, currentPlayerID)
     : [];
 
   return (

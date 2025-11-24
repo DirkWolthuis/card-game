@@ -51,6 +51,16 @@ export const playCardFromHand: Move<GameState> = (
   return G;
 };
 
+/**
+ * Handles player selection of a target for a pending effect.
+ * Validates the target is valid for the current effect, executes the effect with the target,
+ * and either continues with remaining effects or sets up the next targeting selection.
+ * 
+ * @param G - The current game state
+ * @param ctx - The boardgame.io context
+ * @param targetPlayerId - The ID of the player being targeted
+ * @returns Updated game state or INVALID_MOVE if the target is invalid
+ */
 export const selectTarget: Move<GameState> = (
   { G, ctx },
   targetPlayerId: string
