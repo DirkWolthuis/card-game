@@ -62,10 +62,15 @@ export const playCardFromHand: Move<GameState> = (
  * @returns Updated game state or INVALID_MOVE if the target is invalid
  */
 export const selectTarget: Move<GameState> = (
-  { G, ctx },
+  { G, ctx, playerID },
   targetPlayerId: string
 ) => {
   if (!G.pendingTargetSelection) {
+    return INVALID_MOVE;
+  }
+
+  // Validate the caller is the current player
+  if (ctx.currentPlayer !== playerID) {
     return INVALID_MOVE;
   }
 

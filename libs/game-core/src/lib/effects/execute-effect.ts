@@ -9,22 +9,29 @@ export const executeEffect = (
 ): void => {
   switch (effect.type) {
     case EffectType.DEAL_DAMAGE: {
-      if (!targetPlayerId) {
+      // Resolve target: use SELF for TargetType.SELF, otherwise require explicit target
+      let resolvedTargetPlayerId = targetPlayerId;
+      if (effect.target === TargetType.SELF) {
+        resolvedTargetPlayerId = ctx.currentPlayer;
+      } else if (
+        (effect.target === TargetType.PLAYER || effect.target === TargetType.OPPONENT) &&
+        !targetPlayerId
+      ) {
         const effectTypeName = EffectType[effect.type];
         const targetTypeName = TargetType[effect.target];
         throw new Error(
           `Target player ID is required for ${effectTypeName} effect with target type ${targetTypeName}`
         );
       }
-      if (!gameState.players[targetPlayerId]) {
-        throw new Error(`Invalid target player ID: ${targetPlayerId}`);
+      if (!gameState.players[resolvedTargetPlayerId!]) {
+        throw new Error(`Invalid target player ID: ${resolvedTargetPlayerId}`);
       }
-      gameState.players[targetPlayerId].resources.life -= effect.value;
+      gameState.players[resolvedTargetPlayerId!].resources.life -= effect.value;
       break;
     }
     case EffectType.HEAL: {
-      // HEAL effects currently always target the player who played the card
-      // In the future, this could be extended to support other targets
+      // HEAL effects always target the player who played the card (TargetType.SELF)
+      // The type system enforces this constraint via the HealEffect interface
       gameState.players[ctx.currentPlayer].resources.life += effect.value;
       break;
     }

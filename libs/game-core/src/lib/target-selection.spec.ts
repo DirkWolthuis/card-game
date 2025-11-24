@@ -1,5 +1,4 @@
-import { GameEngine } from './game';
-import { DamageEffect, EffectType, GameState, HealEffect, MoveType, TargetType } from '@game/models';
+import { DamageEffect, EffectType, GameState, HealEffect, TargetType } from '@game/models';
 import { needsTargetSelection, getValidTargets } from './effects/target-utils';
 
 describe('Target Selection', () => {
