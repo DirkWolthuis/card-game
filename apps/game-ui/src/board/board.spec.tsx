@@ -30,14 +30,16 @@ describe('Board', () => {
         numPlayers: 1,
         playOrder: ['0'],
         playOrderPos: 0,
-        phase: null,
+        phase: 'null',
         activePlayers: null,
       },
       moves: {},
       playerID: '0',
     };
 
-    const { baseElement } = render(<Board {...(mockBoard as BoardProps<GameState>)} />);
+    const { baseElement } = render(
+      <Board {...(mockBoard as BoardProps<GameState>)} />
+    );
     expect(baseElement).toBeTruthy();
   });
 });
