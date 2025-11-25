@@ -34,9 +34,10 @@ export interface BoardGridConfig {
 export const DEFAULT_GRID_CONFIG: BoardGridConfig = {
   gridTemplateAreas: `
     "opponents opponents opponents"
+    "opponents opponents opponents"
     "game-stats battlefield resources"
     "game-stats battlefield card-zones"
-    "hand hand hand"
+    "hand hand card-zones"
   `,
   gridTemplateColumns: '200px 1fr 200px',
   gridTemplateRows: '1fr 1fr 1fr auto',

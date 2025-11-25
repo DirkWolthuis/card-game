@@ -12,11 +12,9 @@ import { TargetSelectionModal } from './components/TargetSelectionModal';
 import { getValidTargets } from '@game/core';
 import { getGridConfig } from './grid-config';
 
-const DEFAULT_PLAYER_ID = '0';
-
 export function Board(props: BoardProps<GameState>) {
   const { playerID, G, ctx, moves } = props;
-  const currentPlayerID = playerID ?? DEFAULT_PLAYER_ID;
+  const currentPlayerID = playerID as string;
   const { zones, entities, resources } = G.players[currentPlayerID];
   const { hand } = zones;
 
@@ -33,7 +31,7 @@ export function Board(props: BoardProps<GameState>) {
   // Get all player IDs for opponent zones
   const allPlayerIds = Object.keys(G.players);
   const playerCount = allPlayerIds.length;
-  
+
   // Get grid configuration based on player count
   const gridConfig = getGridConfig(playerCount);
 
@@ -80,7 +78,10 @@ export function Board(props: BoardProps<GameState>) {
       </div>
 
       {/* Card Zones (Deck, Graveyard, Exile) - Bottom right */}
-      <div style={{ gridArea: 'card-zones' }} className="flex flex-col gap-1 overflow-auto">
+      <div
+        style={{ gridArea: 'card-zones' }}
+        className="flex flex-col gap-1 overflow-auto"
+      >
         <DeckZone />
         <GraveyardZone />
         <ExileZone />
