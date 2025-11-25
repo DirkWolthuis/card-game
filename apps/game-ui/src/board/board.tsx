@@ -1,18 +1,17 @@
 import { GameState, MoveType } from '@game/models';
 import type { BoardProps } from 'boardgame.io/react';
-import { HandZone } from './zones/HandZone';
+import { GameStatsOverview } from './zones/GameStatsOverview';
+import { OpponentZones } from './zones/OpponentZones';
+import { PlayerZones } from './zones/PlayerZones';
 import { TargetSelectionModal } from './components/TargetSelectionModal';
-import { getValidTargets } from '@game/core';
-
-const DEFAULT_PLAYER_ID = '0';
+import { getValidTargets, getAllPlayerIds, getPlayerCount } from '@game/core';
+import { getGridConfig } from './grid-config';
 
 export function Board(props: BoardProps<GameState>) {
   const { playerID, G, ctx, moves } = props;
-  const currentPlayerID = playerID ?? DEFAULT_PLAYER_ID;
-  const { zones, entities } = G.players[currentPlayerID];
-  const { hand } = zones;
+  const currentPlayerID = playerID as string;
+  const { zones, entities, resources } = G.players[currentPlayerID];
 
-  const entitiesInHand = hand.entityIds.map((id) => entities[id]);
   const isMyTurn = ctx.currentPlayer === playerID;
 
   // Check if there's a pending target selection
@@ -22,21 +21,52 @@ export function Board(props: BoardProps<GameState>) {
     ? getValidTargets(pendingSelection.effect, G, ctx.currentPlayer)
     : [];
 
+  // Get all player IDs and count using utility functions
+  const allPlayerIds = getAllPlayerIds(G);
+  const playerCount = getPlayerCount(G);
+
+  // Get grid configuration based on player count
+  const gridConfig = getGridConfig(playerCount);
+
   return (
-    <div>
-      <p>Player ID: {playerID}</p>
-      <p>Current Turn: Player {ctx.currentPlayer}</p>
-      <HandZone board={props} entities={entitiesInHand}></HandZone>
-      <div className="mt-4">
-        <button
-          onClick={() => moves[MoveType.END_TURN]()}
-          disabled={!isMyTurn}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
-        >
-          End Turn
-        </button>
+    <div
+      className="h-screen p-4 bg-gray-900"
+      style={{
+        display: 'grid',
+        gridTemplateAreas: gridConfig.gridTemplateAreas,
+        gridTemplateColumns: gridConfig.gridTemplateColumns,
+        gridTemplateRows: gridConfig.gridTemplateRows,
+        gap: gridConfig.gap,
+      }}
+    >
+      {/* Opponent Zones - Top half */}
+      <div style={{ gridArea: 'opponents' }} className="overflow-hidden">
+        <OpponentZones
+          opponentIds={allPlayerIds}
+          currentTurnPlayerId={ctx.currentPlayer}
+          currentPlayerId={currentPlayerID}
+        />
       </div>
-      
+
+      {/* Game Stats - Center left */}
+      <div style={{ gridArea: 'game-stats' }} className="overflow-auto">
+        <GameStatsOverview
+          currentTurn={ctx.turn}
+          currentPlayer={ctx.currentPlayer}
+          isMyTurn={isMyTurn}
+        />
+      </div>
+
+      {/* Current Player Zones */}
+      <PlayerZones
+        playerId={currentPlayerID}
+        zones={zones}
+        entities={entities}
+        resources={resources}
+        isMyTurn={isMyTurn}
+        board={props}
+      />
+
       {showTargetModal && (
         <TargetSelectionModal
           gameState={G}
