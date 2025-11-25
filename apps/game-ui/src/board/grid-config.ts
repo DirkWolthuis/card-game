@@ -40,7 +40,7 @@ export const DEFAULT_GRID_CONFIG: BoardGridConfig = {
     "hand hand card-zones"
   `,
   gridTemplateColumns: '200px 1fr 200px',
-  gridTemplateRows: '1fr 1fr 1fr auto',
+  gridTemplateRows: '1fr 1fr 1fr 1fr auto',
   gap: '1rem',
 };
 
