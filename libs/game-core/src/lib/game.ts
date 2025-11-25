@@ -2,25 +2,75 @@
 import type { Game } from 'boardgame.io';
 import { GameState, MoveType } from '@game/models';
 import { playCardFromHand, selectTarget } from './moves/card-moves';
-import { endTurn } from './moves/turn-moves';
+import { drawCard, discardCard } from './moves/stage-moves';
 import { setupPlayersState } from './util/game-setup';
 
-export const GameEngine: Game<
-  GameState,
-  { 
-    playCardFromHand: typeof playCardFromHand; 
-    endTurn: typeof endTurn;
-    selectTarget: typeof selectTarget;
-  }
-> = {
+const MAX_HAND_SIZE = 7;
+
+export const GameEngine: Game<GameState> = {
   name: 'card-game',
   setup: ({ ctx }) => {
     return setupPlayersState(Object.keys(ctx.playOrder));
   },
-  moves: {
-    [MoveType.PLAY_CARD_FROM_HAND]: playCardFromHand,
-    [MoveType.END_TURN]: endTurn,
-    [MoveType.SELECT_TARGET]: selectTarget,
+  phases: {
+    /**
+     * Start stage configuration.
+     * Player draws a card automatically when the stage begins.
+     * No manual moves are allowed in this stage.
+     */
+    start: {
+      start: true,
+      moves: {
+        [MoveType.DRAW_CARD]: drawCard,
+      },
+      onBegin: ({ G, ctx, events }) => {
+        // Automatically draw a card for the current player
+        const playerState = G.players[ctx.currentPlayer];
+        if (playerState && playerState.zones.deck.entityIds.length > 0) {
+          const drawnCardId = playerState.zones.deck.entityIds[0];
+          playerState.zones.deck.entityIds =
+            playerState.zones.deck.entityIds.slice(1);
+          playerState.zones.hand.entityIds.push(drawnCardId);
+        }
+        // Automatically transition to main stage
+        events.setPhase('main');
+      },
+    },
+    /**
+     * Main stage configuration.
+     * Player can play cards from hand, select targets, and end their turn.
+     */
+    main: {
+      moves: {
+        [MoveType.PLAY_CARD_FROM_HAND]: playCardFromHand,
+        [MoveType.SELECT_TARGET]: selectTarget,
+        [MoveType.END_TURN]: {
+          move: ({ G, events }) => {
+            events.setPhase('end');
+            return G;
+          },
+        },
+      },
+    },
+    /**
+     * End stage configuration.
+     * Player must discard down to 7 cards if they have more.
+     */
+    end: {
+      moves: {
+        [MoveType.DISCARD_CARD]: discardCard,
+      },
+      endIf: ({ G, ctx }) => {
+        const playerState = G.players[ctx.currentPlayer];
+        return (
+          playerState && playerState.zones.hand.entityIds.length <= MAX_HAND_SIZE
+        );
+      },
+      onEnd: ({ events }) => {
+        events.endTurn();
+      },
+      next: 'start',
+    },
   },
   minPlayers: 2,
   maxPlayers: 4,
