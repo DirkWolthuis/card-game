@@ -14,6 +14,9 @@ describe('GameEngine', () => {
     entities: {},
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const callEndIf = (gameState: GameState) => GameEngine.endIf?.({ G: gameState } as any);
+
   describe('endTurn move', () => {
     it('should end the current player turn', () => {
       const mockEvents = {
@@ -47,8 +50,7 @@ describe('GameEngine', () => {
           '1': createPlayerState(10),
         },
       };
-      const result = GameEngine.endIf?.({ G: gameState } as Parameters<NonNullable<typeof GameEngine.endIf>>[0]);
-      expect(result).toBeUndefined();
+      expect(callEndIf(gameState)).toBeUndefined();
     });
 
     it('should return winner when only one player remains alive', () => {
@@ -58,8 +60,7 @@ describe('GameEngine', () => {
           '1': createPlayerState(0),
         },
       };
-      const result = GameEngine.endIf?.({ G: gameState } as Parameters<NonNullable<typeof GameEngine.endIf>>[0]);
-      expect(result).toEqual({ winner: '0' });
+      expect(callEndIf(gameState)).toEqual({ winner: '0' });
     });
 
     it('should return winner when opponent life goes below 0', () => {
@@ -69,8 +70,7 @@ describe('GameEngine', () => {
           '1': createPlayerState(-10),
         },
       };
-      const result = GameEngine.endIf?.({ G: gameState } as Parameters<NonNullable<typeof GameEngine.endIf>>[0]);
-      expect(result).toEqual({ winner: '0' });
+      expect(callEndIf(gameState)).toEqual({ winner: '0' });
     });
   });
 });
