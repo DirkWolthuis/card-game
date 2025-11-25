@@ -9,7 +9,7 @@ import { PlayerResourceOverview } from './zones/PlayerResourceOverview';
 import { GameStatsOverview } from './zones/GameStatsOverview';
 import { OpponentZones } from './zones/OpponentZones';
 import { TargetSelectionModal } from './components/TargetSelectionModal';
-import { getValidTargets } from '@game/core';
+import { getValidTargets, getAllPlayerIds, getPlayerCount } from '@game/core';
 import { getGridConfig } from './grid-config';
 
 export function Board(props: BoardProps<GameState>) {
@@ -28,9 +28,9 @@ export function Board(props: BoardProps<GameState>) {
     ? getValidTargets(pendingSelection.effect, G, ctx.currentPlayer)
     : [];
 
-  // Get all player IDs for opponent zones
-  const allPlayerIds = Object.keys(G.players);
-  const playerCount = allPlayerIds.length;
+  // Get all player IDs and count using utility functions
+  const allPlayerIds = getAllPlayerIds(G);
+  const playerCount = getPlayerCount(G);
 
   // Get grid configuration based on player count
   const gridConfig = getGridConfig(playerCount);
@@ -64,6 +64,7 @@ export function Board(props: BoardProps<GameState>) {
         />
       </div>
 
+      {/* Current Player Zones */}
       {/* Battlefield - Center */}
       <div style={{ gridArea: 'battlefield' }} className="overflow-auto">
         <BattlefieldZone />

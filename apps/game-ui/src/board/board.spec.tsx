@@ -1,12 +1,12 @@
 import { render } from '@testing-library/react';
-import { GameState } from '@game/models';
 import type { BoardProps } from 'boardgame.io/react';
+import type { GameState } from '@game/models';
 
 import Board from './board';
 
 describe('Board', () => {
   it('should render successfully', () => {
-    const mockBoard = {
+    const mockBoard: Partial<BoardProps<GameState>> = {
       G: {
         players: {
           '0': {
@@ -27,12 +27,17 @@ describe('Board', () => {
       ctx: {
         currentPlayer: '0',
         turn: 1,
+        numPlayers: 1,
+        playOrder: ['0'],
+        playOrderPos: 0,
+        phase: null,
+        activePlayers: null,
       },
       moves: {},
       playerID: '0',
-    } as BoardProps<GameState>;
+    };
 
-    const { baseElement } = render(<Board {...mockBoard} />);
+    const { baseElement } = render(<Board {...(mockBoard as BoardProps<GameState>)} />);
     expect(baseElement).toBeTruthy();
   });
 });
