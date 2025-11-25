@@ -1,34 +1,17 @@
 import { GameState } from '@game/models';
 import { Move } from 'boardgame.io';
 import { INVALID_MOVE } from 'boardgame.io/core';
+import { drawCardToHand } from '../util/game-state-utils';
 
 /**
  * Draw a card from the player's deck to their hand.
  * This move is used during the start stage of a turn.
  */
 export const drawCard: Move<GameState> = ({ G, playerID }) => {
-  const playerState = G.players[playerID];
-
-  if (!playerState) {
+  const success = drawCardToHand(G, playerID);
+  if (!success) {
     return INVALID_MOVE;
   }
-
-  const deckEntityIds = playerState.zones.deck.entityIds;
-
-  // Cannot draw if deck is empty
-  if (deckEntityIds.length === 0) {
-    return INVALID_MOVE;
-  }
-
-  // Draw the top card from the deck (first element)
-  const drawnCardId = deckEntityIds[0];
-
-  // Remove from deck
-  playerState.zones.deck.entityIds = deckEntityIds.slice(1);
-
-  // Add to hand
-  playerState.zones.hand.entityIds.push(drawnCardId);
-
   return G;
 };
 

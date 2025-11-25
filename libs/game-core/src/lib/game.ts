@@ -4,6 +4,7 @@ import { GameState, MoveType } from '@game/models';
 import { playCardFromHand, selectTarget } from './moves/card-moves';
 import { drawCard, discardCard } from './moves/stage-moves';
 import { setupPlayersState } from './util/game-setup';
+import { drawCardToHand } from './util/game-state-utils';
 
 const MAX_HAND_SIZE = 7;
 
@@ -25,13 +26,7 @@ export const GameEngine: Game<GameState> = {
       },
       onBegin: ({ G, ctx, events }) => {
         // Automatically draw a card for the current player
-        const playerState = G.players[ctx.currentPlayer];
-        if (playerState && playerState.zones.deck.entityIds.length > 0) {
-          const drawnCardId = playerState.zones.deck.entityIds[0];
-          playerState.zones.deck.entityIds =
-            playerState.zones.deck.entityIds.slice(1);
-          playerState.zones.hand.entityIds.push(drawnCardId);
-        }
+        drawCardToHand(G, ctx.currentPlayer);
         // Automatically transition to main stage
         events.setPhase('main');
       },
