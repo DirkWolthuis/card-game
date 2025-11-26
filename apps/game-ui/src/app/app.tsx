@@ -6,10 +6,13 @@ import { Local } from 'boardgame.io/multiplayer';
 import { GameEngine } from '@game/core';
 import Board from '../board/board';
 
+const showDebugTools = import.meta.env.VITE_SHOW_DEBUG_TOOLS === 'true';
+
 const CardGameClient = Client({
   game: GameEngine,
   board: Board,
   multiplayer: Local(),
+  debug: showDebugTools,
 });
 
 const App = () => {
