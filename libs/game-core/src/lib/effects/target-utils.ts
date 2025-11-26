@@ -1,4 +1,5 @@
 import { Effect, TargetType, PlayerId, GameState } from '@game/models';
+import { isPlayerEliminated } from '../util/game-state-utils';
 
 export const needsTargetSelection = (effect: Effect): boolean => {
   return (
@@ -12,17 +13,19 @@ export const getValidTargets = (
   currentPlayerId: string
 ): PlayerId[] => {
   const allPlayerIds = Object.keys(gameState.players);
+  // Filter out eliminated players - they cannot be targets
+  const alivePlayerIds = allPlayerIds.filter(id => !isPlayerEliminated(gameState, id));
   
   switch (effect.target) {
     case TargetType.PLAYER:
-      // All players including self
-      return allPlayerIds;
+      // All alive players including self
+      return alivePlayerIds;
     case TargetType.OPPONENT:
-      // All players except self
-      return allPlayerIds.filter(id => id !== currentPlayerId);
+      // All alive players except self
+      return alivePlayerIds.filter(id => id !== currentPlayerId);
     case TargetType.SELF:
-      // Only self
-      return [currentPlayerId];
+      // Only self (if alive)
+      return alivePlayerIds.filter(id => id === currentPlayerId);
     default:
       return [];
   }
