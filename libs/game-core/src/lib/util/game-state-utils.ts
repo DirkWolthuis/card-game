@@ -15,11 +15,16 @@ export function getPlayerCount(G: GameState): number {
 }
 
 /**
- * Check if a player is eliminated (life <= 0)
+ * Check if a player is eliminated (life <= 0).
+ * Returns true if the player doesn't exist or has 0 or less life.
  */
 export function isPlayerEliminated(G: GameState, playerId: string): boolean {
   const playerState = G.players[playerId];
-  return !playerState || playerState.resources.life <= 0;
+  if (!playerState) {
+    // Non-existent players are treated as eliminated for safety
+    return true;
+  }
+  return playerState.resources.life <= 0;
 }
 
 /**

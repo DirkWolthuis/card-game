@@ -40,7 +40,9 @@ export const GameEngine: Game<
           }
         }
         
-        // If no alive players found (shouldn't happen as game would have ended)
+        // No alive players found - this is expected when the game ends.
+        // The endIf hook will handle game termination before this becomes an issue.
+        // Returning undefined signals boardgame.io that no next player is available.
         return undefined;
       },
     },
