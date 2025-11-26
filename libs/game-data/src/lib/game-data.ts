@@ -31,4 +31,12 @@ const CARD_DATABASE: Card[] = [
       { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 999 },
     ],
   },
+  {
+    id: 'dddd',
+    displayText: 'Deal 20 damage to opponent',
+    name: '20 Damage Spell',
+    effects: [
+      { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 20 },
+    ],
+  },
 ];

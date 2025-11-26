@@ -2,14 +2,18 @@
 import { useState } from 'react';
 import { Client } from 'boardgame.io/react';
 import { Local } from 'boardgame.io/multiplayer';
+import { Debug } from 'boardgame.io/debug';
 
 import { GameEngine } from '@game/core';
 import Board from '../board/board';
+
+const showDebugTools = import.meta.env.VITE_SHOW_DEBUG_TOOLS === 'true';
 
 const CardGameClient = Client({
   game: GameEngine,
   board: Board,
   multiplayer: Local(),
+  debug: showDebugTools ? { impl: Debug } : false,
 });
 
 const App = () => {
