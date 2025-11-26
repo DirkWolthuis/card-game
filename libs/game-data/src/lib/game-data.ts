@@ -23,4 +23,12 @@ const CARD_DATABASE: Card[] = [
     name: 'Divine touch',
     effects: [{ target: TargetType.SELF, type: EffectType.HEAL, value: 2 }],
   },
+  {
+    id: 'dddd',
+    displayText: 'Deal 20 damage to opponent',
+    name: '20 Damage Spell',
+    effects: [
+      { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 20 },
+    ],
+  },
 ];
