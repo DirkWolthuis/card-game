@@ -15,6 +15,14 @@ export function getPlayerCount(G: GameState): number {
 }
 
 /**
+ * Check if a player is eliminated (life <= 0)
+ */
+export function isPlayerEliminated(G: GameState, playerId: string): boolean {
+  const playerState = G.players[playerId];
+  return !playerState || playerState.resources.life <= 0;
+}
+
+/**
  * Get all player IDs that are still alive (life > 0)
  */
 export function getAlivePlayers(G: GameState): string[] {

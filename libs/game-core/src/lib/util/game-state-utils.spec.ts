@@ -4,6 +4,7 @@ import {
   getPlayerCount,
   getAlivePlayers,
   checkGameEnd,
+  isPlayerEliminated,
 } from './game-state-utils';
 
 describe('game-state-utils', () => {
@@ -41,6 +42,44 @@ describe('game-state-utils', () => {
         },
       };
       expect(getPlayerCount(gameState)).toBe(3);
+    });
+  });
+
+  describe('isPlayerEliminated', () => {
+    it('should return false for player with positive life', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(20),
+        },
+      };
+      expect(isPlayerEliminated(gameState, '0')).toBe(false);
+    });
+
+    it('should return true for player with zero life', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(0),
+        },
+      };
+      expect(isPlayerEliminated(gameState, '0')).toBe(true);
+    });
+
+    it('should return true for player with negative life', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(-5),
+        },
+      };
+      expect(isPlayerEliminated(gameState, '0')).toBe(true);
+    });
+
+    it('should return true for non-existent player', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(20),
+        },
+      };
+      expect(isPlayerEliminated(gameState, '1')).toBe(true);
     });
   });
 

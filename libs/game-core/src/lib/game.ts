@@ -4,7 +4,7 @@ import { GameState, MoveType } from '@game/models';
 import { playCardFromHand, selectTarget } from './moves/card-moves';
 import { endTurn } from './moves/turn-moves';
 import { setupPlayersState } from './util/game-setup';
-import { checkGameEnd } from './util/game-state-utils';
+import { checkGameEnd, isPlayerEliminated } from './util/game-state-utils';
 
 export const GameEngine: Game<
   GameState,
@@ -22,6 +22,28 @@ export const GameEngine: Game<
     [MoveType.PLAY_CARD_FROM_HAND]: playCardFromHand,
     [MoveType.END_TURN]: endTurn,
     [MoveType.SELECT_TARGET]: selectTarget,
+  },
+  turn: {
+    order: {
+      first: () => 0,
+      next: ({ G, ctx }) => {
+        // Find the next non-eliminated player
+        let nextPos = ctx.playOrderPos;
+        const numPlayers = ctx.numPlayers;
+        
+        // Loop through all players to find the next alive player
+        for (let i = 0; i < numPlayers; i++) {
+          nextPos = (nextPos + 1) % numPlayers;
+          const playerId = ctx.playOrder[nextPos];
+          if (!isPlayerEliminated(G, playerId)) {
+            return nextPos;
+          }
+        }
+        
+        // If no alive players found (shouldn't happen as game would have ended)
+        return undefined;
+      },
+    },
   },
   endIf: ({ G }) => checkGameEnd(G),
   minPlayers: 2,
