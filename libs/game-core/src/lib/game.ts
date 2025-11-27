@@ -8,7 +8,9 @@ import {
   checkGameEnd,
   isPlayerEliminated,
   drawCardForPlayer,
+  discardCardForPlayer,
 } from './util/game-state-utils';
+import { INVALID_MOVE } from 'boardgame.io/core';
 
 /** Maximum hand size - players must discard down to this limit at end of turn */
 const MAX_HAND_SIZE = 7;
@@ -48,70 +50,71 @@ export const GameEngine: Game<
         return undefined;
       },
     },
-  },
-  phases: {
     /**
-     * Start Stage: Player draws a card automatically, no manual moves allowed.
-     * Transitions to main stage after drawing.
+     * Start Stage: At the beginning of each turn, automatically draw a card.
+     * Then transition to the main stage where the player can make moves.
      */
-    startStage: {
-      start: true,
-      onBegin: ({ G, ctx, events }) => {
-        const currentPlayerId = ctx.currentPlayer;
+    onBegin: ({ G, ctx, events }) => {
+      const currentPlayerId = ctx.currentPlayer;
 
-        // Draw a card if possible
-        drawCardForPlayer(G, currentPlayerId);
+      // Draw a card if possible (Start Stage - automatic, no manual moves)
+      drawCardForPlayer(G, currentPlayerId);
 
-        // Automatically transition to main stage
-        events.setPhase('mainStage');
-      },
-      // No moves available in start stage - everything is automatic
-      moves: {},
+      // Transition to main stage for player actions
+      events.setActivePlayers({ currentPlayer: 'mainStage' });
     },
-    /**
-     * Main Stage: Player makes their moves (play cards, use abilities, etc.)
-     * Player can end their turn to transition to end stage.
-     */
-    mainStage: {
-      moves: {
-        [MoveType.PLAY_CARD_FROM_HAND]: playCardFromHand,
-        [MoveType.SELECT_TARGET]: selectTarget,
-        [MoveType.END_TURN]: {
-          move: ({ G, events, ctx }) => {
-            const currentPlayerId = ctx.currentPlayer;
-            const playerState = G.players[currentPlayerId];
+    stages: {
+      /**
+       * Main Stage: Player makes their moves (play cards, use abilities, etc.)
+       * Player can end their turn to transition to end stage if needed.
+       */
+      mainStage: {
+        moves: {
+          [MoveType.PLAY_CARD_FROM_HAND]: playCardFromHand,
+          [MoveType.SELECT_TARGET]: selectTarget,
+          [MoveType.END_TURN]: {
+            move: ({ G, events, ctx }) => {
+              const currentPlayerId = ctx.currentPlayer;
+              const playerState = G.players[currentPlayerId];
 
-            // Check if player needs to discard
-            if (playerState.zones.hand.entityIds.length > MAX_HAND_SIZE) {
-              events.setPhase('endStage');
-            } else {
-              // No discarding needed, end the turn directly
+              // Check if player needs to discard
+              if (playerState.zones.hand.entityIds.length > MAX_HAND_SIZE) {
+                // Transition to end stage for discarding
+                events.setActivePlayers({ currentPlayer: 'endStage' });
+              } else {
+                // No discarding needed, end the turn directly
+                events.endTurn();
+              }
+              return G;
+            },
+          },
+        },
+      },
+      /**
+       * End Stage: Player discards down to 7 cards if over the limit.
+       * Transitions to next player's turn after discarding is complete.
+       */
+      endStage: {
+        moves: {
+          [MoveType.DISCARD_FROM_HAND]: (
+            { G, playerID, events },
+            entityId: string
+          ) => {
+            const success = discardCardForPlayer(G, playerID, entityId);
+            if (!success) {
+              return INVALID_MOVE;
+            }
+
+            // Check if we can end the turn now
+            const playerState = G.players[playerID];
+            if (playerState.zones.hand.entityIds.length <= MAX_HAND_SIZE) {
               events.endTurn();
             }
+
             return G;
           },
         },
       },
-    },
-    /**
-     * End Stage: Player discards down to 7 cards if over the limit.
-     * Transitions to next player's turn after discarding is complete.
-     */
-    endStage: {
-      moves: {
-        [MoveType.DISCARD_FROM_HAND]: discardFromHand,
-      },
-      endIf: ({ G, ctx }) => {
-        const currentPlayerId = ctx.currentPlayer;
-        const playerState = G.players[currentPlayerId];
-        // End this phase when hand size is at or below max
-        return playerState.zones.hand.entityIds.length <= MAX_HAND_SIZE;
-      },
-      onEnd: ({ events }) => {
-        // After discarding is complete, end the turn
-        events.endTurn();
-      },
-      next: 'startStage',
     },
   },
   endIf: ({ G }) => checkGameEnd(G),

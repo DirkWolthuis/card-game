@@ -1,7 +1,10 @@
 import { GameState } from '@game/models';
 import { Move } from 'boardgame.io';
 import { INVALID_MOVE } from 'boardgame.io/core';
-import { drawCardForPlayer } from '../util/game-state-utils';
+import {
+  drawCardForPlayer,
+  discardCardForPlayer,
+} from '../util/game-state-utils';
 
 export const endTurn: Move<GameState> = ({ G, events }) => {
   events.endTurn();
@@ -27,19 +30,9 @@ export const discardFromHand: Move<GameState> = (
   { G, playerID },
   entityId: string
 ) => {
-  const playerState = G.players[playerID];
-
-  // Verify the card is in the player's hand
-  const cardIndex = playerState.zones.hand.entityIds.indexOf(entityId);
-  if (cardIndex === -1) {
+  const success = discardCardForPlayer(G, playerID, entityId);
+  if (!success) {
     return INVALID_MOVE;
   }
-
-  // Remove the card from hand
-  playerState.zones.hand.entityIds.splice(cardIndex, 1);
-
-  // Add the card to graveyard
-  playerState.zones.graveyard.entityIds.push(entityId);
-
   return G;
 };
