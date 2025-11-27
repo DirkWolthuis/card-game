@@ -1,12 +1,21 @@
 import { GameEngine } from './game';
 import { GameState, MoveType, PlayerState } from '@game/models';
+import type { PhaseConfig } from 'boardgame.io';
 
 describe('GameEngine', () => {
-  const createPlayerState = (life: number): PlayerState => ({
+  const createPlayerState = (
+    life: number,
+    handSize = 0,
+    deckSize = 0
+  ): PlayerState => ({
     resources: { life },
     zones: {
-      hand: { entityIds: [] },
-      deck: { entityIds: [] },
+      hand: {
+        entityIds: Array.from({ length: handSize }, (_, i) => `hand-${i}`),
+      },
+      deck: {
+        entityIds: Array.from({ length: deckSize }, (_, i) => `deck-${i}`),
+      },
       battlefield: { entityIds: [] },
       graveyard: { entityIds: [] },
       exile: { entityIds: [] },
@@ -15,26 +24,220 @@ describe('GameEngine', () => {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const callEndIf = (gameState: GameState) => GameEngine.endIf?.({ G: gameState } as any);
+  const callEndIf = (gameState: GameState) =>
+    GameEngine.endIf?.({ G: gameState } as any);
 
-  describe('endTurn move', () => {
-    it('should end the current player turn', () => {
-      const mockEvents = {
-        endTurn: jest.fn(),
-      };
+  describe('phases', () => {
+    it('should have three phases defined', () => {
+      expect(GameEngine.phases).toBeDefined();
+      expect(GameEngine.phases?.['startStage']).toBeDefined();
+      expect(GameEngine.phases?.['mainStage']).toBeDefined();
+      expect(GameEngine.phases?.['endStage']).toBeDefined();
+    });
 
-      const move = GameEngine.moves?.[MoveType.END_TURN];
-      expect(move).toBeDefined();
+    it('should start with startStage phase', () => {
+      expect(
+        (GameEngine.phases?.['startStage'] as PhaseConfig<GameState>)?.start
+      ).toBe(true);
+    });
 
-      if (move && typeof move === 'function') {
-        const mockContext = {
-          G: { players: {} } as GameState,
-          events: mockEvents,
+    describe('startStage', () => {
+      it('should have no moves available', () => {
+        const startStage = GameEngine.phases?.[
+          'startStage'
+        ] as PhaseConfig<GameState>;
+        expect(startStage.moves).toEqual({});
+      });
+
+      it('should draw a card on phase begin', () => {
+        const gameState: GameState = {
+          players: {
+            '0': createPlayerState(20, 5, 10),
+          },
         };
+
+        const mockEvents = {
+          setPhase: jest.fn(),
+        };
+
+        const startStage = GameEngine.phases?.[
+          'startStage'
+        ] as PhaseConfig<GameState>;
+        startStage.onBegin?.({
+          G: gameState,
+          ctx: { currentPlayer: '0' },
+          events: mockEvents,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+
+        // Should have drawn one card from deck to hand
+        expect(gameState.players['0'].zones.hand.entityIds.length).toBe(6);
+        expect(gameState.players['0'].zones.deck.entityIds.length).toBe(9);
+        // Should transition to main stage
+        expect(mockEvents.setPhase).toHaveBeenCalledWith('mainStage');
+      });
+
+      it('should transition to mainStage even when deck is empty', () => {
+        const gameState: GameState = {
+          players: {
+            '0': createPlayerState(20, 5, 0), // empty deck
+          },
+        };
+
+        const mockEvents = {
+          setPhase: jest.fn(),
+        };
+
+        const startStage = GameEngine.phases?.[
+          'startStage'
+        ] as PhaseConfig<GameState>;
+        startStage.onBegin?.({
+          G: gameState,
+          ctx: { currentPlayer: '0' },
+          events: mockEvents,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+
+        // Hand size should remain unchanged
+        expect(gameState.players['0'].zones.hand.entityIds.length).toBe(5);
+        // Should still transition to main stage
+        expect(mockEvents.setPhase).toHaveBeenCalledWith('mainStage');
+      });
+    });
+
+    describe('mainStage', () => {
+      it('should have playCardFromHand, selectTarget, and endTurn moves', () => {
+        const mainStage = GameEngine.phases?.[
+          'mainStage'
+        ] as PhaseConfig<GameState>;
+        expect(mainStage.moves).toBeDefined();
+        expect(mainStage.moves?.[MoveType.PLAY_CARD_FROM_HAND]).toBeDefined();
+        expect(mainStage.moves?.[MoveType.SELECT_TARGET]).toBeDefined();
+        expect(mainStage.moves?.[MoveType.END_TURN]).toBeDefined();
+      });
+
+      it('should transition to endStage when endTurn is called with more than 7 cards in hand', () => {
+        const gameState: GameState = {
+          players: {
+            '0': createPlayerState(20, 10, 0), // 10 cards in hand
+          },
+        };
+
+        const mockEvents = {
+          setPhase: jest.fn(),
+          endTurn: jest.fn(),
+        };
+
+        const mainStage = GameEngine.phases?.[
+          'mainStage'
+        ] as PhaseConfig<GameState>;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        move(mockContext as any);
+        const endTurnMove = mainStage.moves?.[MoveType.END_TURN] as any;
+        endTurnMove.move({
+          G: gameState,
+          ctx: { currentPlayer: '0' },
+          events: mockEvents,
+        });
+
+        expect(mockEvents.setPhase).toHaveBeenCalledWith('endStage');
+        expect(mockEvents.endTurn).not.toHaveBeenCalled();
+      });
+
+      it('should end turn directly when hand size is 7 or less', () => {
+        const gameState: GameState = {
+          players: {
+            '0': createPlayerState(20, 5, 0), // 5 cards in hand
+          },
+        };
+
+        const mockEvents = {
+          setPhase: jest.fn(),
+          endTurn: jest.fn(),
+        };
+
+        const mainStage = GameEngine.phases?.[
+          'mainStage'
+        ] as PhaseConfig<GameState>;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const endTurnMove = mainStage.moves?.[MoveType.END_TURN] as any;
+        endTurnMove.move({
+          G: gameState,
+          ctx: { currentPlayer: '0' },
+          events: mockEvents,
+        });
+
+        expect(mockEvents.setPhase).not.toHaveBeenCalled();
         expect(mockEvents.endTurn).toHaveBeenCalled();
-      }
+      });
+    });
+
+    describe('endStage', () => {
+      it('should only have discardFromHand move', () => {
+        const endStage = GameEngine.phases?.[
+          'endStage'
+        ] as PhaseConfig<GameState>;
+        expect(endStage.moves).toBeDefined();
+        expect(endStage.moves?.[MoveType.DISCARD_FROM_HAND]).toBeDefined();
+        expect(Object.keys(endStage.moves ?? {}).length).toBe(1);
+      });
+
+      it('should end phase when hand size is at or below 7', () => {
+        const endStage = GameEngine.phases?.[
+          'endStage'
+        ] as PhaseConfig<GameState>;
+
+        const gameStateAtLimit: GameState = {
+          players: {
+            '0': createPlayerState(20, 7, 0),
+          },
+        };
+        expect(
+          endStage.endIf?.({
+            G: gameStateAtLimit,
+            ctx: { currentPlayer: '0' },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any)
+        ).toBe(true);
+
+        const gameStateBelowLimit: GameState = {
+          players: {
+            '0': createPlayerState(20, 5, 0),
+          },
+        };
+        expect(
+          endStage.endIf?.({
+            G: gameStateBelowLimit,
+            ctx: { currentPlayer: '0' },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any)
+        ).toBe(true);
+      });
+
+      it('should not end phase when hand size is above 7', () => {
+        const endStage = GameEngine.phases?.[
+          'endStage'
+        ] as PhaseConfig<GameState>;
+
+        const gameState: GameState = {
+          players: {
+            '0': createPlayerState(20, 10, 0),
+          },
+        };
+        expect(
+          endStage.endIf?.({
+            G: gameState,
+            ctx: { currentPlayer: '0' },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any)
+        ).toBe(false);
+      });
+
+      it('should transition to startStage after ending', () => {
+        const endStage = GameEngine.phases?.[
+          'endStage'
+        ] as PhaseConfig<GameState>;
+        expect(endStage.next).toBe('startStage');
+      });
     });
   });
 
@@ -90,7 +293,7 @@ describe('GameEngine', () => {
           '2': createPlayerState(15),
         },
       };
-      
+
       const mockCtx = {
         playOrderPos: 0,
         numPlayers: 3,
@@ -98,7 +301,10 @@ describe('GameEngine', () => {
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nextPos = GameEngine.turn?.order?.next?.({ G: gameState, ctx: mockCtx } as any);
+      const nextPos = GameEngine.turn?.order?.next?.({
+        G: gameState,
+        ctx: mockCtx,
+      } as any);
       // From position 0 (player '0'), next should be position 2 (player '2'), skipping eliminated player '1'
       expect(nextPos).toBe(2);
     });
@@ -112,7 +318,7 @@ describe('GameEngine', () => {
           '3': createPlayerState(10),
         },
       };
-      
+
       const mockCtx = {
         playOrderPos: 3, // Currently player '3'
         numPlayers: 4,
@@ -120,7 +326,10 @@ describe('GameEngine', () => {
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nextPos = GameEngine.turn?.order?.next?.({ G: gameState, ctx: mockCtx } as any);
+      const nextPos = GameEngine.turn?.order?.next?.({
+        G: gameState,
+        ctx: mockCtx,
+      } as any);
       // From position 3 (player '3'), should wrap to position 0 (player '0'), skipping eliminated players
       expect(nextPos).toBe(0);
     });
@@ -132,7 +341,7 @@ describe('GameEngine', () => {
           '1': createPlayerState(0),
         },
       };
-      
+
       const mockCtx = {
         playOrderPos: 0,
         numPlayers: 2,
@@ -140,7 +349,10 @@ describe('GameEngine', () => {
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nextPos = GameEngine.turn?.order?.next?.({ G: gameState, ctx: mockCtx } as any);
+      const nextPos = GameEngine.turn?.order?.next?.({
+        G: gameState,
+        ctx: mockCtx,
+      } as any);
       expect(nextPos).toBeUndefined();
     });
   });
