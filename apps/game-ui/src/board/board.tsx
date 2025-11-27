@@ -4,6 +4,7 @@ import { GameStatsOverview } from './zones/GameStatsOverview';
 import { OpponentZones } from './zones/OpponentZones';
 import { PlayerZones } from './zones/PlayerZones';
 import { TargetSelectionModal } from './components/TargetSelectionModal';
+import { EndGameScreen } from './components/EndGameScreen';
 import { getValidTargets, getAllPlayerIds, getPlayerCount } from '@game/core';
 import { getGridConfig } from './grid-config';
 
@@ -72,6 +73,15 @@ export function Board(props: BoardProps<GameState>) {
           gameState={G}
           validTargets={validTargets}
           onSelectTarget={(targetId) => moves[MoveType.SELECT_TARGET](targetId)}
+        />
+      )}
+
+      {ctx.gameover && (
+        <EndGameScreen
+          gameState={G}
+          gameover={ctx.gameover}
+          currentPlayerId={currentPlayerID}
+          totalTurns={ctx.turn}
         />
       )}
     </div>
