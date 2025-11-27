@@ -2,9 +2,13 @@
 import type { Game } from 'boardgame.io';
 import { GameState, MoveType } from '@game/models';
 import { playCardFromHand, selectTarget } from './moves/card-moves';
-import { endTurn, drawCard, discardFromHand } from './moves/turn-moves';
+import { discardFromHand } from './moves/turn-moves';
 import { setupPlayersState } from './util/game-setup';
-import { checkGameEnd, isPlayerEliminated } from './util/game-state-utils';
+import {
+  checkGameEnd,
+  isPlayerEliminated,
+  drawCardForPlayer,
+} from './util/game-state-utils';
 
 /** Maximum hand size - players must discard down to this limit at end of turn */
 const MAX_HAND_SIZE = 7;
@@ -13,9 +17,7 @@ export const GameEngine: Game<
   GameState,
   {
     playCardFromHand: typeof playCardFromHand;
-    endTurn: typeof endTurn;
     selectTarget: typeof selectTarget;
-    drawCard: typeof drawCard;
     discardFromHand: typeof discardFromHand;
   }
 > = {
@@ -56,15 +58,9 @@ export const GameEngine: Game<
       start: true,
       onBegin: ({ G, ctx, events }) => {
         const currentPlayerId = ctx.currentPlayer;
-        const playerState = G.players[currentPlayerId];
 
         // Draw a card if possible
-        if (playerState.zones.deck.entityIds.length > 0) {
-          const drawnEntityId = playerState.zones.deck.entityIds.shift();
-          if (drawnEntityId) {
-            playerState.zones.hand.entityIds.push(drawnEntityId);
-          }
-        }
+        drawCardForPlayer(G, currentPlayerId);
 
         // Automatically transition to main stage
         events.setPhase('mainStage');
@@ -117,10 +113,6 @@ export const GameEngine: Game<
       },
       next: 'startStage',
     },
-  },
-  // Global moves that are available in all phases if not overridden
-  moves: {
-    [MoveType.DRAW_CARD]: drawCard,
   },
   endIf: ({ G }) => checkGameEnd(G),
   minPlayers: 2,

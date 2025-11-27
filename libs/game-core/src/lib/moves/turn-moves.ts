@@ -1,6 +1,7 @@
 import { GameState } from '@game/models';
 import { Move } from 'boardgame.io';
 import { INVALID_MOVE } from 'boardgame.io/core';
+import { drawCardForPlayer } from '../util/game-state-utils';
 
 export const endTurn: Move<GameState> = ({ G, events }) => {
   events.endTurn();
@@ -12,22 +13,7 @@ export const endTurn: Move<GameState> = ({ G, events }) => {
  * Used during the start stage of a turn.
  */
 export const drawCard: Move<GameState> = ({ G, playerID }) => {
-  const playerState = G.players[playerID];
-
-  // Check if there are cards in the deck to draw
-  if (playerState.zones.deck.entityIds.length === 0) {
-    // No cards to draw - the game continues without drawing
-    return G;
-  }
-
-  // Remove the top card from the deck
-  const drawnEntityId = playerState.zones.deck.entityIds.shift();
-
-  if (drawnEntityId) {
-    // Add the card to the player's hand
-    playerState.zones.hand.entityIds.push(drawnEntityId);
-  }
-
+  drawCardForPlayer(G, playerID);
   return G;
 };
 

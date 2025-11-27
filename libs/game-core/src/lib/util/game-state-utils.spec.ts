@@ -5,14 +5,19 @@ import {
   getAlivePlayers,
   checkGameEnd,
   isPlayerEliminated,
+  drawCardForPlayer,
 } from './game-state-utils';
 
 describe('game-state-utils', () => {
-  const createPlayerState = (life: number): PlayerState => ({
+  const createPlayerState = (
+    life: number,
+    handEntityIds: string[] = [],
+    deckEntityIds: string[] = []
+  ): PlayerState => ({
     resources: { life },
     zones: {
-      hand: { entityIds: [] },
-      deck: { entityIds: [] },
+      hand: { entityIds: [...handEntityIds] },
+      deck: { entityIds: [...deckEntityIds] },
       battlefield: { entityIds: [] },
       graveyard: { entityIds: [] },
       exile: { entityIds: [] },
@@ -164,6 +169,70 @@ describe('game-state-utils', () => {
         },
       };
       expect(checkGameEnd(gameState)).toBeUndefined();
+    });
+  });
+
+  describe('drawCardForPlayer', () => {
+    it('should move the top card from deck to hand', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(
+            20,
+            ['hand-1', 'hand-2'],
+            ['deck-1', 'deck-2', 'deck-3']
+          ),
+        },
+      };
+
+      drawCardForPlayer(gameState, '0');
+
+      expect(gameState.players['0'].zones.hand.entityIds).toEqual([
+        'hand-1',
+        'hand-2',
+        'deck-1',
+      ]);
+      expect(gameState.players['0'].zones.deck.entityIds).toEqual([
+        'deck-2',
+        'deck-3',
+      ]);
+    });
+
+    it('should do nothing if deck is empty', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(20, ['hand-1', 'hand-2'], []),
+        },
+      };
+
+      drawCardForPlayer(gameState, '0');
+
+      expect(gameState.players['0'].zones.hand.entityIds).toEqual([
+        'hand-1',
+        'hand-2',
+      ]);
+      expect(gameState.players['0'].zones.deck.entityIds).toEqual([]);
+    });
+
+    it('should only affect the specified player', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(20, ['hand-0-1'], ['deck-0-1']),
+          '1': createPlayerState(20, ['hand-1-1'], ['deck-1-1', 'deck-1-2']),
+        },
+      };
+
+      drawCardForPlayer(gameState, '1');
+
+      // Player 0's state should be unchanged
+      expect(gameState.players['0'].zones.hand.entityIds).toEqual(['hand-0-1']);
+      expect(gameState.players['0'].zones.deck.entityIds).toEqual(['deck-0-1']);
+
+      // Player 1 should have drawn a card
+      expect(gameState.players['1'].zones.hand.entityIds).toEqual([
+        'hand-1-1',
+        'deck-1-1',
+      ]);
+      expect(gameState.players['1'].zones.deck.entityIds).toEqual(['deck-1-2']);
     });
   });
 });

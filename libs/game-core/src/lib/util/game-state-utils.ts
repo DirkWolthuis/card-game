@@ -43,10 +43,34 @@ export function getAlivePlayers(G: GameState): string[] {
  */
 export function checkGameEnd(G: GameState): { winner: string } | undefined {
   const alivePlayers = getAlivePlayers(G);
-  
+
   if (alivePlayers.length === 1) {
     return { winner: alivePlayers[0] };
   }
-  
+
   return undefined;
+}
+
+/**
+ * Draws a card from a player's deck and adds it to their hand.
+ * Does nothing if the deck is empty.
+ *
+ * @param G - The game state
+ * @param playerId - The ID of the player drawing the card
+ */
+export function drawCardForPlayer(G: GameState, playerId: string): void {
+  const playerState = G.players[playerId];
+
+  // Check if there are cards in the deck to draw
+  if (playerState.zones.deck.entityIds.length === 0) {
+    return;
+  }
+
+  // Remove the top card from the deck
+  const drawnEntityId = playerState.zones.deck.entityIds.shift();
+
+  if (drawnEntityId) {
+    // Add the card to the player's hand
+    playerState.zones.hand.entityIds.push(drawnEntityId);
+  }
 }
