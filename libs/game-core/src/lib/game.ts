@@ -2,7 +2,6 @@
 import type { Game } from 'boardgame.io';
 import { GameState, MoveType } from '@game/models';
 import { playCardFromHand, selectTarget } from './moves/card-moves';
-import { discardFromHand } from './moves/turn-moves';
 import { setupPlayersState } from './util/game-setup';
 import {
   checkGameEnd,
@@ -20,7 +19,6 @@ export const GameEngine: Game<
   {
     playCardFromHand: typeof playCardFromHand;
     selectTarget: typeof selectTarget;
-    discardFromHand: typeof discardFromHand;
   }
 > = {
   name: 'card-game',

@@ -171,6 +171,152 @@ describe('GameEngine', () => {
         expect(endStage.moves?.[MoveType.DISCARD_FROM_HAND]).toBeDefined();
         expect(Object.keys(endStage.moves ?? {}).length).toBe(1);
       });
+
+      it('should discard a card correctly', () => {
+        const gameState: GameState = {
+          players: {
+            '0': {
+              resources: { life: 20 },
+              zones: {
+                hand: { entityIds: ['card-1', 'card-2', 'card-3', 'card-4', 'card-5', 'card-6', 'card-7', 'card-8'] },
+                deck: { entityIds: [] },
+                battlefield: { entityIds: [] },
+                graveyard: { entityIds: [] },
+                exile: { entityIds: [] },
+              },
+              entities: {},
+            },
+          },
+        };
+
+        const mockEvents = {
+          endTurn: jest.fn(),
+        };
+
+        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const endStage = turn.stages?.['endStage'] as StageConfig<GameState>;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const discardMove = endStage.moves?.[MoveType.DISCARD_FROM_HAND] as any;
+        discardMove({
+          G: gameState,
+          playerID: '0',
+          events: mockEvents,
+        }, 'card-1');
+
+        // Card should be moved from hand to graveyard
+        expect(gameState.players['0'].zones.hand.entityIds).not.toContain('card-1');
+        expect(gameState.players['0'].zones.graveyard.entityIds).toContain('card-1');
+        expect(gameState.players['0'].zones.hand.entityIds.length).toBe(7);
+      });
+
+      it('should end turn when hand size reaches 7 or below', () => {
+        const gameState: GameState = {
+          players: {
+            '0': {
+              resources: { life: 20 },
+              zones: {
+                hand: { entityIds: ['card-1', 'card-2', 'card-3', 'card-4', 'card-5', 'card-6', 'card-7', 'card-8'] },
+                deck: { entityIds: [] },
+                battlefield: { entityIds: [] },
+                graveyard: { entityIds: [] },
+                exile: { entityIds: [] },
+              },
+              entities: {},
+            },
+          },
+        };
+
+        const mockEvents = {
+          endTurn: jest.fn(),
+        };
+
+        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const endStage = turn.stages?.['endStage'] as StageConfig<GameState>;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const discardMove = endStage.moves?.[MoveType.DISCARD_FROM_HAND] as any;
+        discardMove({
+          G: gameState,
+          playerID: '0',
+          events: mockEvents,
+        }, 'card-1');
+
+        // Hand size is now 7, turn should end
+        expect(mockEvents.endTurn).toHaveBeenCalled();
+      });
+
+      it('should not end turn when hand size is still above 7', () => {
+        const gameState: GameState = {
+          players: {
+            '0': {
+              resources: { life: 20 },
+              zones: {
+                hand: { entityIds: ['card-1', 'card-2', 'card-3', 'card-4', 'card-5', 'card-6', 'card-7', 'card-8', 'card-9'] },
+                deck: { entityIds: [] },
+                battlefield: { entityIds: [] },
+                graveyard: { entityIds: [] },
+                exile: { entityIds: [] },
+              },
+              entities: {},
+            },
+          },
+        };
+
+        const mockEvents = {
+          endTurn: jest.fn(),
+        };
+
+        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const endStage = turn.stages?.['endStage'] as StageConfig<GameState>;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const discardMove = endStage.moves?.[MoveType.DISCARD_FROM_HAND] as any;
+        discardMove({
+          G: gameState,
+          playerID: '0',
+          events: mockEvents,
+        }, 'card-1');
+
+        // Hand size is now 8, turn should NOT end
+        expect(mockEvents.endTurn).not.toHaveBeenCalled();
+      });
+
+      it('should return INVALID_MOVE when trying to discard a card not in hand', () => {
+        const gameState: GameState = {
+          players: {
+            '0': {
+              resources: { life: 20 },
+              zones: {
+                hand: { entityIds: ['card-1', 'card-2'] },
+                deck: { entityIds: [] },
+                battlefield: { entityIds: [] },
+                graveyard: { entityIds: [] },
+                exile: { entityIds: [] },
+              },
+              entities: {},
+            },
+          },
+        };
+
+        const mockEvents = {
+          endTurn: jest.fn(),
+        };
+
+        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const endStage = turn.stages?.['endStage'] as StageConfig<GameState>;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const discardMove = endStage.moves?.[MoveType.DISCARD_FROM_HAND] as any;
+        const result = discardMove({
+          G: gameState,
+          playerID: '0',
+          events: mockEvents,
+        }, 'non-existent-card');
+
+        // Should return INVALID_MOVE
+        expect(result).toBe('INVALID_MOVE');
+        // Hand should remain unchanged
+        expect(gameState.players['0'].zones.hand.entityIds).toEqual(['card-1', 'card-2']);
+        // Turn should not end
+        expect(mockEvents.endTurn).not.toHaveBeenCalled();
+      });
     });
   });
 

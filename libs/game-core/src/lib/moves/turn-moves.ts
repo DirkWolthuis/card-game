@@ -1,24 +1,7 @@
 import { GameState } from '@game/models';
 import { Move } from 'boardgame.io';
 import { INVALID_MOVE } from 'boardgame.io/core';
-import {
-  drawCardForPlayer,
-  discardCardForPlayer,
-} from '../util/game-state-utils';
-
-export const endTurn: Move<GameState> = ({ G, events }) => {
-  events.endTurn();
-  return G;
-};
-
-/**
- * Draws a card from the player's deck and adds it to their hand.
- * Used during the start stage of a turn.
- */
-export const drawCard: Move<GameState> = ({ G, playerID }) => {
-  drawCardForPlayer(G, playerID);
-  return G;
-};
+import { discardCardForPlayer } from '../util/game-state-utils';
 
 /**
  * Discards a card from the player's hand to the graveyard.

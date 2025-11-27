@@ -1,4 +1,4 @@
-import { drawCard, discardFromHand } from './turn-moves';
+import { discardFromHand } from './turn-moves';
 import { GameState, PlayerState } from '@game/models';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import type { FnContext } from 'boardgame.io';
@@ -31,80 +31,6 @@ describe('turn-moves', () => {
       exile: { entityIds: [] },
     },
     entities: {},
-  });
-
-  describe('drawCard', () => {
-    it('should draw the top card from deck to hand', () => {
-      const gameState: GameState = {
-        players: {
-          '0': createPlayerState(
-            ['hand-1', 'hand-2'],
-            ['deck-1', 'deck-2', 'deck-3']
-          ),
-        },
-      };
-
-      const result = callMove(drawCard, {
-        G: gameState,
-        playerID: '0',
-      });
-
-      expect(result).toBe(gameState);
-      expect(gameState.players['0'].zones.hand.entityIds).toEqual([
-        'hand-1',
-        'hand-2',
-        'deck-1',
-      ]);
-      expect(gameState.players['0'].zones.deck.entityIds).toEqual([
-        'deck-2',
-        'deck-3',
-      ]);
-    });
-
-    it('should not modify state if deck is empty', () => {
-      const gameState: GameState = {
-        players: {
-          '0': createPlayerState(['hand-1', 'hand-2'], []),
-        },
-      };
-
-      const result = callMove(drawCard, {
-        G: gameState,
-        playerID: '0',
-      });
-
-      expect(result).toBe(gameState);
-      expect(gameState.players['0'].zones.hand.entityIds).toEqual([
-        'hand-1',
-        'hand-2',
-      ]);
-      expect(gameState.players['0'].zones.deck.entityIds).toEqual([]);
-    });
-
-    it('should draw from the correct player', () => {
-      const gameState: GameState = {
-        players: {
-          '0': createPlayerState(['hand-0-1'], ['deck-0-1']),
-          '1': createPlayerState(['hand-1-1'], ['deck-1-1', 'deck-1-2']),
-        },
-      };
-
-      callMove(drawCard, {
-        G: gameState,
-        playerID: '1',
-      });
-
-      // Player 0's state should be unchanged
-      expect(gameState.players['0'].zones.hand.entityIds).toEqual(['hand-0-1']);
-      expect(gameState.players['0'].zones.deck.entityIds).toEqual(['deck-0-1']);
-
-      // Player 1 should have drawn a card
-      expect(gameState.players['1'].zones.hand.entityIds).toEqual([
-        'hand-1-1',
-        'deck-1-1',
-      ]);
-      expect(gameState.players['1'].zones.deck.entityIds).toEqual(['deck-1-2']);
-    });
   });
 
   describe('discardFromHand', () => {
