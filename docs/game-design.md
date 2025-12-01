@@ -34,6 +34,7 @@
 
 **Start of Turn:**
 
+- Untap all cards you control
 - Draw cards until you have 7 cards in hand
 
 **Main Phase:**
@@ -58,7 +59,7 @@
 
 **Leader Cards:**
 
-- Unit Leader cards can attack
+- Unit Leader cards can attack (only if untapped)
 - Only one Leader can attack each of your turns (by tapping it)
 - Leaders can attack the same turn as they are played, but most cards will enter tapped
 - Leaders have a keyword: `Leader - {Troop type} (X)` (e.g., `Leader - Zombie (5)`)
@@ -68,8 +69,8 @@
 
 **Troop Cards:**
 
-- Unit Troop cards can join an attacking Leader
-- Unit Troop cards can block as a reaction to an attacking unit
+- Unit Troop cards can join an attacking Leader (only if untapped; they tap when joining)
+- Unit Troop cards can block as a reaction to an attacking unit (by tapping)
 - Damage on Troops resets at the end of each turn
 
 ---
@@ -79,14 +80,15 @@
 **Attacking:**
 
 - Attacking is an activated ability, just like playing a card
+- Only untapped units can attack
 - Only one Leader can attack per turn (by tapping it)
-- When a Leader attacks, Troop entities can join the attack based on the Leader's keyword
+- When a Leader attacks, untapped Troop entities can join the attack based on the Leader's keyword (they tap when joining)
 
 **Blocking:**
 
-- Players can block attacking Leaders by tapping their own Leaders
-- Any number of Leaders can block a single attacker
-- Blocking is a reaction
+- All units can block by tapping (blocking is a reaction)
+- Any number of untapped units can block a single attacker
+- Only untapped units can block
 
 **Troop Combat:**
 
