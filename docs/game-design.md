@@ -1,52 +1,137 @@
-# Lords of Estraven (LOE) Card Game Design
+# Lords of Estraven (LOE) Card Game Design v2
 
 ---
 
 ## Table of Contents
 
-- [Design Philosophy](#design-philosophy)
 - [Game Setup](#game-setup)
+- [Turn Structure](#turn-structure)
 - [Card Types](#card-types)
-- [Main Mechanics](#main-mechanics)
-- [Play Modes](#play-modes)
-- [Game Sequence](#game-sequence)
-
----
-
-## Design Philosophy
+- [Combat Mechanics](#combat-mechanics)
+- [Resource System](#resource-system)
+- [Marketplace](#marketplace)
 
 ---
 
 ## Game Setup
 
-**Game Attributes:**
+**Deck Construction:**
 
-**Player Cards:**
+- Players choose two pre-constructed 20 card decks (40 cards total)
 
-**Player Zones:**
+**Starting Conditions:**
 
-**Shared Zones:**
+- Players start with 20 health each
 
-- **A**:
+**Shared Resources:**
+
+- There is a shared resource cards deck containing 20 resource cards
+- 5 resource cards are placed face-up in the marketplace at the start of the game
+
+---
+
+## Turn Structure
+
+**Start of Turn:**
+
+- Draw cards until you have 7 cards in hand
+
+**Main Phase:**
+
+- Play cards from hand
+- Activate abilities on cards you control
+- Attack with Leaders
+- Interact with the marketplace
+
+**End of Turn:**
+
+- Discard down to a maximum of 7 cards in hand
+- Damage on Troop units resets
 
 ---
 
 ## Card Types
 
-- **A**: xxx
+**Unit Cards:**
+
+- Unit cards are cards that enter the battlefield
+
+**Leader Cards:**
+
+- Unit Leader cards can attack
+- Only one Leader can attack each of your turns (by tapping it)
+- Leaders can attack the same turn as they are played, but most cards will enter tapped
+- Leaders have a keyword: `Leader - {Troop type} (X)` (e.g., `Leader - Zombie (5)`)
+  - This indicates how many Troops of that type can join the attacking Leader
+- Damage on Leaders is permanent but can be healed by effects
+- When attacking, a Leader can choose to target the player or another unit Leader
+
+**Troop Cards:**
+
+- Unit Troop cards can join an attacking Leader
+- Unit Troop cards can block as a reaction to an attacking unit
+- Damage on Troops resets at the end of each turn
 
 ---
 
-## Main Mechanics
+## Combat Mechanics
 
-- **A**: xxx
+**Attacking:**
+
+- Attacking is an activated ability, just like playing a card
+- Only one Leader can attack per turn (by tapping it)
+- When a Leader attacks, Troop entities can join the attack based on the Leader's keyword
+
+**Blocking:**
+
+- Players can block attacking Leaders by tapping their own Leaders
+- Any number of Leaders can block a single attacker
+- Blocking is a reaction
+
+**Troop Combat:**
+
+- When an attacking Leader is joined by Troops, only the Troop units can be blocked
+- Excess damage from blocked Troops is allocated to the attacking Leader
+- Example: A Leader attacks with 2x 2/2 Zombie Troops. Each is blocked by a 3/3 Troop. The 2 excess damage points are allocated to the attacking Leader.
 
 ---
 
-## Play Modes
+## Resource System
 
-- **A**: xxx
+**Pitching Cards for Mana:**
+
+- Pitch any card for mana by playing it upside down for its pitch value (1, 2, or 3)
+- Pitching cards can be done as an instant speed action
+- When mana is used, the pitched card goes to the graveyard
+
+**Unused Pitch Cards:**
+
+- Unused pitch cards return to hand and deal one damage to player
+- Partially used pitch cards go to the graveyard
+
+**Additional Resource Costs:**
+
+- Big cards need additional resources, like resource cards that need to be sacrificed (subjects/materials/influence)
+
+**Deck Depletion:**
+
+- When deck is empty, player loses the game
+- Important to manage card usage: if you use many cards to pitch/generate mana, you must close the game quickly or you will burn through resources too fast
 
 ---
 
-## Game Sequence
+## Marketplace
+
+**Shared Resource Deck:**
+
+- 20 resource cards in a shared deck
+- 5 cards are face-up in the market at all times
+
+**Market Refresh:**
+
+- End of round, cards refresh (first in, first out)
+
+**Trading:**
+
+- In their turn, players can swap one card from their hand with a card in the marketplace (including cards from opponents)
+- Players can play as many resource cards during their turn as they want
