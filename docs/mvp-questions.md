@@ -124,7 +124,7 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Card Economy
 
-- [ ] How many cards are in the pre-constructed 20 card decks?
+- [ ] What is the composition of the pre-constructed 20 card decks? (How many Leaders, Troops, other cards?)
 - [ ] What is the ratio of Leaders to Troops to other cards?
 - [ ] How fast should games end? (What's the target game length?)
 - [ ] At what point does deck depletion become a real concern?

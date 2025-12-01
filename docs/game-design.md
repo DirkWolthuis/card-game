@@ -129,9 +129,10 @@
 
 **Market Refresh:**
 
-- End of round, cards refresh (first in, first out)
+- At the end of each round (after all players have taken a turn), cards refresh (first in, first out)
 
 **Trading:**
 
-- In their turn, players can swap one card from their hand with a card in the marketplace (including cards from opponents)
+- In their turn, players can swap one card from their hand with a card in the marketplace
+- Note: Cards that opponents previously traded into the marketplace are available for all players to swap
 - Players can play as many resource cards during their turn as they want
