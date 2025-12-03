@@ -137,7 +137,10 @@ This document outlines the open questions that need to be answered to create a M
 ### Market Mechanics
 
 - [x] How does "first in, first out" refresh work exactly?
-  - At the start of the game, 5 cards are revealed. The first one revealed is removed at the start of the next round. Then all cards move one place and a new one is added from the resource deck
+  - At the start of the game, 5 cards are revealed. At the start of each subsequent round:
+    1. Remove the oldest card (first revealed)
+    2. Shift remaining cards to fill the gap
+    3. Add a new card from the resource deck
 - [x] When exactly does the market refresh? (After all players take a turn?)
   - At the start of each round (after all players have taken a turn)
 - [x] What happens if the resource card deck runs out?

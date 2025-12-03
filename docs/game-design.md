@@ -89,7 +89,7 @@ Units are cards that enter the battlefield. All units can block by tapping. Only
 ### Damage Resolution
 
 - All damage happens simultaneously, then destroyed units are determined
-- **Leader vs Blockers**: Leader deals damage equal to its Power to all blockers; blockers deal damage to Leader equal to (blocker's Power - Leader's Resistance), only if Power > Resistance
+- **Leader vs Blockers**: Leader deals damage equal to its Power to all blockers; blockers deal damage to Leader equal to (blocker's Power minus Leader's Resistance), but only when blocker's Power exceeds Leader's Resistance
 - **Troop vs Blockers**: Compare Power vs Toughness
 - Excess damage: When Power is greater than Toughness (for Troops) or Resistance (for Leaders)
 - When a Leader attacks but is blocked, combat functions the same as if Troops joined
@@ -111,7 +111,7 @@ Units are cards that enter the battlefield. All units can block by tapping. Only
 
 - Any card can be pitched for its pitch value (1, 2, or 3 mana)
 - **Pitch value is printed on the front of the card**
-- All cards have a pitch value (some special cards may have a value of 0)
+- All cards have a pitch value, though some special cards may have a value of 0
 - Pitching is **instant speed** — can be done anytime you have priority
 - No limit to how many cards you can pitch per turn
 - Can pitch cards in response to opponent actions
