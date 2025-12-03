@@ -91,7 +91,7 @@ Units are cards that enter the battlefield. All units can block by tapping. Only
 - All damage happens simultaneously, then destroyed units are determined
 - **Leader vs Blockers**: Leader deals damage equal to its Power to all blockers; blockers deal damage to Leader equal to (blocker's Power minus Leader's Resistance), but only when blocker's Power exceeds Leader's Resistance
 - **Troop vs Blockers**: Compare Power vs Toughness
-- Excess damage: When Power is greater than Toughness (for Troops) or Resistance (for Leaders)
+- Excess damage: When Power is greater than Toughness (for Troops), excess damage does not apply to Leaders (player takes no damage from combat with Leaders)
 - When a Leader attacks but is blocked, combat functions the same as if Troops joined
 
 ---
