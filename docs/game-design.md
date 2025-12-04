@@ -184,8 +184,8 @@ There are three action speeds in the game:
 
 | Speed | Description | Can Respond To | Examples |
 |-------|-------------|----------------|----------|
-| **Normal Speed** | Actions that can only be played during your main phase when the chain is empty | N/A - Cannot be used as responses | Playing spells, attacking, activating abilities without the chain icon |
-| **Reaction Speed** | Actions that can respond to normal speed actions and other reactions | Normal speed actions, other reactions (if card allows) | Reaction cards, abilities with the chain icon |
+| **Normal Speed** | Actions that can only be played during your main phase when the chain is empty | N/A - Cannot be used as responses | Playing spells, attacking, most activated abilities |
+| **Reaction Speed** | Actions that can respond to normal speed actions and other reactions | Normal speed actions, other reactions (if card allows) | Reaction cards, abilities marked as reactions |
 | **Fast Speed** *(Not MVP)* | Actions that can respond to reactions | Reactions, other fast speed cards | Reserved for future expansion |
 
 ### Chain Building
@@ -220,19 +220,15 @@ flowchart TD
     end
 
     subgraph Build["**Chain Building Phase**"]
-        C --> D{Opponent has<br/>reaction?}
+        C --> D{Player wants to<br/>add reaction?}
         D -->|Yes| E[Play reaction]
         E --> F[Reaction added to chain]
-        F --> G[Priority passes]
-        G --> H{Other player<br/>has reaction?}
-        H -->|Yes| E
-        H -->|No| I{Pass priority?}
-        D -->|No| J{Pass priority?}
-        I -->|No, play reaction| E
-        I -->|Yes| K{Both players<br/>passed?}
-        J -->|Yes| K
-        K -->|No| G
-        K -->|Yes| L[Chain is locked]
+        F --> G[Priority passes to<br/>other player]
+        G --> D
+        D -->|No, pass| H[Player passes priority]
+        H --> I{Did both players<br/>pass consecutively?}
+        I -->|No| G
+        I -->|Yes| L[Chain is locked<br/>No more reactions allowed]
     end
 
     subgraph Resolve["**Chain Resolution Phase** *(LIFO)*"]
