@@ -20,30 +20,45 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Unit Cards
 
-- [ ] What stats do unit cards have? (Attack/Defense/Health?)
-- [ ] How do we represent the pitch value (1/2/3) on cards?
+- [x] What stats do unit cards have? (Attack/Defense/Health?)
+  - **Troops**: Power / Toughness (when Toughness reaches zero, unit is destroyed)
+  - **Leaders**: Power / Resistance / Health (takes damage equal to attacker's Power - Resistance, reduces health. When health reaches zero, unit is destroyed)
+- [x] How do we represent the pitch value (1/2/3) on cards?
+  - Pitch value is printed on the front of the card
 - [ ] What is the distribution of pitch values across card types?
-- [ ] Do all cards have a pitch value, or only certain types?
+- [x] Do all cards have a pitch value, or only certain types?
+  - All cards have a pitch value, but some special cards may have a value of 0
 
 ### Leaders
 
 - [ ] What are the base stats for Leader cards?
-- [ ] How many different Troop types will exist? (e.g., Zombie, Soldier, etc.)
-- [ ] What is the maximum number of Troops a Leader can lead? (The example shows 5)
-- [ ] Can Leaders have abilities beyond their leadership keyword?
+  - TBD: Need to experiment with playtesting
+- [x] How many different Troop types will exist? (e.g., Zombie, Soldier, etc.)
+  - Card design is out of scope; cards can be added at any time
+- [x] What is the maximum number of Troops a Leader can lead? (The example shows 5)
+  - No maximum
+- [x] Can Leaders have abilities beyond their leadership keyword?
+  - Yes, triggered abilities and activated abilities with costs, noted as: `{cost}: {effect}`
 
 ### Troops
 
 - [ ] What are the base stats for Troop cards?
-- [ ] Can Troops exist on the battlefield without a Leader?
-- [ ] How are Troops summoned? (Same as other cards?)
-- [ ] Do Troops tap when attacking or blocking?
+  - TBD: Need to experiment with playtesting
+- [x] Can Troops exist on the battlefield without a Leader?
+  - Yes, because they can have effects or block
+- [x] How are Troops summoned? (Same as other cards?)
+  - Same as other cards, or created by other effects
+- [x] Do Troops tap when attacking or blocking?
+  - Yes
 
 ### Other Card Types
 
-- [ ] Will there be spell/instant cards?
-- [ ] Will there be equipment/attachment cards?
-- [ ] Will there be enchantment/continuous effect cards?
+- [x] Will there be spell/instant cards?
+  - Yes, Spells and Reactions. Reactions are like instants, but more scoped when they can be used
+- [x] Will there be equipment/attachment cards?
+  - Later, not in MVP
+- [x] Will there be enchantment/continuous effect cards?
+  - Later, not in MVP
 
 ---
 
@@ -51,23 +66,34 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Attacking
 
-- [ ] What happens if a Leader attacks but no Troops join?
-- [ ] Can a Leader attack without any Troops?
-- [ ] If a Leader is blocked, what determines combat resolution?
-- [ ] How is damage calculated between Leader vs Leader combat?
+- [x] What happens if a Leader attacks but no Troops join?
+  - It can be blocked directly, but combat functions the same
+- [x] Can a Leader attack without any Troops?
+  - Yes
+- [x] If a Leader is blocked, what determines combat resolution?
+  - Leader deals damage equal to its Power to all blockers (no assigning damage individually). Blockers deal damage to Leader equal to (blocker's Power - Leader's Resistance), only if Power > Resistance
+- [x] How is damage calculated between Leader vs Leader combat?
+  - Same as above. The Resistance value is not reduced when multiple units block a Leader
 
 ### Blocking
 
-- [ ] Can Troops block without a Leader?
-- [ ] How many Troops can block a single attacking Troop?
+- [x] Can Troops block without a Leader?
+  - Yes
+- [x] How many Troops can block a single attacking Troop?
+  - As many as you want, but Leaders can have abilities to limit the number of blockers
 - [ ] If multiple Leaders block, how is damage distributed?
-- [ ] Can you choose not to block?
+  - TBD
+- [x] Can you choose not to block?
+  - Yes
 
 ### Damage Resolution
 
-- [ ] How exactly is excess damage calculated and assigned?
-- [ ] What happens when a Leader takes lethal damage during their attack?
-- [ ] Does the attacking player or blocking player assign damage?
+- [x] How exactly is excess damage calculated and assigned?
+  - When Power is greater than Toughness or Resistance, there is excess damage
+- [x] What happens when a Leader takes lethal damage during their attack?
+  - All damage happens at the same time, then there is a check for what units are destroyed
+- [x] Does the attacking player or blocking player assign damage?
+  - There is no assigning damage (Leaders deal damage to all blockers equally)
 
 ---
 
@@ -75,23 +101,34 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Pitching
 
-- [ ] When can you pitch cards? (Only during your turn, or anytime?)
-- [ ] Is there a limit to how many cards you can pitch per turn?
-- [ ] Can you pitch cards in response to opponent actions?
-- [ ] What happens if you pitch a card but don't use all the mana? (Specified: returns to hand, deals 1 damage)
+- [x] When can you pitch cards? (Only during your turn, or anytime?)
+  - Anytime you have priority
+- [x] Is there a limit to how many cards you can pitch per turn?
+  - No
+- [x] Can you pitch cards in response to opponent actions?
+  - Yes
+- [x] What happens if you pitch a card but don't use all the mana? (Specified: returns to hand, deals 1 damage)
+  - If partially used, the card is discarded at the beginning of your turn. If no mana was used, it returns to hand and deals 1 damage (also at the beginning of your turn)
 
 ### Resource Cards
 
-- [ ] What types of resources exist? (Subjects/Materials/Influence mentioned)
+- [x] What types of resources exist? (Subjects/Materials/Influence mentioned)
+  - Subjects, Materials, Influence
 - [ ] What is the cost range for cards? (How much mana do cards typically cost?)
-- [ ] How do sacrifice costs work? (Tap? Discard? Destroy?)
-- [ ] Can resource cards be pitched for mana as well?
+  - TBD
+- [x] How do sacrifice costs work? (Tap? Discard? Destroy?)
+  - Specified on each card. Could be tap and sacrifice, or just sacrifice
+- [x] Can resource cards be pitched for mana as well?
+  - No
 
 ### Mana Pool
 
-- [ ] Does unused mana empty at end of turn or end of phase?
-- [ ] Is there a mana pool limit?
-- [ ] Can mana be stored between turns?
+- [x] Does unused mana empty at end of turn or end of phase?
+  - No
+- [x] Is there a mana pool limit?
+  - No
+- [x] Can mana be stored between turns?
+  - Yes, you can pitch a card and use the mana later
 
 ---
 
@@ -99,17 +136,28 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Market Mechanics
 
-- [ ] How does "first in, first out" refresh work exactly?
-- [ ] When exactly does the market refresh? (After all players take a turn?)
-- [ ] What happens if the resource card deck runs out?
-- [ ] Can you view cards in the resource deck?
+- [x] How does "first in, first out" refresh work exactly?
+  - At the start of the game, 5 cards are revealed. At the start of each subsequent round:
+    1. Remove the oldest card (first revealed)
+    2. Shift remaining cards to fill the gap
+    3. Add a new card from the resource deck
+- [x] When exactly does the market refresh? (After all players take a turn?)
+  - At the start of each round (after all players have taken a turn)
+- [x] What happens if the resource card deck runs out?
+  - It doesn't. Resource cards (and traded cards) are shuffled back into the resource deck
+- [x] Can you view cards in the resource deck?
+  - No
 
 ### Trading
 
-- [ ] Is there a cost to swap cards with the marketplace?
-- [ ] Can you swap any card type, or only certain types?
-- [ ] What does "including cards from opponents" mean? (Cards they've traded in?)
-- [ ] Is there a limit to how many swaps per turn?
+- [x] Is there a cost to swap cards with the marketplace?
+  - No, just a once per turn restriction
+- [x] Can you swap any card type, or only certain types?
+  - Any
+- [x] What does "including cards from opponents" mean? (Cards they've traded in?)
+  - Yes, cards traded in by opponents are available in the marketplace
+- [x] Is there a limit to how many swaps per turn?
+  - Yes, once per turn
 
 ---
 
@@ -117,24 +165,36 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Starting Resources
 
-- [ ] Do players start with any cards on the battlefield?
-- [ ] Is there a mulligan system?
-- [ ] Do players draw 7 cards on the first turn?
-- [ ] Does the second player get any compensation for going second?
+- [x] Do players start with any cards on the battlefield?
+  - No
+- [x] Is there a mulligan system?
+  - Not in the MVP
+- [x] Do players draw 7 cards on the first turn?
+  - Yes
+- [x] Does the second player get any compensation for going second?
+  - Not in the MVP
 
 ### Card Economy
 
 - [ ] What is the composition of the pre-constructed 20 card decks? (How many Leaders, Troops, other cards?)
+  - TBD
 - [ ] What is the ratio of Leaders to Troops to other cards?
+  - TBD
 - [ ] How fast should games end? (What's the target game length?)
+  - TBD
 - [ ] At what point does deck depletion become a real concern?
+  - TBD
 
 ### Damage and Health
 
 - [ ] What is the typical damage output per turn?
+  - TBD
 - [ ] How much healing should be available in the game?
+  - TBD
 - [ ] Is 20 starting health the right amount?
-- [ ] Should there be a maximum health?
+  - TBD
+- [x] Should there be a maximum health?
+  - No
 
 ---
 
@@ -142,15 +202,21 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Victory
 
-- [ ] Primary win: Reduce opponent to 0 health?
-- [ ] Are there alternative win conditions?
-- [ ] What happens if both players would lose simultaneously?
+- [x] Primary win: Reduce opponent to 0 health?
+  - Yes
+- [x] Are there alternative win conditions?
+  - Yes, but not in MVP
+- [x] What happens if both players would lose simultaneously?
+  - Draw
 
 ### Loss Conditions
 
-- [ ] Deck depletion is a loss - is this the only deck-related loss?
-- [ ] Can you concede?
-- [ ] Are there any draw conditions?
+- [x] Deck depletion is a loss - is this the only deck-related loss?
+  - Yes, for the MVP
+- [x] Can you concede?
+  - Yes, but not in MVP
+- [x] Are there any draw conditions?
+  - No, except both players losing at the same time
 
 ---
 
@@ -158,22 +224,32 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Turn Order
 
-- [ ] How is first player determined?
-- [ ] Does first player skip their draw phase?
-- [ ] Is there priority/response windows during opponent's turn?
+- [x] How is first player determined?
+  - Random
+- [x] Does first player skip their draw phase?
+  - Not relevant; there is no draw extra card. All players start at 7
+- [x] Is there priority/response windows during opponent's turn?
+  - Yes
 
 ### Timing and Priority
 
-- [ ] When can reactions be played?
-- [ ] Is there a stack for resolving multiple effects?
-- [ ] Can you respond to marketplace actions?
-- [ ] Can you pitch cards during opponent's turn to pay for reactions?
+- [x] When can reactions be played?
+  - When a relevant action is played/activated and you get priority
+- [x] Is there a stack for resolving multiple effects?
+  - Yes, based on MTG stack. May need to simplify more
+- [x] Can you respond to marketplace actions?
+  - If a reaction card/ability allows it, yes
+- [x] Can you pitch cards during opponent's turn to pay for reactions?
+  - Yes
 
 ### Phases
 
-- [ ] Are there distinct phases (draw, main, combat, end)?
-- [ ] Can you play cards after attacking?
-- [ ] When exactly does Troop damage reset?
+- [x] Are there distinct phases (draw, main, combat, end)?
+  - Yes: Start (untap, handle pitched cards, draw to 7), Main (play cards, abilities, attack, trade), End (discard to 7, troop damage resets)
+- [x] Can you play cards after attacking?
+  - Yes, during the main phase
+- [x] When exactly does Troop damage reset?
+  - At end of turn (during End phase)
 
 ---
 
@@ -195,12 +271,22 @@ This document outlines the open questions that need to be answered to create a M
 
 ---
 
+## Summary
+
+Many core design questions have been answered. The remaining open questions are primarily:
+
+1. **Balance questions** (base stats, damage output, health values, deck composition) - require playtesting
+2. **Implementation questions** (UI/UX, MVP scope) - for digital version development
+3. **Pitch value distribution** - card design specific
+
+---
+
 ## Next Steps
 
-1. Prioritize which questions need answers for a playable prototype
+1. ~~Prioritize which questions need answers for a playable prototype~~ (Done - core mechanics are defined)
 2. Create paper prototype to test core mechanics
-3. Define minimum card set for initial playtesting
-4. Document answers as they are determined
+3. Determine base stats through playtesting
+4. Define minimum card set for initial playtesting
 
 ---
 
