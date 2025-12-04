@@ -21,8 +21,8 @@ This document outlines the open questions that need to be answered to create a M
 ### Unit Cards
 
 - [x] What stats do unit cards have? (Attack/Defense/Health?)
-  - **Troops**: Power / Toughness (when Toughness hits zero, unit is destroyed)
-  - **Leaders**: Power / Resistance / Health (takes damage equal to attacker's Power - Resistance, reduces health. When health hits zero, unit is destroyed)
+  - **Troops**: Power / Toughness (when Toughness reaches zero, unit is destroyed)
+  - **Leaders**: Power / Resistance / Health (takes damage equal to attacker's Power - Resistance, reduces health. When health reaches zero, unit is destroyed)
 - [x] How do we represent the pitch value (1/2/3) on cards?
   - Pitch value is printed on the front of the card
 - [ ] What is the distribution of pitch values across card types?
