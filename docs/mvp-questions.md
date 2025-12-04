@@ -2,6 +2,8 @@
 
 This document outlines the open questions that need to be answered to create a Minimum Viable Product (MVP) for Lords of Estraven.
 
+> **Note**: Items marked with [x] have been addressed in `game-design.md`.
+
 ---
 
 ## Table of Contents
@@ -20,24 +22,24 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Unit Cards
 
-- [ ] What stats do unit cards have? (Attack/Defense/Health?)
+- [x] What stats do unit cards have? (Attack/Defense/Health?) → **Attack and Health**
 - [ ] How do we represent the pitch value (1/2/3) on cards?
 - [ ] What is the distribution of pitch values across card types?
-- [ ] Do all cards have a pitch value, or only certain types?
+- [x] Do all cards have a pitch value, or only certain types? → **All cards have a pitch value**
 
 ### Leaders
 
 - [ ] What are the base stats for Leader cards?
 - [ ] How many different Troop types will exist? (e.g., Zombie, Soldier, etc.)
-- [ ] What is the maximum number of Troops a Leader can lead? (The example shows 5)
+- [x] What is the maximum number of Troops a Leader can lead? → **Defined by the (X) in the keyword**
 - [ ] Can Leaders have abilities beyond their leadership keyword?
 
 ### Troops
 
 - [ ] What are the base stats for Troop cards?
-- [ ] Can Troops exist on the battlefield without a Leader?
+- [x] Can Troops exist on the battlefield without a Leader? → **Yes**
 - [ ] How are Troops summoned? (Same as other cards?)
-- [ ] Do Troops tap when attacking or blocking?
+- [x] Do Troops tap when attacking or blocking? → **Yes**
 
 ### Other Card Types
 
@@ -51,22 +53,22 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Attacking
 
-- [ ] What happens if a Leader attacks but no Troops join?
-- [ ] Can a Leader attack without any Troops?
+- [x] What happens if a Leader attacks but no Troops join? → **Leader attacks alone**
+- [x] Can a Leader attack without any Troops? → **Yes**
 - [ ] If a Leader is blocked, what determines combat resolution?
 - [ ] How is damage calculated between Leader vs Leader combat?
 
 ### Blocking
 
-- [ ] Can Troops block without a Leader?
+- [x] Can Troops block without a Leader? → **Yes**
 - [ ] How many Troops can block a single attacking Troop?
 - [ ] If multiple Leaders block, how is damage distributed?
-- [ ] Can you choose not to block?
+- [x] Can you choose not to block? → **Yes, blocking is optional**
 
 ### Damage Resolution
 
-- [ ] How exactly is excess damage calculated and assigned?
-- [ ] What happens when a Leader takes lethal damage during their attack?
+- [x] How exactly is excess damage calculated and assigned? → **Excess damage beyond Troop's Health spills to attacking Leader**
+- [x] What happens when a Leader takes lethal damage during their attack? → **Destroyed after combat resolves**
 - [ ] Does the attacking player or blocking player assign damage?
 
 ---
@@ -75,23 +77,23 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Pitching
 
-- [ ] When can you pitch cards? (Only during your turn, or anytime?)
-- [ ] Is there a limit to how many cards you can pitch per turn?
-- [ ] Can you pitch cards in response to opponent actions?
-- [ ] What happens if you pitch a card but don't use all the mana? (Specified: returns to hand, deals 1 damage)
+- [x] When can you pitch cards? (Only during your turn, or anytime?) → **Instant speed, anytime**
+- [x] Is there a limit to how many cards you can pitch per turn? → **No limit**
+- [x] Can you pitch cards in response to opponent actions? → **Yes**
+- [x] What happens if you pitch a card but don't use all the mana? → **Returns to hand, deals 1 damage per card**
 
 ### Resource Cards
 
-- [ ] What types of resources exist? (Subjects/Materials/Influence mentioned)
+- [x] What types of resources exist? → **Subjects, Materials, Influence**
 - [ ] What is the cost range for cards? (How much mana do cards typically cost?)
-- [ ] How do sacrifice costs work? (Tap? Discard? Destroy?)
+- [x] How do sacrifice costs work? → **Destroy from battlefield**
 - [ ] Can resource cards be pitched for mana as well?
 
 ### Mana Pool
 
-- [ ] Does unused mana empty at end of turn or end of phase?
+- [x] Does unused mana empty at end of turn or end of phase? → **End of phase**
 - [ ] Is there a mana pool limit?
-- [ ] Can mana be stored between turns?
+- [x] Can mana be stored between turns? → **No**
 
 ---
 
@@ -99,17 +101,17 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Market Mechanics
 
-- [ ] How does "first in, first out" refresh work exactly?
-- [ ] When exactly does the market refresh? (After all players take a turn?)
-- [ ] What happens if the resource card deck runs out?
+- [x] How does "first in, first out" refresh work exactly? → **Oldest card is discarded, new card revealed**
+- [x] When exactly does the market refresh? → **End of each round (after all players take a turn)**
+- [x] What happens if the resource card deck runs out? → **No new cards revealed, remaining face-up cards stay**
 - [ ] Can you view cards in the resource deck?
 
 ### Trading
 
-- [ ] Is there a cost to swap cards with the marketplace?
+- [x] Is there a cost to swap cards with the marketplace? → **No cost**
 - [ ] Can you swap any card type, or only certain types?
 - [ ] What does "including cards from opponents" mean? (Cards they've traded in?)
-- [ ] Is there a limit to how many swaps per turn?
+- [x] Is there a limit to how many swaps per turn? → **One per turn (your turn only)**
 
 ---
 
@@ -119,7 +121,7 @@ This document outlines the open questions that need to be answered to create a M
 
 - [ ] Do players start with any cards on the battlefield?
 - [ ] Is there a mulligan system?
-- [ ] Do players draw 7 cards on the first turn?
+- [x] Do players draw 7 cards on the first turn? → **Yes, both players draw 7; first player skips draw on turn 1**
 - [ ] Does the second player get any compensation for going second?
 
 ### Card Economy
@@ -142,15 +144,15 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Victory
 
-- [ ] Primary win: Reduce opponent to 0 health?
-- [ ] Are there alternative win conditions?
-- [ ] What happens if both players would lose simultaneously?
+- [x] Primary win: Reduce opponent to 0 health? → **Yes**
+- [x] Are there alternative win conditions? → **Opponent cannot draw (deck depletion)**
+- [x] What happens if both players would lose simultaneously? → **Draw**
 
 ### Loss Conditions
 
-- [ ] Deck depletion is a loss - is this the only deck-related loss?
+- [x] Deck depletion is a loss - is this the only deck-related loss? → **Yes**
 - [ ] Can you concede?
-- [ ] Are there any draw conditions?
+- [x] Are there any draw conditions? → **Yes, simultaneous loss**
 
 ---
 
@@ -158,22 +160,22 @@ This document outlines the open questions that need to be answered to create a M
 
 ### Turn Order
 
-- [ ] How is first player determined?
-- [ ] Does first player skip their draw phase?
-- [ ] Is there priority/response windows during opponent's turn?
+- [x] How is first player determined? → **Random**
+- [x] Does first player skip their draw phase? → **Yes, skip draw on turn 1**
+- [x] Is there priority/response windows during opponent's turn? → **Yes (reactions, pitching)**
 
 ### Timing and Priority
 
-- [ ] When can reactions be played?
+- [x] When can reactions be played? → **After attackers are declared (blocking)**
 - [ ] Is there a stack for resolving multiple effects?
 - [ ] Can you respond to marketplace actions?
-- [ ] Can you pitch cards during opponent's turn to pay for reactions?
+- [x] Can you pitch cards during opponent's turn to pay for reactions? → **Yes**
 
 ### Phases
 
-- [ ] Are there distinct phases (draw, main, combat, end)?
+- [x] Are there distinct phases (draw, main, combat, end)? → **Start (untap + draw), Main, End**
 - [ ] Can you play cards after attacking?
-- [ ] When exactly does Troop damage reset?
+- [x] When exactly does Troop damage reset? → **End of each turn, during End phase**
 
 ---
 
