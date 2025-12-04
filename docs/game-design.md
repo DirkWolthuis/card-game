@@ -122,46 +122,42 @@ flowchart TD
         O --> P[Assign blockers to attackers<br/>*multiple blockers can<br/>gang up on one attacker*]
     end
 
-    subgraph Damage["**Damage Resolution** *(Simultaneous)*"]
+    subgraph Damage["**Damage Resolution** *(All damage is simultaneous)*"]
         L --> Q[Unblocked Damage]
         N --> Q
         P --> R[Blocked Combat]
         
         Q --> S{Target type?}
         S -->|Player| T[Deal damage to<br/>opponent's health]
-        S -->|Leader| U[Calculate Leader damage]
+        S -->|Leader| U[Calculate Leader damage:<br/>Attacker Power - Leader Resistance<br/>*only if Power > Resistance*]
         
         R --> V{Attacker type?}
-        V -->|Leader| W[Leader vs Blockers]
-        V -->|Troop| X[Troop vs Blockers]
+        V -->|Leader| W["Leader vs Blockers<br/>*(simultaneous exchange)*"]
+        V -->|Troop| X["Troop vs Blockers<br/>*(simultaneous exchange)*"]
         
-        W --> W1[Leader deals Power<br/>to ALL blockers]
-        W --> W2[Each blocker deals<br/>Power - Resistance<br/>*only if Power > Resistance*]
+        W --> W1["① Leader deals Power to ALL blockers<br/>② Each blocker deals Power - Resistance<br/>&nbsp;&nbsp;&nbsp;to Leader *(only if Power > Resistance)*"]
         
-        X --> X1[Compare Power vs Toughness]
-        X --> X2[Blockers deal Power<br/>to Troop's Toughness]
-        
-        U --> U1[Attacker Power - Target Resistance<br/>*only if Power > Resistance*]
+        X --> X1["① Troop deals Power to blockers<br/>② Blockers deal Power to Troop's Toughness"]
     end
 
-    subgraph Cleanup["**Destruction Check**"]
+    subgraph Cleanup["**Destruction Check** *(after all damage applied)*"]
         T --> Y[Check for victory]
-        U1 --> AA{Leader Health = 0?}
-        W1 --> BB{Blocker Toughness = 0?}
-        W2 --> CC{Leader Health = 0?}
-        X1 --> DD{Blocker Toughness = 0?}
-        X2 --> EE{Troop Toughness = 0?}
+        U --> AA{Leader Health = 0?}
+        W1 --> BB{Check all units}
+        X1 --> BB
         
         AA -->|Yes| FF[Enemy Leader destroyed]
         AA -->|No| GG[Enemy Leader survives]
-        BB -->|Yes| HH[Blocker destroyed]
-        BB -->|No| II[Blocker survives<br/>*damage resets at end of turn*]
-        CC -->|Yes| JJ[Attacking Leader destroyed]
-        CC -->|No| KK[Leader survives]
-        DD -->|Yes| HH
-        DD -->|No| II
-        EE -->|Yes| LL[Attacking Troop destroyed]
-        EE -->|No| MM[Troop survives<br/>*damage resets at end of turn*]
+        
+        BB --> CC{Blocker<br/>Toughness = 0?}
+        BB --> DD{Attacker<br/>Health/Toughness = 0?}
+        
+        CC -->|Yes| HH[Blocker destroyed]
+        CC -->|No| II[Blocker survives<br/>*damage resets at end of turn*]
+        
+        DD -->|Yes, Leader| JJ[Attacking Leader destroyed]
+        DD -->|Yes, Troop| LL[Attacking Troop destroyed]
+        DD -->|No| KK[Attacker survives<br/>*Troop damage resets at end of turn*]
     end
 
     Y --> END[Combat End]
@@ -172,7 +168,6 @@ flowchart TD
     JJ --> END
     KK --> END
     LL --> END
-    MM --> END
 ```
 
 ---
