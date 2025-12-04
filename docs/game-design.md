@@ -94,6 +94,87 @@ Units are cards that enter the battlefield. All units can block by tapping. Only
 - Excess damage: When Power is greater than Toughness (for Troops), excess damage does not apply to Leaders (player takes no damage from combat with Leaders)
 - When a Leader attacks but is blocked, combat functions the same as if Troops joined
 
+### Combat Flow Chart
+
+```mermaid
+flowchart TD
+    subgraph Attack["**Attack Phase**"]
+        A[Start Combat] --> B{Have untapped<br/>Leader?}
+        B -->|No| Z[Cannot Attack]
+        B -->|Yes| C[Declare Leader as Attacker<br/>*tap Leader*]
+        C --> D{Choose Target}
+        D -->|Player| E[Target: Opponent's Health]
+        D -->|Leader| F[Target: Enemy Leader]
+        E --> G{Troops available<br/>matching Leader type?}
+        F --> G
+        G -->|Yes| H[Declare joining Troops<br/>*tap each Troop*]
+        G -->|No| I[Leader attacks alone]
+        H --> J[Attack Declared]
+        I --> J
+    end
+
+    subgraph Block["**Block Phase** *(Reaction)*"]
+        J --> K{Defender has<br/>untapped units?}
+        K -->|No| L[No blockers available]
+        K -->|Yes| M{Defender chooses<br/>to block?}
+        M -->|No| N[No blocks declared]
+        M -->|Yes| O[Declare blockers<br/>*tap blocking units*]
+        O --> P[Assign blockers to attackers<br/>*multiple blockers can<br/>gang up on one attacker*]
+    end
+
+    subgraph Damage["**Damage Resolution** *(Simultaneous)*"]
+        L --> Q[Unblocked Damage]
+        N --> Q
+        P --> R[Blocked Combat]
+        
+        Q --> S{Target type?}
+        S -->|Player| T[Deal damage to<br/>opponent's health]
+        S -->|Leader| U[Calculate Leader damage]
+        
+        R --> V{Attacker type?}
+        V -->|Leader| W[Leader vs Blockers]
+        V -->|Troop| X[Troop vs Blockers]
+        
+        W --> W1[Leader deals Power<br/>to ALL blockers]
+        W --> W2[Each blocker deals<br/>Power - Resistance<br/>*only if Power > Resistance*]
+        
+        X --> X1[Compare Power vs Toughness]
+        X --> X2[Blockers deal Power<br/>to Troop's Toughness]
+        
+        U --> U1[Attacker Power - Target Resistance<br/>*only if Power > Resistance*]
+    end
+
+    subgraph Cleanup["**Destruction Check**"]
+        T --> Y[Check for victory]
+        U1 --> AA{Leader Health = 0?}
+        W1 --> BB{Blocker Toughness = 0?}
+        W2 --> CC{Leader Health = 0?}
+        X1 --> DD{Blocker Toughness = 0?}
+        X2 --> EE{Troop Toughness = 0?}
+        
+        AA -->|Yes| FF[Enemy Leader destroyed]
+        AA -->|No| GG[Enemy Leader survives]
+        BB -->|Yes| HH[Blocker destroyed]
+        BB -->|No| II[Blocker survives<br/>*damage resets at end of turn*]
+        CC -->|Yes| JJ[Attacking Leader destroyed]
+        CC -->|No| KK[Leader survives]
+        DD -->|Yes| HH
+        DD -->|No| II
+        EE -->|Yes| LL[Attacking Troop destroyed]
+        EE -->|No| MM[Troop survives<br/>*damage resets at end of turn*]
+    end
+
+    Y --> END[Combat End]
+    FF --> END
+    GG --> END
+    HH --> END
+    II --> END
+    JJ --> END
+    KK --> END
+    LL --> END
+    MM --> END
+```
+
 ---
 
 ## Priority and the Stack
