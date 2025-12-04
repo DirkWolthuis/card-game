@@ -62,8 +62,10 @@ Units are cards that enter the battlefield. All units can block by tapping. Only
 
 ### Reactions
 
-- Similar to instants but with scoped conditions for when they can be used
-- Can be played when a relevant action is played/activated and you have priority
+- Reaction speed cards that can be played in response to actions
+- Can only be played when you have priority and a triggerable event occurs
+- Each reaction card specifies what events it can respond to
+- When played, reactions are added to the chain and resolve in LIFO order
 - Played during either player's turn when conditions are met
 
 ---
@@ -172,12 +174,82 @@ flowchart TD
 
 ---
 
-## Priority and the Stack
+## Priority and the Chain
 
-- Players can respond to actions when they have priority
-- Multiple effects resolve using a stack system (based on MTG rules)
-- Priority passes between players during key moments
+The chain mechanism determines how players can respond to actions and how effects resolve. This system is inspired by Yu-Gi-Oh!'s chain mechanism.
+
+### Action Speeds
+
+There are three action speeds in the game:
+
+| Speed | Description | Can Respond To | Examples |
+|-------|-------------|----------------|----------|
+| **Normal Speed** | Actions that can only be played during your main phase when the chain is empty | N/A - Cannot be used as responses | Playing spells, attacking, activating abilities without the chain icon |
+| **Reaction Speed** | Actions that can respond to normal speed actions and other reactions | Normal speed actions, other reactions (if card allows) | Reaction cards, abilities with the chain icon |
+| **Fast Speed** *(Not MVP)* | Actions that can respond to reactions | Reactions, other fast speed cards | Reserved for future expansion |
+
+### Chain Building
+
+1. **Trigger**: A player performs a normal speed action (e.g., plays a spell, declares an attack)
+2. **Priority Pass**: After each action, priority passes to the opponent
+3. **Response Window**: The player with priority may respond with a reaction speed card/ability
+4. **Chain Growth**: If a reaction is played, priority passes again, allowing another response
+5. **Chain Lock**: When both players pass consecutively without adding to the chain, no more reactions can be added
+
+### Chain Resolution
+
+- The chain resolves in **LIFO (Last In, First Out)** order
+- Once the chain starts resolving, players cannot add new reactions
+- Each effect resolves completely before the next effect resolves
+- After the entire chain resolves, play continues normally
+
+### Priority Rules
+
+- The active player (whose turn it is) always receives priority first
+- Priority passes to the opponent after each action or effect
 - You can pitch cards during opponent's turn to pay for reactions
+- A player may pass priority without taking an action
+
+### Chain Flowchart
+
+```mermaid
+flowchart TD
+    subgraph Trigger["**Chain Trigger**"]
+        A[Player performs action] --> B[Action goes on the chain]
+        B --> C[Priority passes to opponent]
+    end
+
+    subgraph Build["**Chain Building Phase**"]
+        C --> D{Opponent has<br/>reaction?}
+        D -->|Yes| E[Play reaction]
+        E --> F[Reaction added to chain]
+        F --> G[Priority passes]
+        G --> H{Other player<br/>has reaction?}
+        H -->|Yes| E
+        H -->|No| I{Pass priority?}
+        D -->|No| J{Pass priority?}
+        I -->|No, play reaction| E
+        I -->|Yes| K{Both players<br/>passed?}
+        J -->|Yes| K
+        K -->|No| G
+        K -->|Yes| L[Chain is locked]
+    end
+
+    subgraph Resolve["**Chain Resolution Phase** *(LIFO)*"]
+        L --> M[Resolve top effect]
+        M --> N{More effects<br/>on chain?}
+        N -->|Yes| M
+        N -->|No| O[Chain complete]
+    end
+
+    subgraph Continue["**Continue Play**"]
+        O --> P{Active player's<br/>turn?}
+        P -->|Yes| Q[Active player may<br/>take another action]
+        P -->|No| R[Priority returns<br/>to active player]
+        Q --> S[Return to normal play]
+        R --> S
+    end
+```
 
 ---
 
@@ -188,7 +260,7 @@ flowchart TD
 - Any card can be pitched for its pitch value (1, 2, or 3 mana)
 - **Pitch value is printed on the front of the card**
 - All cards have a pitch value, though some special cards may have a value of 0
-- Pitching is **instant speed** — can be done anytime you have priority
+- Pitching is **reaction speed** — can be done anytime you have priority
 - No limit to how many cards you can pitch per turn
 - Can pitch cards in response to opponent actions
 - **At the beginning of your turn**:
@@ -248,6 +320,7 @@ flowchart TD
 
 The following features are planned but not included in the MVP:
 
+- Fast speed cards and abilities
 - Equipment/attachment cards
 - Enchantment/continuous effect cards
 - Alternative win conditions
@@ -264,21 +337,25 @@ The following features are planned but not included in the MVP:
 | **Activated ability** | An ability with a cost that can be activated by paying that cost, noted as `{cost}: {effect}` |
 | **Battlefield** | The play area where units exist after being played from hand |
 | **Block** | A reaction where a unit intercepts an attacking unit to prevent damage |
+| **Chain** | A sequence of actions and reactions that resolve in LIFO order; once locked, no more effects can be added |
+| **Chain lock** | The state when both players have passed priority consecutively, sealing the chain for resolution |
 | **Deck** | A player's draw pile; running out means you lose |
+| **Fast speed** | *(Not MVP)* Action speed that can respond to reactions; reserved for future expansion |
 | **FIFO** | First In, First Out — oldest items are removed first |
 | **Graveyard** | Discard pile where used or destroyed cards go |
 | **Health** | A player's or Leader's life total; reaching 0 means defeat/destruction |
-| **Instant speed** | An action that can be performed at any time, even during opponent's turn |
+| **LIFO** | Last In, First Out — newest items are resolved first; used for chain resolution |
 | **Mana** | Resource used to pay for cards and abilities; generated by pitching |
+| **Normal speed** | Actions that can only be played during your main phase when the chain is empty (e.g., spells, attacking) |
 | **Pitch** | Playing a card to generate mana equal to its pitch value (1–3) |
 | **Pitch value** | The mana a card produces when pitched (printed on the front as 1, 2, or 3) |
 | **Power** | A unit's offensive strength; determines damage dealt in combat |
-| **Priority** | The right to take an action or respond; passes between players |
-| **Reaction** | A scoped instant-speed action that can be played when specific conditions are met |
+| **Priority** | The right to take an action or respond; passes between players after each action |
+| **Reaction** | An action that can respond to normal speed actions or other reactions when you have priority |
+| **Reaction speed** | Action speed that can respond to normal speed actions and other reactions |
 | **Resistance** | A Leader's defensive stat; reduces incoming damage (only takes damage when attacker's Power > Resistance) |
 | **Round** | A complete cycle where all players have taken one turn |
 | **Spell** | A one-time effect card that goes to graveyard after resolving |
-| **Stack** | A system for resolving multiple effects in order (last in, first out) |
 | **Tap** | Turning a card sideways to indicate it has been used this turn |
 | **Toughness** | A Troop's defensive stat; when reduced to 0, the Troop is destroyed |
 | **Triggered ability** | An ability that automatically triggers when a specific condition is met |
