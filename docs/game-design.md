@@ -135,25 +135,25 @@ flowchart TD
         V -->|Leader| W["Leader vs Blockers<br/>*(simultaneous exchange)*"]
         V -->|Troop| X["Troop vs Blockers<br/>*(simultaneous exchange)*"]
         
-        W --> W1["① Leader deals Power to ALL blockers<br/>② Each blocker deals Power - Resistance<br/>&nbsp;&nbsp;&nbsp;to Leader *(only if Power > Resistance)*"]
+        W --> W1["1. Leader deals Power to ALL blockers<br/>2. Each blocker deals Power - Resistance<br/>to Leader *only if Power > Resistance*"]
         
-        X --> X1["① Troop deals Power to blockers<br/>② Blockers deal Power to Troop's Toughness"]
+        X --> X1["1. Troop deals Power to blockers<br/>2. Blockers deal Power to Troop Toughness"]
     end
 
     subgraph Cleanup["**Destruction Check** *(after all damage applied)*"]
         T --> Y[Check for victory]
         U --> AA{Leader Health = 0?}
-        W1 --> BB{Check all units}
+        W1 --> BB[Evaluate all combatants]
         X1 --> BB
         
         AA -->|Yes| FF[Enemy Leader destroyed]
         AA -->|No| GG[Enemy Leader survives]
         
-        BB --> CC{Blocker<br/>Toughness = 0?}
-        BB --> DD{Attacker<br/>Health/Toughness = 0?}
-        
+        BB --> CC{Any blocker<br/>Toughness = 0?}
         CC -->|Yes| HH[Blocker destroyed]
         CC -->|No| II[Blocker survives<br/>*damage resets at end of turn*]
+        
+        BB --> DD{Attacker<br/>Health/Toughness = 0?}
         
         DD -->|Yes, Leader| JJ[Attacking Leader destroyed]
         DD -->|Yes, Troop| LL[Attacking Troop destroyed]
