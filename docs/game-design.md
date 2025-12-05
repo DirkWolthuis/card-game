@@ -16,7 +16,7 @@
 |-------|---------|
 | **Start** | Untap all your cards; move all pitched cards to graveyard; draw to 7 cards |
 | **Main** | Play cards, activate abilities, attack, trade in marketplace, pitch cards for mana |
-| **End** | Discard down to 7 cards; troop damage resets |
+| **End** | Discard down to 7 cards |
 
 ---
 
@@ -24,36 +24,40 @@
 
 ### Units
 
-Units are cards that enter the battlefield. All units can block by tapping. Only untapped units can attack or block. Units tap when attacking or blocking.
+Units are cards that enter the battlefield. Only untapped units can attack or block. Units tap when declared as attackers or blockers; units joining an attack or block via the Lead ability also tap when they join.
 
 #### Unit Stats
 
-- **Troops**: Power / Toughness
-  - When Toughness reaches zero, unit is destroyed
-  - Damage resets at end of turn
-- **Leaders**: Power / Resistance / Health
-  - Takes damage equal to (attacker's Power - Leader's Resistance)
-  - Only takes damage when attacker's Power exceeds Resistance
-  - When Health reaches zero, unit is destroyed
-  - Damage is permanent (can be healed by effects)
+All units have three stats:
+
+- **Power**: Offensive strength; determines damage dealt in combat
+- **Resistance**: Defensive stat; reduces incoming damage
+- **Health**: Life total; when reduced to 0, the unit is destroyed
+
+**Damage Calculation**: Damage dealt = Attacker's Power - Defender's Resistance (minimum 0). Damage reduces Health.
+
+- **Troops**: Typically have 1 Health
+- **Leaders**: Can have higher Health values and may possess the `Lead X {UNIT_SUBTYPE}` ability
 
 ### Leaders
 
-- Only **one Leader** may attack per turn (by tapping)
+- Leaders can attack by tapping (only untapped Leaders can attack)
 - Leaders can attack the turn they're played (unless they enter tapped)
-- Attack target: opponent's health **or** another Leader
-- Leaders deal damage equal to their Power to **all** blockers (no assigning damage individually)
-- Keyword `Leader - {Troop type}` defines which troop types can join attacks
-- No maximum number of Troops that can join a Leader's attack (unless specified by abilities)
+- Attack target: **opponent (player) only** — Leaders cannot target other units directly
+- Leaders may have the `Lead X {UNIT_SUBTYPE}` ability:
+  - When attacking, the Leader can declare up to X untapped Troops of the specified subtype as joining the attack
+  - All declared Troops tap when joining the attack
+  - When blocking, the Lead ability allows the Leader to assign up to X Troops of the specified subtype as blockers alongside them
 - Leaders can have triggered and activated abilities with costs, noted as: `{cost}: {effect}`
 
 ### Troops
 
-- Join an attacking Leader by tapping (must match Leader's troop type)
-- Block attacking units as a reaction (by tapping)
+- Troops can be declared as the attacker for a turn (by tapping), following the "one attacker per turn" rule
+- Troops can join a Leader's attack if they match the Leader's `Lead X {UNIT_SUBTYPE}` ability
+- Troops can block attacking units (by tapping)
 - Can exist on the battlefield without a Leader
 - Summoned the same as other cards, or created by effects
-- Multiple blockers can gang up on a single attacking Troop
+- Troops typically have 1 Health
 
 ### Spells
 
@@ -72,104 +76,102 @@ Units are cards that enter the battlefield. All units can block by tapping. Only
 
 ## Combat
 
+### Overview
+
+Combat is simplified: a player can only attack with one unit per turn (plus additional troops if the attacker has the Lead ability). Defenders can only block with one unit (plus additional troops if blocking with a Leader with the Lead ability). All damage is simultaneous, and units that reach 0 health are destroyed at the same time.
+
 ### Attacking
 
-1. Declare one untapped Leader as attacker (tap it)
-2. Choose target: opponent or enemy Leader
-3. Untapped Troops matching the Leader's type may join (they tap)
-4. A Leader can attack without any Troops joining
+1. **Declare Attacker**: Choose one untapped unit (Leader or Troop) as your attacker and tap it
+2. **Declare Target**: The target must be the defending **player** (not another unit)
+3. **Lead Ability** (Leaders only): If the attacking Leader has `Lead X {UNIT_SUBTYPE}`, you may declare up to X untapped Troops of that subtype as joining the attack; tap all joining Troops
+4. A player may only declare **one unit as attacker per turn** (the Lead ability allows additional Troops to join this single attack)
 
 ### Blocking
 
-- Blocking is a **reaction**
-- Any untapped unit may block by tapping
-- Multiple blockers can gang up on one attacker
-- Troops can block without a Leader on the battlefield
-- You can choose not to block
-- Leaders can have abilities that limit the number of blockers
+1. **Declare Blocker**: The defending player may declare one untapped unit as a blocker and tap it; the defending player may choose not to block
+2. **One Blocker Rule**: Only one unit can be declared as a blocker, unless blocking with a Leader with the Lead ability
+3. **Lead Ability** (Leaders only): If blocking with a Leader that has `Lead X {UNIT_SUBTYPE}`, the defender may assign up to X untapped Troops of that subtype as additional blockers; tap all joining Troops
+4. **Assign Blockers**: The defender assigns which blocker blocks which attacking unit; each attacking unit can only be blocked by one blocker
 
 ### Damage Resolution
 
-- All damage happens simultaneously, then destroyed units are determined
-- **Leader vs Blockers**: Leader deals damage equal to its Power to all blockers; blockers deal damage to Leader equal to (blocker's Power minus Leader's Resistance), but only when blocker's Power exceeds Leader's Resistance
-- **Troop vs Blockers**: Compare Power vs Toughness
-- Excess damage: When Power is greater than Toughness (for Troops), excess damage does not apply to Leaders (player takes no damage from combat with Leaders)
-- When a Leader attacks but is blocked, combat functions the same as if Troops joined
+- **All damage is simultaneous**: Calculate all damage first, then apply it, then determine deaths
+- **Damage Calculation**: Damage = Attacker's Power - Defender's Resistance (minimum 0)
+- Damage reduces the target's Health
+- When a unit's Health reaches 0, it is destroyed
+- **Simultaneous Deaths**: All units that reach 0 Health are destroyed at the same time, after all damage is applied
+
+### Effect Triggering
+
+- Effects that trigger from declaring attacks or unit deaths **do not start a chain**
+- All effects from the **active player** resolve first
+- Then effects from other players resolve in **priority order**
+- This prevents complex chain interactions during combat
 
 ### Combat Flow Chart
 
 ```mermaid
 flowchart TD
     subgraph Attack["**Attack Phase**"]
-        A[Start Combat] --> B{Have untapped<br/>Leader?}
+        A[Start Combat] --> B{Have untapped unit?}
         B -->|No| Z[Cannot Attack]
-        B -->|Yes| C[Declare Leader as Attacker<br/>*tap Leader*]
-        C --> D{Choose Target}
-        D -->|Player| E[Target: Opponent's Health]
-        D -->|Leader| F[Target: Enemy Leader]
-        E --> G{Troops available<br/>matching Leader type?}
-        F --> G
-        G -->|Yes| H[Declare joining Troops<br/>*tap each Troop*]
-        G -->|No| I[Leader attacks alone]
-        H --> J[Attack Declared]
-        I --> J
+        B -->|Yes| C[Declare one unit as Attacker<br/>*tap attacker*]
+        C --> D[Target: Defending Player]
+        D --> E{Attacker is Leader<br/>with Lead X ability?}
+        E -->|Yes| F{Matching untapped<br/>Troops available?}
+        F -->|Yes| G[Declare up to X Troops<br/>as joining attack<br/>*tap each Troop*]
+        F -->|No| H[Leader attacks alone]
+        E -->|No| H
+        G --> I[Attack Declared]
+        H --> I
     end
 
-    subgraph Block["**Block Phase** *(Reaction)*"]
-        J --> K{Defender has<br/>untapped units?}
-        K -->|No| L[No blockers available]
-        K -->|Yes| M{Defender chooses<br/>to block?}
-        M -->|No| N[No blocks declared]
-        M -->|Yes| O[Declare blockers<br/>*tap blocking units*]
-        O --> P[Assign blockers to attackers<br/>*multiple blockers can<br/>gang up on one attacker*]
+    subgraph Block["**Block Phase**"]
+        I --> J{Defender has<br/>untapped units?}
+        J -->|No| K[No blockers available]
+        J -->|Yes| L{Defender chooses<br/>to block?}
+        L -->|No| M[No blocks declared]
+        L -->|Yes| N[Declare one unit as Blocker<br/>*tap blocker*]
+        N --> O{Blocker is Leader<br/>with Lead X ability?}
+        O -->|Yes| P{Matching untapped<br/>Troops available?}
+        P -->|Yes| Q[Assign up to X Troops<br/>as additional blockers<br/>*tap each Troop*]
+        P -->|No| R[Leader blocks alone]
+        O -->|No| R
+        Q --> S[Assign blockers to attackers]
+        R --> S
     end
 
     subgraph Damage["**Damage Resolution** *(All damage is simultaneous)*"]
-        L --> Q[Unblocked Damage]
-        N --> Q
-        P --> R[Blocked Combat]
+        K --> T[Unblocked Damage]
+        M --> T
+        S --> U[Blocked Combat]
         
-        Q --> S{Target type?}
-        S -->|Player| T[Deal damage to<br/>opponent's health]
-        S -->|Leader| U[Calculate Leader damage:<br/>Attacker Power - Leader Resistance<br/>*only if Power > Resistance*]
+        T --> V[Calculate damage:<br/>Attacker Power<br/>*players have no Resistance*]
+        V --> W[Deal damage to<br/>defending player's health]
         
-        R --> V{Attacker type?}
-        V -->|Leader| W["Leader vs Blockers<br/>*(simultaneous exchange)*"]
-        V -->|Troop| X["Troop vs Blockers<br/>*(simultaneous exchange)*"]
-        
-        W --> W1["1. Leader deals Power to ALL blockers<br/>2. Each blocker deals Power - Resistance<br/>to Leader *only if Power > Resistance*"]
-        
-        X --> X1["1. Troop deals Power to blockers<br/>2. Blockers deal Power to Troop Toughness"]
+        U --> X[For each attacker/blocker pair:<br/>Calculate damage =<br/>Power - Resistance]
+        X --> Y[Apply all damage<br/>simultaneously to Health]
     end
 
     subgraph Cleanup["**Destruction Check** *(after all damage applied)*"]
-        T --> Y[Check for victory]
-        U --> AA{Leader Health = 0?}
-        W1 --> BB[Evaluate all combatants]
-        X1 --> BB
+        W --> AA[Check for victory]
+        Y --> BB[Evaluate all combatants]
         
-        AA -->|Yes| FF[Enemy Leader destroyed]
-        AA -->|No| GG[Enemy Leader survives]
-        
-        BB --> CC{Any blocker<br/>Toughness = 0?}
-        CC -->|Yes| HH[Blocker destroyed]
-        CC -->|No| II[Blocker survives<br/>*damage resets at end of turn*]
-        
-        BB --> DD{Attacker<br/>Health/Toughness = 0?}
-        
-        DD -->|Yes, Leader| JJ[Attacking Leader destroyed]
-        DD -->|Yes, Troop| LL[Attacking Troop destroyed]
-        DD -->|No| KK[Attacker survives<br/>*Troop damage resets at end of turn*]
+        BB --> CC{Any unit<br/>Health = 0?}
+        CC -->|Yes| DD[All units with 0 Health<br/>destroyed simultaneously]
+        CC -->|No| EE[All units survive]
     end
 
-    Y --> END[Combat End]
-    FF --> END
-    GG --> END
-    HH --> END
-    II --> END
-    JJ --> END
-    KK --> END
-    LL --> END
+    subgraph Effects["**Effect Resolution** *(No chain)*"]
+        DD --> FF{Triggered effects<br/>from deaths/attacks?}
+        EE --> FF
+        AA --> GG[Combat End]
+        FF -->|Yes| HH[Active player effects<br/>resolve first]
+        HH --> II[Other players' effects<br/>resolve in priority order]
+        II --> GG
+        FF -->|No| GG
+    end
 ```
 
 ---
@@ -353,14 +355,15 @@ The following features are planned but not included in the MVP:
 |------|------------|
 | **Activated ability** | An ability with a cost that can be activated by paying that cost, noted as `{cost}: {effect}` |
 | **Battlefield** | The play area where units exist after being played from hand |
-| **Block** | A reaction where a unit intercepts an attacking unit to prevent damage |
+| **Block** | Declaring a unit to intercept an attacking unit to prevent damage to the defending player |
 | **Chain** | A sequence of actions and reactions that resolve in LIFO order; once locked, no more effects can be added |
 | **Chain lock** | The state when both players have passed priority consecutively, sealing the chain for resolution |
 | **Deck** | A player's draw pile; running out means you lose |
 | **Fast speed** | *(Not MVP)* Action speed that can respond to normal speed actions, reactions, and other fast speed cards; reserved for future expansion |
 | **FIFO** | First In, First Out — oldest items are removed first |
 | **Graveyard** | Discard pile where used or destroyed cards go |
-| **Health** | A player's or Leader's life total; reaching 0 means defeat/destruction |
+| **Health** | A unit's or player's life total; when reduced to 0, the unit is destroyed (or player loses) |
+| **Lead X {UNIT_SUBTYPE}** | A Leader ability that allows declaring up to X Troops of the specified subtype when attacking or blocking with that Leader |
 | **LIFO** | Last In, First Out — newest items are resolved first; used for chain resolution |
 | **Mana** | Resource used to pay for cards and abilities; generated by pitching |
 | **Normal speed** | Actions that can only be played during your main phase when the chain is empty (e.g., spells, attacking) |
@@ -368,13 +371,14 @@ The following features are planned but not included in the MVP:
 | **Pitch value** | The mana a card produces when pitched (printed on the front as 1, 2, or 3) |
 | **Power** | A unit's offensive strength; determines damage dealt in combat |
 | **Priority** | The right to take an action or respond; passes between players after each action |
+| **Priority order** | The order in which players' effects resolve; active player first, then other players in priority order (determined randomly at game start) |
 | **Reaction** | An action that can respond to normal speed actions or other reactions when you have priority |
 | **Reaction speed** | Action speed that can respond to normal speed actions and other reactions |
-| **Resistance** | A Leader's defensive stat; reduces incoming damage (only takes damage when attacker's Power > Resistance) |
+| **Resistance** | A unit's defensive stat; reduces incoming damage (damage = Power - Resistance) |
 | **Round** | A complete cycle where all players have taken one turn |
+| **Simultaneous damage** | All combat damage is calculated and applied at the same time; deaths occur after all damage is resolved |
 | **Spell** | A one-time effect card that goes to graveyard after resolving |
-| **Tap** | Turning a card sideways to indicate it has been used this turn |
-| **Toughness** | A Troop's defensive stat; when reduced to 0, the Troop is destroyed |
+| **Tap** | Turning a card sideways to indicate it has been used this turn; tapped units cannot attack or block |
 | **Triggered ability** | An ability that automatically triggers when a specific condition is met |
 | **Turn** | One player's complete sequence of phases (Start → Main → End) |
 | **Untap** | Returning a tapped card to upright position, making it usable again |
