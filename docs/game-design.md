@@ -92,7 +92,7 @@ Combat is simplified: a player can only attack with one unit per turn (plus addi
 1. **Declare Blocker**: The defending player may declare one untapped unit as a blocker and tap it; the defending player may choose not to block
 2. **One Blocker Rule**: Only one unit can be declared as a blocker, unless blocking with a Leader with the Lead ability
 3. **Lead Ability** (Leaders only): If blocking with a Leader that has `Lead X {UNIT_SUBTYPE}`, the defender may assign up to X untapped Troops of that subtype as additional blockers; tap all joining Troops
-4. **Assign Blockers**: The defender assigns which blocker blocks which attacking unit
+4. **Assign Blockers**: The defender assigns which blocker blocks which attacking unit; each attacking unit can only be blocked by one blocker
 
 ### Damage Resolution
 
@@ -371,7 +371,7 @@ The following features are planned but not included in the MVP:
 | **Pitch value** | The mana a card produces when pitched (printed on the front as 1, 2, or 3) |
 | **Power** | A unit's offensive strength; determines damage dealt in combat |
 | **Priority** | The right to take an action or respond; passes between players after each action |
-| **Priority order** | The order in which players' effects resolve; active player first, then other players |
+| **Priority order** | The order in which players' effects resolve; active player first, then other players in priority order (determined randomly at game start) |
 | **Reaction** | An action that can respond to normal speed actions or other reactions when you have priority |
 | **Reaction speed** | Action speed that can respond to normal speed actions and other reactions |
 | **Resistance** | A unit's defensive stat; reduces incoming damage (damage = Power - Resistance) |
