@@ -107,7 +107,7 @@ Explicitly excluded from MVP:
 
 ## Implementation Phases
 
-> **Note**: The issue IDs below (P1.1, P2.1, etc.) are proposed new issues to be created. They do not correspond to existing GitHub issues.
+> **Note**: The issue IDs below (P1.1, P2.1, etc.) are placeholder identifiers for proposed new issues. When creating actual GitHub issues, replace these with the real issue numbers.
 
 ### Phase 1: Core Unit System (Foundation)
 
