@@ -52,7 +52,7 @@ All units have three stats:
 
 ### Troops
 
-- A player can attack with **one Troop per turn** (by tapping) if they have no Leader attacking
+- Troops can be declared as the attacker for a turn (by tapping), following the "one attacker per turn" rule
 - Troops can join a Leader's attack if they match the Leader's `Lead X {UNIT_SUBTYPE}` ability
 - Troops can block attacking units (by tapping)
 - Can exist on the battlefield without a Leader
@@ -148,7 +148,7 @@ flowchart TD
         M --> T
         S --> U[Blocked Combat]
         
-        T --> V[Calculate damage:<br/>Attacker Power - Player Resistance<br/>*default Resistance = 0*]
+        T --> V[Calculate damage:<br/>Attacker Power<br/>*players have no Resistance*]
         V --> W[Deal damage to<br/>defending player's health]
         
         U --> X[For each attacker/blocker pair:<br/>Calculate damage =<br/>Power - Resistance]
