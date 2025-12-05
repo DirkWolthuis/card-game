@@ -24,7 +24,7 @@
 
 ### Units
 
-Units are cards that enter the battlefield. Only untapped units can attack or block. Units tap when declared as attackers or blockers.
+Units are cards that enter the battlefield. Only untapped units can attack or block. Units tap when declared as attackers or blockers; units joining an attack or block via the Lead ability also tap when they join.
 
 #### Unit Stats
 
@@ -85,15 +85,14 @@ Combat is simplified: a player can only attack with one unit per turn (plus addi
 1. **Declare Attacker**: Choose one untapped unit (Leader or Troop) as your attacker and tap it
 2. **Declare Target**: The target must be the defending **player** (not another unit)
 3. **Lead Ability** (Leaders only): If the attacking Leader has `Lead X {UNIT_SUBTYPE}`, you may declare up to X untapped Troops of that subtype as joining the attack; tap all joining Troops
-4. A player may only attack with **one unit per turn** (the Lead ability allows additional Troops to join, but doesn't count as separate attacks)
+4. A player may only declare **one unit as attacker per turn** (the Lead ability allows additional Troops to join this single attack)
 
 ### Blocking
 
-1. **Declare Blocker**: The defending player may declare one untapped unit as a blocker and tap it
-2. **Lead Ability** (Leaders only): If blocking with a Leader that has `Lead X {UNIT_SUBTYPE}`, the defender may assign up to X untapped Troops of that subtype as additional blockers; tap all blocking Troops
-3. **Assign Blockers**: The defender assigns which blocker blocks which attacking unit
-4. The defending player may choose not to block
-5. Only **one unit** can block unless blocking with a Leader with the Lead ability
+1. **Declare Blocker**: The defending player may declare one untapped unit as a blocker and tap it; the defending player may choose not to block
+2. **One Blocker Rule**: Only one unit can be declared as a blocker, unless blocking with a Leader with the Lead ability
+3. **Lead Ability** (Leaders only): If blocking with a Leader that has `Lead X {UNIT_SUBTYPE}`, the defender may assign up to X untapped Troops of that subtype as additional blockers; tap all joining Troops
+4. **Assign Blockers**: The defender assigns which blocker blocks which attacking unit
 
 ### Damage Resolution
 
