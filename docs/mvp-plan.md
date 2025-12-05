@@ -118,7 +118,7 @@ Explicitly excluded from MVP:
 | P1.1 | [MODELS] Add unit card types | Add Leader and Troop card types to models |
 | P1.2 | [MODELS] Add unit stats | Add Power, Resistance, Health to unit cards |
 | P1.3 | [MODELS] Add tap state | Add tapped/untapped state to entities |
-| P1.4 | [CORE] Implement untap phase | Untap all units at start of turn |
+| P1.4 | [CORE] Implement untap in Start phase | Untap all units at Start phase |
 | P1.5 | [CORE] Play units to battlefield | Move units from hand to battlefield |
 
 **Dependencies**: None
@@ -152,7 +152,7 @@ Explicitly excluded from MVP:
 | P3.3 | [MODELS] Add mana cost to cards | Add mana cost to play cards |
 | P3.4 | [CORE] Pitch card for mana | Move card to pitched zone, gain mana |
 | P3.5 | [CORE] Pay mana for cards | Require mana to play cards |
-| P3.6 | [CORE] Handle pitched cards | Move to graveyard at turn start |
+| P3.6 | [CORE] Handle pitched cards | Move to graveyard at Start phase |
 | P3.7 | [UI] Mana pool display | Show current mana |
 | P3.8 | [UI] Pitch zone | Show pitched cards |
 
@@ -186,7 +186,7 @@ Explicitly excluded from MVP:
 | P5.2 | [MODELS] Add resource card type | Subjects, Materials, Influence |
 | P5.3 | [CORE] Setup marketplace | Initialize with 20 cards, 5 visible |
 | P5.4 | [CORE] Trade with marketplace | Swap card from hand once per turn |
-| P5.5 | [CORE] Marketplace refresh | FIFO refresh at round start |
+| P5.5 | [CORE] Marketplace refresh | FIFO refresh at start of each round |
 | P5.6 | [UI] Marketplace display | Show available cards |
 
 **Dependencies**: None
@@ -249,12 +249,12 @@ The following **existing** GitHub issues are related to MVP work and should be c
 
 | GitHub Issue | Title | MVP Phase |
 |--------------|-------|-----------|
-| #13 | [CORE] Priority / stack system | Phase 4 |
-| #14 | [CORE] Pre-game phase / deck selection | Phase 6 |
-| #15 | [CORE] Permanent card type | Phase 1 |
-| #27 | [GAME-DESIGN] card types | Phase 1, 4, 5 |
-| #32 | [GAME-DESIGN] clarify game design | Documentation |
-| #34 | [UI] Create card UI based on game design document | UI |
+| [#13](https://github.com/DirkWolthuis/card-game/issues/13) | [CORE] Priority / stack system | Phase 4 |
+| [#14](https://github.com/DirkWolthuis/card-game/issues/14) | [CORE] Pre-game phase / deck selection | Phase 6 |
+| [#15](https://github.com/DirkWolthuis/card-game/issues/15) | [CORE] Permanent card type | Phase 1 |
+| [#27](https://github.com/DirkWolthuis/card-game/issues/27) | [GAME-DESIGN] card types | Phase 1, 4, 5 |
+| [#32](https://github.com/DirkWolthuis/card-game/issues/32) | [GAME-DESIGN] clarify game design | Documentation |
+| [#34](https://github.com/DirkWolthuis/card-game/issues/34) | [UI] Create card UI based on game design document | UI |
 
 ---
 
