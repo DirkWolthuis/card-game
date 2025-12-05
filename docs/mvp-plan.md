@@ -107,17 +107,19 @@ Explicitly excluded from MVP:
 
 ## Implementation Phases
 
+> **Note**: The issue IDs below (P1.1, P2.1, etc.) are proposed new issues to be created. They do not correspond to existing GitHub issues.
+
 ### Phase 1: Core Unit System (Foundation)
 
 **Goal**: Enable units to exist on the battlefield with proper stats.
 
-| Issue | Title | Description |
-|-------|-------|-------------|
-| #1 | [MODELS] Add unit card types | Add Leader and Troop card types to models |
-| #2 | [MODELS] Add unit stats | Add Power, Resistance, Health to unit cards |
-| #3 | [MODELS] Add tap state | Add tapped/untapped state to entities |
-| #4 | [CORE] Implement untap phase | Untap all units at start of turn |
-| #5 | [CORE] Play units to battlefield | Move units from hand to battlefield |
+| ID | Title | Description |
+|----|-------|-------------|
+| P1.1 | [MODELS] Add unit card types | Add Leader and Troop card types to models |
+| P1.2 | [MODELS] Add unit stats | Add Power, Resistance, Health to unit cards |
+| P1.3 | [MODELS] Add tap state | Add tapped/untapped state to entities |
+| P1.4 | [CORE] Implement untap phase | Untap all units at start of turn |
+| P1.5 | [CORE] Play units to battlefield | Move units from hand to battlefield |
 
 **Dependencies**: None
 **Estimated Issues**: 5
@@ -126,15 +128,15 @@ Explicitly excluded from MVP:
 
 **Goal**: Enable attacking and blocking between players.
 
-| Issue | Title | Description |
-|-------|-------|-------------|
-| #6 | [MODELS] Add combat state | Track attacking/blocking declarations |
-| #7 | [CORE] Declare attacker move | Allow declaring one unit as attacker |
-| #8 | [CORE] Lead ability | Leaders can bring troops to attack |
-| #9 | [CORE] Declare blocker move | Allow blocking with one unit (Lead for more) |
-| #10 | [CORE] Damage resolution | Simultaneous damage calculation |
-| #11 | [CORE] Unit destruction | Remove units with 0 health |
-| #12 | [UI] Combat visualization | Show attackers, blockers, damage |
+| ID | Title | Description |
+|----|-------|-------------|
+| P2.1 | [MODELS] Add combat state | Track attacking/blocking declarations |
+| P2.2 | [CORE] Declare attacker move | Allow declaring one unit as attacker |
+| P2.3 | [CORE] Lead ability | Leaders can bring troops to attack |
+| P2.4 | [CORE] Declare blocker move | Allow blocking with one unit (Lead for more) |
+| P2.5 | [CORE] Damage resolution | Simultaneous damage calculation |
+| P2.6 | [CORE] Unit destruction | Remove units with 0 health |
+| P2.7 | [UI] Combat visualization | Show attackers, blockers, damage |
 
 **Dependencies**: Phase 1
 **Estimated Issues**: 7
@@ -143,16 +145,16 @@ Explicitly excluded from MVP:
 
 **Goal**: Implement pitching cards for mana to play cards.
 
-| Issue | Title | Description |
-|-------|-------|-------------|
-| #13 | [MODELS] Add mana pool | Track player's mana pool |
-| #14 | [MODELS] Add pitch value to cards | Add pitch value (1-3) to cards |
-| #15 | [MODELS] Add mana cost to cards | Add mana cost to play cards |
-| #16 | [CORE] Pitch card for mana | Move card to pitched zone, gain mana |
-| #17 | [CORE] Pay mana for cards | Require mana to play cards |
-| #18 | [CORE] Handle pitched cards | Move to graveyard at turn start |
-| #19 | [UI] Mana pool display | Show current mana |
-| #20 | [UI] Pitch zone | Show pitched cards |
+| ID | Title | Description |
+|----|-------|-------------|
+| P3.1 | [MODELS] Add mana pool | Track player's mana pool |
+| P3.2 | [MODELS] Add pitch value to cards | Add pitch value (1-3) to cards |
+| P3.3 | [MODELS] Add mana cost to cards | Add mana cost to play cards |
+| P3.4 | [CORE] Pitch card for mana | Move card to pitched zone, gain mana |
+| P3.5 | [CORE] Pay mana for cards | Require mana to play cards |
+| P3.6 | [CORE] Handle pitched cards | Move to graveyard at turn start |
+| P3.7 | [UI] Mana pool display | Show current mana |
+| P3.8 | [UI] Pitch zone | Show pitched cards |
 
 **Dependencies**: None (parallel with Phase 2)
 **Estimated Issues**: 8
@@ -161,15 +163,15 @@ Explicitly excluded from MVP:
 
 **Goal**: Enable response windows and reaction cards.
 
-| Issue | Title | Description |
-|-------|-------|-------------|
-| #21 | [MODELS] Add chain state | Track chain of effects |
-| #22 | [MODELS] Add reaction card type | Cards that respond to actions |
-| #23 | [CORE] Priority system | Passing priority between players |
-| #24 | [CORE] Chain building | Add reactions to chain |
-| #25 | [CORE] Chain resolution | LIFO resolution of effects |
-| #26 | [UI] Priority indicator | Show who has priority |
-| #27 | [UI] Chain visualization | Show chain stack |
+| ID | Title | Description |
+|----|-------|-------------|
+| P4.1 | [MODELS] Add chain state | Track chain of effects |
+| P4.2 | [MODELS] Add reaction card type | Cards that respond to actions |
+| P4.3 | [CORE] Priority system | Passing priority between players |
+| P4.4 | [CORE] Chain building | Add reactions to chain |
+| P4.5 | [CORE] Chain resolution | LIFO resolution of effects |
+| P4.6 | [UI] Priority indicator | Show who has priority |
+| P4.7 | [UI] Chain visualization | Show chain stack |
 
 **Dependencies**: Phase 1, Phase 3
 **Estimated Issues**: 7
@@ -178,14 +180,14 @@ Explicitly excluded from MVP:
 
 **Goal**: Implement shared resource deck and trading.
 
-| Issue | Title | Description |
-|-------|-------|-------------|
-| #28 | [MODELS] Add marketplace state | Shared deck and visible cards |
-| #29 | [MODELS] Add resource card type | Subjects, Materials, Influence |
-| #30 | [CORE] Setup marketplace | Initialize with 20 cards, 5 visible |
-| #31 | [CORE] Trade with marketplace | Swap card from hand once per turn |
-| #32 | [CORE] Marketplace refresh | FIFO refresh at round start |
-| #33 | [UI] Marketplace display | Show available cards |
+| ID | Title | Description |
+|----|-------|-------------|
+| P5.1 | [MODELS] Add marketplace state | Shared deck and visible cards |
+| P5.2 | [MODELS] Add resource card type | Subjects, Materials, Influence |
+| P5.3 | [CORE] Setup marketplace | Initialize with 20 cards, 5 visible |
+| P5.4 | [CORE] Trade with marketplace | Swap card from hand once per turn |
+| P5.5 | [CORE] Marketplace refresh | FIFO refresh at round start |
+| P5.6 | [UI] Marketplace display | Show available cards |
 
 **Dependencies**: None
 **Estimated Issues**: 6
@@ -194,14 +196,14 @@ Explicitly excluded from MVP:
 
 **Goal**: Create initial card set for playtesting.
 
-| Issue | Title | Description |
-|-------|-------|-------------|
-| #34 | [DATA] Create Leader cards | Design initial leader cards |
-| #35 | [DATA] Create Troop cards | Design initial troop cards |
-| #36 | [DATA] Create Spell cards | Design initial spell cards |
-| #37 | [DATA] Create Reaction cards | Design initial reaction cards |
-| #38 | [DATA] Create Resource cards | Design resource cards |
-| #39 | [CORE] Pre-constructed decks | Define 2 starter decks |
+| ID | Title | Description |
+|----|-------|-------------|
+| P6.1 | [DATA] Create Leader cards | Design initial leader cards |
+| P6.2 | [DATA] Create Troop cards | Design initial troop cards |
+| P6.3 | [DATA] Create Spell cards | Design initial spell cards |
+| P6.4 | [DATA] Create Reaction cards | Design initial reaction cards |
+| P6.5 | [DATA] Create Resource cards | Design resource cards |
+| P6.6 | [CORE] Pre-constructed decks | Define 2 starter decks |
 
 **Dependencies**: All previous phases
 **Estimated Issues**: 6
@@ -243,10 +245,10 @@ Explicitly excluded from MVP:
 
 ## Existing Open Issues
 
-The following open issues are related to MVP work:
+The following **existing** GitHub issues are related to MVP work and should be considered during implementation:
 
-| Issue | Title | MVP Phase |
-|-------|-------|-----------|
+| GitHub Issue | Title | MVP Phase |
+|--------------|-------|-----------|
 | #13 | [CORE] Priority / stack system | Phase 4 |
 | #14 | [CORE] Pre-game phase / deck selection | Phase 6 |
 | #15 | [CORE] Permanent card type | Phase 1 |
