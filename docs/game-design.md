@@ -194,15 +194,6 @@ flowchart TD
         CC -->|No| EE[All units survive]
     end
 
-    subgraph Effects["**Effect Resolution** *(No chain)*"]
-        DD --> FF{Triggered effects<br/>from deaths/attacks?}
-        EE --> FF
-        AA --> GG[Combat End]
-        FF -->|Yes| HH[Active player effects<br/>resolve first]
-        HH --> II[Other players' effects<br/>resolve in priority order]
-        II --> GG
-        FF -->|No| GG
-    end
 ```
 
 ---
@@ -269,7 +260,7 @@ The following actions do not trigger a chain and cannot be responded to:
 ```mermaid
 flowchart TD
     subgraph Trigger["**Chain Trigger**"]
-        A[Player performs action] --> B[Action goes on the chain]
+        A[Player performs action] --> B[Effect goes on the chain]
         B --> C[Priority passes to opponent]
     end
 
@@ -290,14 +281,7 @@ flowchart TD
         M --> N{More effects<br/>on chain?}
         N -->|Yes| M
         N -->|No| O[Chain complete]
-    end
-
-    subgraph Continue["**Continue Play**"]
-        O --> P{Active player's<br/>turn?}
-        P -->|Yes| Q[Active player may<br/>take another action]
-        P -->|No| R[Priority returns<br/>to active player]
-        Q --> S[Return to normal play]
-        R --> S
+        O --> X[Continue play]
     end
 ```
 
