@@ -1,7 +1,5 @@
 import { GameState, MoveType } from '@game/models';
 import type { BoardProps } from 'boardgame.io/react';
-import { GameStatsOverview } from './zones/GameStatsOverview';
-import { OpponentZones } from './zones/OpponentZones';
 import { PlayerZones } from './zones/PlayerZones';
 import { TargetSelectionModal } from './components/TargetSelectionModal';
 import { EndGameScreen } from './components/EndGameScreen';
@@ -30,35 +28,7 @@ export function Board(props: BoardProps<GameState>) {
   const gridConfig = getGridConfig(playerCount);
 
   return (
-    <div
-      className="h-screen p-4 bg-gray-900"
-      style={{
-        display: 'grid',
-        gridTemplateAreas: gridConfig.gridTemplateAreas,
-        gridTemplateColumns: gridConfig.gridTemplateColumns,
-        gridTemplateRows: gridConfig.gridTemplateRows,
-        gap: gridConfig.gap,
-      }}
-    >
-      {/* Opponent Zones - Top half */}
-      <div style={{ gridArea: 'opponents' }} className="overflow-hidden">
-        <OpponentZones
-          opponentIds={allPlayerIds}
-          currentTurnPlayerId={ctx.currentPlayer}
-          currentPlayerId={currentPlayerID}
-        />
-      </div>
-
-      {/* Game Stats - Center left */}
-      <div style={{ gridArea: 'game-stats' }} className="overflow-auto">
-        <GameStatsOverview
-          currentTurn={ctx.turn}
-          currentPlayer={ctx.currentPlayer}
-          isMyTurn={isMyTurn}
-        />
-      </div>
-
-      {/* Current Player Zones */}
+    <>
       <PlayerZones
         playerId={currentPlayerID}
         zones={zones}
@@ -84,7 +54,7 @@ export function Board(props: BoardProps<GameState>) {
           totalTurns={ctx.turn}
         />
       )}
-    </div>
+    </>
   );
 }
 
