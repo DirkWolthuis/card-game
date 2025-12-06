@@ -12,13 +12,41 @@
 
 ## Turn Structure
 
-| Phase | Actions |
-|-------|---------|
-| **Start** | Untap all your cards; move all pitched cards to graveyard; draw to 7 cards |
-| **Main** | Play cards, activate abilities, attack, trade in marketplace, pitch cards for mana |
-| **End** | Discard down to 7 cards |
+| Phase     | Actions                                                                            |
+| --------- | ---------------------------------------------------------------------------------- |
+| **Start** | Untap all your cards; move all pitched cards to graveyard; draw to 7 cards         |
+| **Main**  | Play cards, activate abilities, attack, trade in marketplace, pitch cards for mana |
+| **End**   | Discard down to 7 cards                                                            |
 
 ---
+
+## Actions / Abilities / Effects
+
+### Actions
+
+Actions are game actions a player can take in the game context. For example playing a card or activating a ability of a unit.
+
+### Abilities
+
+Abilities are properties of cards / entities that result in effects. Types of abilities are:
+
+- Activated abilities, noted as: `{cost}: {effect}`
+- Reaction abilities, noted as: `@TODO`
+- Static abilities, noted as: `@TODO` (which can be conditional)
+
+### Effects
+
+Effects are events that change the game state. For exmaple a being destroyed is a effect. There are two types of effects:
+
+- Chainable effects (before the effect resolves, players have a change to react to the effect)
+- Immediate effects (effects resolve before anything else can happen)
+
+## Card Templating
+
+Depending on the card type, a card consists out of:
+
+- Characteristic, for example mana value or power
+- Abilities that can result in effects
 
 ## Card Types
 
@@ -26,7 +54,10 @@
 
 Units are cards that enter the battlefield. Only untapped units can attack or block. Units tap when declared as attackers or blockers; units joining an attack or block via the Lead ability also tap when they join.
 
-#### Unit Stats
+- Units can attack by tapping
+- Units can attack the turn they're played (unless they enter tapped)
+- Units can block when untapped
+- Units can have multiple subtypes, (e.g. `Unit Leader Zombie`)
 
 All units have three stats:
 
@@ -41,18 +72,16 @@ All units have three stats:
 
 ### Leaders
 
-- Leaders can attack by tapping (only untapped Leaders can attack)
-- Leaders can attack the turn they're played (unless they enter tapped)
+- Leader is a subtype of Units
 - Attack target: **opponent (player) only** — Leaders cannot target other units directly
 - Leaders may have the `Lead X {UNIT_SUBTYPE}` ability:
   - When attacking, the Leader can declare up to X untapped Troops of the specified subtype as joining the attack
   - All declared Troops tap when joining the attack
   - When blocking, the Lead ability allows the Leader to assign up to X Troops of the specified subtype as blockers alongside them
-- Leaders can have triggered and activated abilities with costs, noted as: `{cost}: {effect}`
 
 ### Troops
 
-- Troops can be declared as the attacker for a turn (by tapping), following the "one attacker per turn" rule
+- Troop is a subtype of Units
 - Troops can join a Leader's attack if they match the Leader's `Lead X {UNIT_SUBTYPE}` ability
 - Troops can block attacking units (by tapping)
 - Can exist on the battlefield without a Leader
@@ -67,8 +96,10 @@ All units have three stats:
 ### Reactions
 
 - Reaction speed cards that can be played in response to actions
-- Can only be played when you have priority and a triggerable event occurs
-- Each reaction card specifies what events it can respond to
+- Can only be played when:
+  - You have priority
+  - a chainable effect occurs
+  - the reaction ability allows reactions to that type of effect
 - When played, reactions are added to the chain and resolve in LIFO order
 - Played during either player's turn when conditions are met
 
@@ -146,10 +177,10 @@ flowchart TD
         K --> T[Unblocked Damage]
         M --> T
         S --> U[Blocked Combat]
-        
+
         T --> V[Calculate damage:<br/>Attacker Power<br/>*players have no Resistance*]
         V --> W[Deal damage to<br/>defending player's health]
-        
+
         U --> X[For each attacker/blocker pair:<br/>Calculate damage =<br/>Power - Resistance]
         X --> Y[Apply all damage<br/>simultaneously to Health]
     end
@@ -157,7 +188,7 @@ flowchart TD
     subgraph Cleanup["**Destruction Check** *(after all damage applied)*"]
         W --> AA[Check for victory]
         Y --> BB[Evaluate all combatants]
-        
+
         BB --> CC{Any unit<br/>Health = 0?}
         CC -->|Yes| DD[All units with 0 Health<br/>destroyed simultaneously]
         CC -->|No| EE[All units survive]
@@ -184,11 +215,11 @@ The chain mechanism determines how players can respond to actions and how effect
 
 There are three action speeds in the game:
 
-| Speed | Description | Can Respond To | Examples |
-|-------|-------------|----------------|----------|
-| **Normal Speed** | Actions that can only be played during your main phase when the chain is empty | N/A - Cannot be used as responses | Playing spells, attacking, most activated abilities |
-| **Reaction Speed** | Actions that can respond to normal speed actions and other reactions | Normal speed actions, other reactions (if card allows) | Reaction cards, abilities marked as reactions |
-| **Fast Speed** *(Not MVP)* | Actions that can respond to normal speed actions, reactions, and other fast speed cards | Normal speed actions, reactions, other fast speed cards | Reserved for future expansion |
+| Speed                      | Description                                                                             | Can Respond To                                          | Examples                                            |
+| -------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------- |
+| **Normal Speed**           | Actions that can only be played during your main phase when the chain is empty          | N/A - Cannot be used as responses                       | Playing spells, attacking, most activated abilities |
+| **Reaction Speed**         | Actions that can respond to normal speed actions and other reactions                    | Normal speed actions, other reactions (if card allows)  | Reaction cards, abilities marked as reactions       |
+| **Fast Speed** _(Not MVP)_ | Actions that can respond to normal speed actions, reactions, and other fast speed cards | Normal speed actions, reactions, other fast speed cards | Reserved for future expansion                       |
 
 ### Chain Building
 
@@ -351,34 +382,34 @@ The following features are planned but not included in the MVP:
 
 ## Glossary
 
-| Term | Definition |
-|------|------------|
-| **Activated ability** | An ability with a cost that can be activated by paying that cost, noted as `{cost}: {effect}` |
-| **Battlefield** | The play area where units exist after being played from hand |
-| **Block** | Declaring a unit to intercept an attacking unit to prevent damage to the defending player |
-| **Chain** | A sequence of actions and reactions that resolve in LIFO order; once locked, no more effects can be added |
-| **Chain lock** | The state when both players have passed priority consecutively, sealing the chain for resolution |
-| **Deck** | A player's draw pile; running out means you lose |
-| **Fast speed** | *(Not MVP)* Action speed that can respond to normal speed actions, reactions, and other fast speed cards; reserved for future expansion |
-| **FIFO** | First In, First Out — oldest items are removed first |
-| **Graveyard** | Discard pile where used or destroyed cards go |
-| **Health** | A unit's or player's life total; when reduced to 0, the unit is destroyed (or player loses) |
-| **Lead X {UNIT_SUBTYPE}** | A Leader ability that allows declaring up to X Troops of the specified subtype when attacking or blocking with that Leader |
-| **LIFO** | Last In, First Out — newest items are resolved first; used for chain resolution |
-| **Mana** | Resource used to pay for cards and abilities; generated by pitching |
-| **Normal speed** | Actions that can only be played during your main phase when the chain is empty (e.g., spells, attacking) |
-| **Pitch** | Playing a card on your turn to generate mana equal to its pitch value (1–3); does not start a chain |
-| **Pitch value** | The mana a card produces when pitched (printed on the front as 1, 2, or 3) |
-| **Power** | A unit's offensive strength; determines damage dealt in combat |
-| **Priority** | The right to take an action or respond; passes between players after each action |
-| **Priority order** | The order in which players' effects resolve; active player first, then other players in priority order (determined randomly at game start) |
-| **Reaction** | An action that can respond to normal speed actions or other reactions when you have priority |
-| **Reaction speed** | Action speed that can respond to normal speed actions and other reactions |
-| **Resistance** | A unit's defensive stat; reduces incoming damage (damage = Power - Resistance) |
-| **Round** | A complete cycle where all players have taken one turn |
-| **Simultaneous damage** | All combat damage is calculated and applied at the same time; deaths occur after all damage is resolved |
-| **Spell** | A one-time effect card that goes to graveyard after resolving |
-| **Tap** | Turning a card sideways to indicate it has been used this turn; tapped units cannot attack or block |
-| **Triggered ability** | An ability that automatically triggers when a specific condition is met |
-| **Turn** | One player's complete sequence of phases (Start → Main → End) |
-| **Untap** | Returning a tapped card to upright position, making it usable again |
+| Term                      | Definition                                                                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Activated ability**     | An ability with a cost that can be activated by paying that cost, noted as `{cost}: {effect}`                                              |
+| **Battlefield**           | The play area where units exist after being played from hand                                                                               |
+| **Block**                 | Declaring a unit to intercept an attacking unit to prevent damage to the defending player                                                  |
+| **Chain**                 | A sequence of actions and reactions that resolve in LIFO order; once locked, no more effects can be added                                  |
+| **Chain lock**            | The state when both players have passed priority consecutively, sealing the chain for resolution                                           |
+| **Deck**                  | A player's draw pile; running out means you lose                                                                                           |
+| **Fast speed**            | _(Not MVP)_ Action speed that can respond to normal speed actions, reactions, and other fast speed cards; reserved for future expansion    |
+| **FIFO**                  | First In, First Out — oldest items are removed first                                                                                       |
+| **Graveyard**             | Discard pile where used or destroyed cards go                                                                                              |
+| **Health**                | A unit's or player's life total; when reduced to 0, the unit is destroyed (or player loses)                                                |
+| **Lead X {UNIT_SUBTYPE}** | A Leader ability that allows declaring up to X Troops of the specified subtype when attacking or blocking with that Leader                 |
+| **LIFO**                  | Last In, First Out — newest items are resolved first; used for chain resolution                                                            |
+| **Mana**                  | Resource used to pay for cards and abilities; generated by pitching                                                                        |
+| **Normal speed**          | Actions that can only be played during your main phase when the chain is empty (e.g., spells, attacking)                                   |
+| **Pitch**                 | Playing a card on your turn to generate mana equal to its pitch value (1–3); does not start a chain                                        |
+| **Pitch value**           | The mana a card produces when pitched (printed on the front as 1, 2, or 3)                                                                 |
+| **Power**                 | A unit's offensive strength; determines damage dealt in combat                                                                             |
+| **Priority**              | The right to take an action or respond; passes between players after each action                                                           |
+| **Priority order**        | The order in which players' effects resolve; active player first, then other players in priority order (determined randomly at game start) |
+| **Reaction**              | An action that can respond to normal speed actions or other reactions when you have priority                                               |
+| **Reaction speed**        | Action speed that can respond to normal speed actions and other reactions                                                                  |
+| **Resistance**            | A unit's defensive stat; reduces incoming damage (damage = Power - Resistance)                                                             |
+| **Round**                 | A complete cycle where all players have taken one turn                                                                                     |
+| **Simultaneous damage**   | All combat damage is calculated and applied at the same time; deaths occur after all damage is resolved                                    |
+| **Spell**                 | A one-time effect card that goes to graveyard after resolving                                                                              |
+| **Tap**                   | Turning a card sideways to indicate it has been used this turn; tapped units cannot attack or block                                        |
+| **Triggered ability**     | An ability that automatically triggers when a specific condition is met                                                                    |
+| **Turn**                  | One player's complete sequence of phases (Start → Main → End)                                                                              |
+| **Untap**                 | Returning a tapped card to upright position, making it usable again                                                                        |
