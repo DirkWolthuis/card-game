@@ -1,6 +1,11 @@
 import { Entity, Resources, Zones, GameState } from '@game/models';
 import type { BoardProps } from 'boardgame.io/react';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+
+const gridTemplateAreas = `
+  "battlefield battlefield battlefield resources"
+  "battlefield battlefield battlefield card-zones"
+  "hand hand hand card-zones"
+`;
 
 interface PlayerZonesProps {
   playerId: string;
@@ -27,15 +32,15 @@ export function PlayerZones({
   const entitiesInHand = hand.entityIds.map((id) => entities[id]);
 
   return (
-    <PanelGroup direction="horizontal">
-      <Panel className="bg-red-500" defaultSize={30} minSize={20}>
-        left
-      </Panel>
-      <PanelResizeHandle />
-      <Panel className="bg-green-500" defaultSize={30} minSize={20}>
-        right
-      </Panel>
-    </PanelGroup>
+    <div
+      style={{ gridTemplateAreas: gridTemplateAreas }}
+      className="grid w-full h-full"
+    >
+      <div style={{ gridArea: 'battlefield' }}>battlefield</div>
+      <div style={{ gridArea: 'resources' }}>resources</div>
+      <div style={{ gridArea: 'card-zones' }}>card zones</div>
+      <div style={{ gridArea: 'hand' }}>hand</div>
+    </div>
   );
 
   // return (
