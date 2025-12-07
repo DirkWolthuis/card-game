@@ -4,7 +4,6 @@ export type CardId = string;
 
 export enum CardType {
   SPELL = 'spell',
-  UNIT = 'unit',
   LEADER = 'leader',
   TROOP = 'troop',
 }
@@ -23,5 +22,5 @@ export interface Card {
   effects: Effect[];
   pitchValue: number; // 1, 2, or 3 - mana value when pitched
   manaCost: number; // Mana cost required to play the card
-  unitStats?: UnitStats; // Only present for unit, leader, and troop types
+  unitStats?: UnitStats; // Only present for leader and troop types
 }

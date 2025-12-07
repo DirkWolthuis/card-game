@@ -5,6 +5,13 @@ import { executeEffect } from '../effects/execute-effect';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import { needsTargetSelection, getValidTargets } from '../effects/target-utils';
 
+/**
+ * Checks if a card type represents a unit (leader or troop)
+ */
+function isUnitType(cardType: CardType): boolean {
+  return cardType === CardType.LEADER || cardType === CardType.TROOP;
+}
+
 export const playCardFromHand: Move<GameState> = (
   { G, ctx, playerID },
   entityId: string
@@ -55,9 +62,8 @@ export const playCardFromHand: Move<GameState> = (
       (handEntityId) => handEntityId !== entityId
     );
 
-    // If the card is a unit (including leader/troop), place it on the battlefield
-    const isUnitCard = card.type === CardType.UNIT || card.type === CardType.LEADER || card.type === CardType.TROOP;
-    if (isUnitCard) {
+    // If the card is a unit (leader or troop), place it on the battlefield
+    if (isUnitType(card.type)) {
       playerState.zones.battlefield.entityIds.push(entityId);
     }
 

@@ -89,7 +89,10 @@ export function BattlefieldZone(props: BattlefieldZoneProps) {
           <div className="flex flex-wrap gap-4 justify-center">
             {props.battlefieldEntities.map((entity) => {
               const card = getCardById(entity.cardId);
-              if (!card) return null;
+              if (!card) {
+                console.error(`Card not found for entity ${entity.id} with cardId ${entity.cardId}`);
+                return null;
+              }
               
               return (
                 <div
