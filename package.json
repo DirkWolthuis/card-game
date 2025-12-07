@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "serve:ui": "nx run game-ui:dev",
+    "test:ui": "nx run game-ui:test",
     "reset": "nx reset"
   },
   "private": true,
@@ -64,6 +65,7 @@
     "immer": "^10.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-resizable-panels": "^3.0.6",
     "tailwindcss": "^4.1.17"
   }
 }

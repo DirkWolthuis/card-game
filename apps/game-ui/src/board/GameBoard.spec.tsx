@@ -2,9 +2,9 @@ import { render } from '@testing-library/react';
 import type { BoardProps } from 'boardgame.io/react';
 import type { GameState } from '@game/models';
 
-import Board from './board';
+import GameBoard from './GameBoard';
 
-describe('Board', () => {
+describe('GameBoard', () => {
   it('should render successfully', () => {
     const mockBoard: Partial<BoardProps<GameState>> = {
       G: {
@@ -38,7 +38,7 @@ describe('Board', () => {
     };
 
     const { baseElement } = render(
-      <Board {...(mockBoard as BoardProps<GameState>)} />
+      <GameBoard {...(mockBoard as BoardProps<GameState>)} />
     );
     expect(baseElement).toBeTruthy();
   });

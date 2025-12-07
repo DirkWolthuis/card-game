@@ -12,11 +12,11 @@
 
 ## Turn Structure
 
-| Phase     | Actions                                                                            |
-| --------- | ---------------------------------------------------------------------------------- |
-| **Start** | Untap all your cards; move all pitched cards to graveyard; draw to 7 cards         |
-| **Main**  | Play cards, activate abilities, attack, trade in marketplace, pitch cards for mana |
-| **End**   | Discard down to 7 cards                                                            |
+| Phase     | Actions                                                                                           |
+| --------- | ------------------------------------------------------------------------------------------------- |
+| **Start** | Empty mana pool; move all cards in Pitch zone to graveyard; Untap all your cards; draw to 7 cards |
+| **Main**  | Play cards, activate abilities, attack, trade in marketplace, pitch cards for mana                |
+| **End**   | Discard down to 7 cards                                                                           |
 
 ---
 
@@ -291,21 +291,20 @@ flowchart TD
 
 ### Pitching for Mana
 
-- Any card can be pitched for its pitch value (1, 2, or 3 mana)
-- **Pitch value is printed on the front of the card**
-- All cards have a pitch value, though some special cards may have a value of 0
+- Any (non-resource) card can be pitched for its pitch value (1, 2, or 3 mana)
+- When you pitch a card, the pitch value is added to your mana pool and the card is added to the players pitch zone
 - Pitching can **only be done on your own turn**
 - Pitching does **not** start a chain and cannot be responded to
 - No limit to how many cards you can pitch per turn
 - Mana from pitched cards can be spent on reactions during opponent's turn
-- **At the beginning of your next turn**:
-  - All pitched cards → graveyard (regardless of whether mana was used)
+- **At the start of each turn**:
+  - All cards in a player's pitch zone are placed into the graveyard (regardless of whether mana was used)
 
 ### Mana Pool
 
 - Unused mana does **not** empty at end of turn or phase
 - No mana pool limit
-- Mana can be stored between turns
+- Mana can be stored between turns in a round
 
 ### Resource Cards
 
