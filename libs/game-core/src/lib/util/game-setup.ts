@@ -62,13 +62,14 @@ const buildPlayerState = (
   const { handIds, deckIds } = splitStartingHand(entities, STARTING_HAND_SIZE);
 
   return {
-    resources: { life: 20 },
+    resources: { life: 20, mana: 0 },
     zones: {
       hand: { entityIds: handIds },
       battlefield: { entityIds: [] },
       graveyard: { entityIds: [] },
       exile: { entityIds: [] },
       deck: { entityIds: deckIds },
+      pitch: { entityIds: [] },
     },
     entities,
   };

@@ -2,6 +2,7 @@
 import type { Game } from 'boardgame.io';
 import { GameState, MoveType } from '@game/models';
 import { playCardFromHand, selectTarget } from './moves/card-moves';
+import { pitchCard } from './moves/resource-moves';
 import { setupPlayersState } from './util/game-setup';
 import {
   checkGameEnd,
@@ -19,6 +20,7 @@ export const GameEngine: Game<
   {
     playCardFromHand: typeof playCardFromHand;
     selectTarget: typeof selectTarget;
+    pitchCard: typeof pitchCard;
   }
 > = {
   name: 'card-game',
@@ -49,11 +51,25 @@ export const GameEngine: Game<
       },
     },
     /**
-     * Start Stage: At the beginning of each turn, automatically draw a card.
+     * Start Stage: At the beginning of each turn:
+     * - Empty mana pool (reset to 0)
+     * - Move all cards from pitch zone to graveyard
+     * - Untap all cards (not yet implemented)
+     * - Draw to 7 cards (currently draws 1 card)
      * Then transition to the main stage where the player can make moves.
      */
     onBegin: ({ G, ctx, events }) => {
       const currentPlayerId = ctx.currentPlayer;
+      const playerState = G.players[currentPlayerId];
+
+      // Empty mana pool
+      playerState.resources.mana = 0;
+
+      // Move all cards from pitch zone to graveyard
+      playerState.zones.graveyard.entityIds.push(
+        ...playerState.zones.pitch.entityIds
+      );
+      playerState.zones.pitch.entityIds = [];
 
       // Draw a card if possible (Start Stage - automatic, no manual moves)
       drawCardForPlayer(G, currentPlayerId);
@@ -70,6 +86,7 @@ export const GameEngine: Game<
         moves: {
           [MoveType.PLAY_CARD_FROM_HAND]: playCardFromHand,
           [MoveType.SELECT_TARGET]: selectTarget,
+          [MoveType.PITCH_CARD]: pitchCard,
           [MoveType.END_TURN]: {
             move: ({ G, events, ctx }) => {
               const currentPlayerId = ctx.currentPlayer;

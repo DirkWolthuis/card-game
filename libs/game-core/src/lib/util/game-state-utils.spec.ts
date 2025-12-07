@@ -15,13 +15,14 @@ describe('game-state-utils', () => {
     handEntityIds: string[] = [],
     deckEntityIds: string[] = []
   ): PlayerState => ({
-    resources: { life },
+    resources: { life, mana: 0 },
     zones: {
       hand: { entityIds: [...handEntityIds] },
       deck: { entityIds: [...deckEntityIds] },
       battlefield: { entityIds: [] },
       graveyard: { entityIds: [] },
       exile: { entityIds: [] },
+      pitch: { entityIds: [] },
     },
     entities: {},
   });
@@ -243,13 +244,14 @@ describe('game-state-utils', () => {
       handEntityIds: string[] = [],
       graveyardEntityIds: string[] = []
     ): PlayerState => ({
-      resources: { life },
+      resources: { life, mana: 0 },
       zones: {
         hand: { entityIds: [...handEntityIds] },
         deck: { entityIds: [] },
         battlefield: { entityIds: [] },
         graveyard: { entityIds: [...graveyardEntityIds] },
         exile: { entityIds: [] },
+        pitch: { entityIds: [] },
       },
       entities: {},
     });

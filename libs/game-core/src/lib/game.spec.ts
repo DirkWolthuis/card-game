@@ -8,7 +8,7 @@ describe('GameEngine', () => {
     handSize = 0,
     deckSize = 0
   ): PlayerState => ({
-    resources: { life },
+    resources: { life, mana: 0 },
     zones: {
       hand: {
         entityIds: Array.from({ length: handSize }, (_, i) => `hand-${i}`),
@@ -19,6 +19,7 @@ describe('GameEngine', () => {
       battlefield: { entityIds: [] },
       graveyard: { entityIds: [] },
       exile: { entityIds: [] },
+      pitch: { entityIds: [] },
     },
     entities: {},
   });
@@ -95,6 +96,66 @@ describe('GameEngine', () => {
         expect(mockEvents.setActivePlayers).toHaveBeenCalledWith({
           currentPlayer: 'mainStage',
         });
+      });
+
+      it('should reset mana pool to 0 on turn begin', () => {
+        const gameState: GameState = {
+          players: {
+            '0': {
+              ...createPlayerState(20, 5, 10),
+              resources: { life: 20, mana: 5 }, // Player has mana from previous turn
+            },
+          },
+        };
+
+        const mockEvents = {
+          setActivePlayers: jest.fn(),
+        };
+
+        const turn = GameEngine.turn as TurnConfig<GameState>;
+        turn.onBegin?.({
+          G: gameState,
+          ctx: { currentPlayer: '0' },
+          events: mockEvents,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+
+        // Mana should be reset to 0
+        expect(gameState.players['0'].resources.mana).toBe(0);
+      });
+
+      it('should move cards from pitch zone to graveyard on turn begin', () => {
+        const playerState = createPlayerState(20, 5, 10);
+        playerState.zones.pitch.entityIds = ['pitch-1', 'pitch-2', 'pitch-3'];
+        playerState.zones.graveyard.entityIds = ['grave-1'];
+
+        const gameState: GameState = {
+          players: {
+            '0': playerState,
+          },
+        };
+
+        const mockEvents = {
+          setActivePlayers: jest.fn(),
+        };
+
+        const turn = GameEngine.turn as TurnConfig<GameState>;
+        turn.onBegin?.({
+          G: gameState,
+          ctx: { currentPlayer: '0' },
+          events: mockEvents,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+
+        // Pitch zone should be empty
+        expect(gameState.players['0'].zones.pitch.entityIds).toEqual([]);
+        // All pitched cards should be in graveyard
+        expect(gameState.players['0'].zones.graveyard.entityIds).toEqual([
+          'grave-1',
+          'pitch-1',
+          'pitch-2',
+          'pitch-3',
+        ]);
       });
     });
 
@@ -176,13 +237,14 @@ describe('GameEngine', () => {
         const gameState: GameState = {
           players: {
             '0': {
-              resources: { life: 20 },
+              resources: { life: 20, mana: 0 },
               zones: {
                 hand: { entityIds: ['card-1', 'card-2', 'card-3', 'card-4', 'card-5', 'card-6', 'card-7', 'card-8'] },
                 deck: { entityIds: [] },
                 battlefield: { entityIds: [] },
                 graveyard: { entityIds: [] },
                 exile: { entityIds: [] },
+                pitch: { entityIds: [] },
               },
               entities: {},
             },
@@ -213,13 +275,14 @@ describe('GameEngine', () => {
         const gameState: GameState = {
           players: {
             '0': {
-              resources: { life: 20 },
+              resources: { life: 20, mana: 0 },
               zones: {
                 hand: { entityIds: ['card-1', 'card-2', 'card-3', 'card-4', 'card-5', 'card-6', 'card-7', 'card-8'] },
                 deck: { entityIds: [] },
                 battlefield: { entityIds: [] },
                 graveyard: { entityIds: [] },
                 exile: { entityIds: [] },
+                pitch: { entityIds: [] },
               },
               entities: {},
             },
@@ -248,13 +311,14 @@ describe('GameEngine', () => {
         const gameState: GameState = {
           players: {
             '0': {
-              resources: { life: 20 },
+              resources: { life: 20, mana: 0 },
               zones: {
                 hand: { entityIds: ['card-1', 'card-2', 'card-3', 'card-4', 'card-5', 'card-6', 'card-7', 'card-8', 'card-9'] },
                 deck: { entityIds: [] },
                 battlefield: { entityIds: [] },
                 graveyard: { entityIds: [] },
                 exile: { entityIds: [] },
+                pitch: { entityIds: [] },
               },
               entities: {},
             },
@@ -283,13 +347,14 @@ describe('GameEngine', () => {
         const gameState: GameState = {
           players: {
             '0': {
-              resources: { life: 20 },
+              resources: { life: 20, mana: 0 },
               zones: {
                 hand: { entityIds: ['card-1', 'card-2'] },
                 deck: { entityIds: [] },
                 battlefield: { entityIds: [] },
                 graveyard: { entityIds: [] },
                 exile: { entityIds: [] },
+                pitch: { entityIds: [] },
               },
               entities: {},
             },

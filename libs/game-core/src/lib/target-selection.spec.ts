@@ -38,13 +38,13 @@ describe('Target Selection', () => {
       gameState = {
         players: {
           '0': {
-            resources: { life: 20 },
-            zones: { hand: { entityIds: [] }, deck: { entityIds: [] }, battlefield: { entityIds: [] }, graveyard: { entityIds: [] }, exile: { entityIds: [] } },
+            resources: { life: 20, mana: 0 },
+            zones: { hand: { entityIds: [] }, deck: { entityIds: [] }, battlefield: { entityIds: [] }, graveyard: { entityIds: [] }, exile: { entityIds: [] }, pitch: { entityIds: [] } },
             entities: {},
           },
           '1': {
-            resources: { life: 20 },
-            zones: { hand: { entityIds: [] }, deck: { entityIds: [] }, battlefield: { entityIds: [] }, graveyard: { entityIds: [] }, exile: { entityIds: [] } },
+            resources: { life: 20, mana: 0 },
+            zones: { hand: { entityIds: [] }, deck: { entityIds: [] }, battlefield: { entityIds: [] }, graveyard: { entityIds: [] }, exile: { entityIds: [] }, pitch: { entityIds: [] } },
             entities: {},
           },
         },
@@ -91,8 +91,8 @@ describe('Target Selection', () => {
       beforeEach(() => {
         // Add a third player who is eliminated
         gameState.players['2'] = {
-          resources: { life: 0 },
-          zones: { hand: { entityIds: [] }, deck: { entityIds: [] }, battlefield: { entityIds: [] }, graveyard: { entityIds: [] }, exile: { entityIds: [] } },
+          resources: { life: 0, mana: 0 },
+          zones: { hand: { entityIds: [] }, deck: { entityIds: [] }, battlefield: { entityIds: [] }, graveyard: { entityIds: [] }, exile: { entityIds: [] }, pitch: { entityIds: [] } },
           entities: {},
         };
       });
@@ -126,8 +126,8 @@ describe('Target Selection', () => {
       it('should exclude eliminated players from OPPONENT targets in 4 player game', () => {
         // Player 3 is alive
         gameState.players['3'] = {
-          resources: { life: 15 },
-          zones: { hand: { entityIds: [] }, deck: { entityIds: [] }, battlefield: { entityIds: [] }, graveyard: { entityIds: [] }, exile: { entityIds: [] } },
+          resources: { life: 15, mana: 0 },
+          zones: { hand: { entityIds: [] }, deck: { entityIds: [] }, battlefield: { entityIds: [] }, graveyard: { entityIds: [] }, exile: { entityIds: [] }, pitch: { entityIds: [] } },
           entities: {},
         };
 

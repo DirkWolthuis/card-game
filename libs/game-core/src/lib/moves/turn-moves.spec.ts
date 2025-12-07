@@ -22,13 +22,14 @@ describe('turn-moves', () => {
     deckEntityIds: string[] = [],
     graveyardEntityIds: string[] = []
   ): PlayerState => ({
-    resources: { life: 20 },
+    resources: { life: 20, mana: 0 },
     zones: {
       hand: { entityIds: [...handEntityIds] },
       deck: { entityIds: [...deckEntityIds] },
       battlefield: { entityIds: [] },
       graveyard: { entityIds: [...graveyardEntityIds] },
       exile: { entityIds: [] },
+      pitch: { entityIds: [] },
     },
     entities: {},
   });
