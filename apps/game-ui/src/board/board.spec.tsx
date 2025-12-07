@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import type { BoardProps } from 'boardgame.io/react';
 import type { GameState } from '@game/models';
 
-import Board from './board';
+import Board from './Board';
 
 describe('Board', () => {
   it('should render successfully', () => {

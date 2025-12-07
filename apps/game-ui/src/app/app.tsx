@@ -5,7 +5,7 @@ import { Local } from 'boardgame.io/multiplayer';
 import { Debug } from 'boardgame.io/debug';
 
 import { GameEngine } from '@game/core';
-import Board from '../board/board';
+import Board from '../board/Board';
 
 const showDebugTools = import.meta.env.VITE_SHOW_DEBUG_TOOLS === 'true';
 

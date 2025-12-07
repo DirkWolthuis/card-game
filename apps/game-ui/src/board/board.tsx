@@ -4,7 +4,6 @@ import { PlayerZones } from './zones/PlayerZones';
 import { TargetSelectionModal } from './components/TargetSelectionModal';
 import { EndGameScreen } from './components/EndGameScreen';
 import { getValidTargets, getAllPlayerIds, getPlayerCount } from '@game/core';
-import { getGridConfig } from './grid-config';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 
 function PanelResizeHandleWrapper() {
@@ -41,9 +40,6 @@ export function Board(props: BoardProps<GameState>) {
   // Get all player IDs and count using utility functions
   const allPlayerIds = getAllPlayerIds(G);
   const playerCount = getPlayerCount(G);
-
-  // Get grid configuration based on player count
-  const gridConfig = getGridConfig(playerCount);
 
   return (
     <>
