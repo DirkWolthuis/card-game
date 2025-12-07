@@ -8,7 +8,6 @@ interface CardProps {
 }
 
 interface DragItem {
-  type: string;
   entityId: string;
   card: CardModel;
 }
@@ -19,7 +18,6 @@ export function Card(props: CardProps) {
   const [{ isDragging }, drag] = useDrag<DragItem, void, { isDragging: boolean }>(() => ({
     type: CARD_DRAG_TYPE,
     item: {
-      type: CARD_DRAG_TYPE,
       entityId: props.entity.id,
       card: props.card,
     },

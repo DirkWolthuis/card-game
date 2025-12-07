@@ -3,7 +3,6 @@ import { CARD_DRAG_TYPE } from '../components/Card';
 import { Card as CardModel } from '@game/models';
 
 interface DragItem {
-  type: string;
   entityId: string;
   card: CardModel;
 }
@@ -17,7 +16,7 @@ export function BattlefieldZone(props: BattlefieldZoneProps) {
   const [{ isOver }, drop] = useDrop<DragItem, void, { isOver: boolean }>(() => ({
     accept: CARD_DRAG_TYPE,
     collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
+      isOver: monitor.isOver({ shallow: true }),
     }),
   }), []);
 
