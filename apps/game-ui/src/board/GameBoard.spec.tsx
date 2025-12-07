@@ -1,6 +1,8 @@
 import { render } from '@testing-library/react';
 import type { BoardProps } from 'boardgame.io/react';
 import type { GameState } from '@game/models';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import GameBoard from './GameBoard';
 
@@ -38,7 +40,9 @@ describe('GameBoard', () => {
     };
 
     const { baseElement } = render(
-      <GameBoard {...(mockBoard as BoardProps<GameState>)} />
+      <DndProvider backend={HTML5Backend}>
+        <GameBoard {...(mockBoard as BoardProps<GameState>)} />
+      </DndProvider>
     );
     expect(baseElement).toBeTruthy();
   });

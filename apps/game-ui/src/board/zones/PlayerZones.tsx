@@ -27,13 +27,21 @@ export function PlayerZones({
   const { hand } = zones;
   const entitiesInHand = hand.entityIds.map((id) => entities[id]);
 
+  const handlePlayCard = (entityId: string) => {
+    board.moves[MoveType.PLAY_CARD_FROM_HAND](entityId);
+  };
+
+  const handlePitchCard = (entityId: string) => {
+    board.moves[MoveType.PITCH_CARD](entityId);
+  };
+
   return (
     <div
       style={{ gridTemplateAreas: gridTemplateAreas }}
       className="grid w-full h-full"
     >
       <div style={{ gridArea: 'battlefield' }}>
-        <BattlefieldZone />
+        <BattlefieldZone onPlayCard={handlePlayCard} onPitchCard={handlePitchCard} />
       </div>
       <div style={{ gridArea: 'resources' }}>resources</div>
       <div style={{ gridArea: 'card-zones' }}>card zones</div>
