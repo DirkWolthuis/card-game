@@ -5,13 +5,13 @@ import { Local } from 'boardgame.io/multiplayer';
 import { Debug } from 'boardgame.io/debug';
 
 import { GameEngine } from '@game/core';
-import Board from '../board/Board';
+import GameBoard from '../board/GameBoard';
 
 const showDebugTools = import.meta.env.VITE_SHOW_DEBUG_TOOLS === 'true';
 
 const CardGameClient = Client({
   game: GameEngine,
-  board: Board,
+  board: GameBoard,
   multiplayer: Local(),
   debug: showDebugTools ? { impl: Debug } : false,
 });

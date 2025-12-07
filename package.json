@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "serve:ui": "nx run game-ui:dev",
+    "test:ui": "nx run game-ui:test",
     "reset": "nx reset"
   },
   "private": true,

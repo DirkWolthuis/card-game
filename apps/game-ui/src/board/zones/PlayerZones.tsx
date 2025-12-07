@@ -18,15 +18,9 @@ interface PlayerZonesProps {
   board: BoardProps<GameState>;
 }
 
-/**
- * Container component that renders all zones for a player.
- * This component can be reused for both the current player and opponents.
- */
 export function PlayerZones({
-  playerId,
   zones,
   entities,
-  resources,
   isMyTurn,
   board,
 }: PlayerZonesProps) {

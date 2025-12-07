@@ -3,7 +3,7 @@ import type { BoardProps } from 'boardgame.io/react';
 import { PlayerZones } from './zones/PlayerZones';
 import { TargetSelectionModal } from './components/TargetSelectionModal';
 import { EndGameScreen } from './components/EndGameScreen';
-import { getValidTargets, getAllPlayerIds, getPlayerCount } from '@game/core';
+import { getValidTargets } from '@game/core';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 
 function PanelResizeHandleWrapper() {
@@ -23,7 +23,7 @@ function PanelResizeHandleWrapper() {
   );
 }
 
-export function Board(props: BoardProps<GameState>) {
+export function GameBoard(props: BoardProps<GameState>) {
   const { playerID, G, ctx, moves } = props;
   const currentPlayerID = playerID as string;
   const { zones, entities, resources } = G.players[currentPlayerID];
@@ -36,10 +36,6 @@ export function Board(props: BoardProps<GameState>) {
   const validTargets = pendingSelection
     ? getValidTargets(pendingSelection.effect, G, ctx.currentPlayer)
     : [];
-
-  // Get all player IDs and count using utility functions
-  const allPlayerIds = getAllPlayerIds(G);
-  const playerCount = getPlayerCount(G);
 
   return (
     <>
@@ -82,4 +78,4 @@ export function Board(props: BoardProps<GameState>) {
   );
 }
 
-export default Board;
+export default GameBoard;
