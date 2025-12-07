@@ -20,7 +20,15 @@ export const playCardFromHand: Move<GameState> = (
     return INVALID_MOVE;
   }
 
+  // Check if player has enough mana to play the card
+  if (playerState.resources.mana < card.manaCost) {
+    return INVALID_MOVE;
+  }
+
   if (hasCardInHand && card) {
+    // Reduce mana before playing the card
+    playerState.resources.mana -= card.manaCost;
+
     // Check if any effect needs target selection
     const firstEffectNeedingTarget = card.effects.find(needsTargetSelection);
     
