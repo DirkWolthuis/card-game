@@ -17,22 +17,15 @@ export const pitchCard: Move<GameState> = (
   const playerState = G.players[playerID];
   
   // Verify card is in hand
-  const cardInHand = playerState.zones.hand.entityIds.find(
-    (handEntityId) => handEntityId === entityId
-  );
-  
-  if (!cardInHand) {
+  if (!playerState.zones.hand.entityIds.includes(entityId)) {
     return INVALID_MOVE;
   }
   
   // Get the card to find its pitch value
   const entity = playerState.entities[entityId];
-  if (!entity) {
-    return INVALID_MOVE;
-  }
+  const card = entity ? getCardById(entity.cardId) : undefined;
   
-  const card = getCardById(entity.cardId);
-  if (!card) {
+  if (!entity || !card) {
     return INVALID_MOVE;
   }
   
