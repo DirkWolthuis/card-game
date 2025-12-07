@@ -21,6 +21,7 @@ export function HandZone(props: HandZoneProps) {
       <Card
         key={entity.id}
         card={card}
+        entity={entity}
         onPlayCard={() =>
           props.board.moves[MoveType.PLAY_CARD_FROM_HAND](entity.id)
         }

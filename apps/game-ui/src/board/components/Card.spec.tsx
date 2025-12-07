@@ -1,6 +1,8 @@
 import { render } from '@testing-library/react';
-import { Card as CardModel } from '@game/models';
+import { Card as CardModel, Entity } from '@game/models';
 import { vi } from 'vitest';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import Card from './Card';
 
@@ -11,11 +13,21 @@ describe('Card', () => {
       name: 'Test Card',
       displayText: 'Test card description',
       effects: [],
+      pitchValue: 1,
+      manaCost: 2,
+    };
+    const mockEntity: Entity = {
+      id: 'entity-1',
+      cardId: 'test-card-1',
+      ownerId: 'player-1',
+      controllerId: 'player-1',
     };
     const mockOnPlayCard = vi.fn();
 
     const { baseElement } = render(
-      <Card card={mockCard} onPlayCard={mockOnPlayCard} />
+      <DndProvider backend={HTML5Backend}>
+        <Card card={mockCard} entity={mockEntity} onPlayCard={mockOnPlayCard} />
+      </DndProvider>
     );
     expect(baseElement).toBeTruthy();
   });
