@@ -298,7 +298,7 @@ flowchart TD
 - No limit to how many cards you can pitch per turn
 - Mana from pitched cards can be spent on reactions during opponent's turn
 - **At the start of each turn**:
-  - All cards in player's pitch zone are placed into the graveyard (regardless of whether mana was used)
+  - All cards in a player's pitch zone are placed into the graveyard (regardless of whether mana was used)
 
 ### Mana Pool
 
