@@ -1,7 +1,7 @@
 import { Entity, Resources, Zones, GameState, MoveType } from '@game/models';
 import type { BoardProps } from 'boardgame.io/react';
-import HandZone from './HandZone';
-import BattlefieldZone from './BattlefieldZone';
+import { HandZone } from './HandZone';
+import { BattlefieldZone } from './BattlefieldZone';
 
 const gridTemplateAreas = `
   "battlefield battlefield battlefield resources"
