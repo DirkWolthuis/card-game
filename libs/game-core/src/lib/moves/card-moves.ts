@@ -21,6 +21,14 @@ export const playCardFromHand: Move<GameState> = (
   }
 
   if (hasCardInHand && card) {
+    // Check if player has enough mana to play the card
+    if (playerState.resources.mana < card.manaCost) {
+      return INVALID_MOVE;
+    }
+
+    // Reduce mana before playing the card
+    playerState.resources.mana -= card.manaCost;
+
     // Check if any effect needs target selection
     const firstEffectNeedingTarget = card.effects.find(needsTargetSelection);
     
@@ -41,14 +49,16 @@ export const playCardFromHand: Move<GameState> = (
       // No targeting needed, execute all effects immediately
       card.effects.forEach((effect) => executeEffect(G, ctx, effect));
     }
+
+    // Remove card from hand
+    playerState.zones.hand.entityIds = playerState.zones.hand.entityIds.filter(
+      (handEntityId) => handEntityId !== entityId
+    );
+
+    return G;
   }
 
-  // Remove card from hand
-  playerState.zones.hand.entityIds = playerState.zones.hand.entityIds.filter(
-    (handEntityId) => handEntityId !== entityId
-  );
-
-  return G;
+  return INVALID_MOVE;
 };
 
 /**

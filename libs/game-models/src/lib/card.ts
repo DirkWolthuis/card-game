@@ -8,4 +8,5 @@ export interface Card {
   displayText: string;
   effects: Effect[];
   pitchValue: number; // 1, 2, or 3 - mana value when pitched
+  manaCost: number; // Mana cost required to play the card
 }
