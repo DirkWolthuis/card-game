@@ -7,4 +7,5 @@ export interface Card {
   name: string;
   displayText: string;
   effects: Effect[];
+  pitchValue: number; // 1, 2, or 3 - mana value when pitched
 }

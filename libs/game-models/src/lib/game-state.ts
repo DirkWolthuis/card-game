@@ -28,4 +28,5 @@ export interface PlayerState {
 
 export interface Resources {
   life: number;
+  mana: number; // Available mana from pitched cards
 }

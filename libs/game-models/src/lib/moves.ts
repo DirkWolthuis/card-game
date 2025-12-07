@@ -4,4 +4,5 @@ export enum MoveType {
   SELECT_TARGET = 'selectTarget',
   DRAW_CARD = 'drawCard',
   DISCARD_FROM_HAND = 'discardFromHand',
+  PITCH_CARD = 'pitchCard',
 }

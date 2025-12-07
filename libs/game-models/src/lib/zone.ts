@@ -10,4 +10,5 @@ export interface Zones {
   graveyard: Zone;
   exile: Zone;
   deck: Zone;
+  pitch: Zone; // Cards pitched for mana
 }
