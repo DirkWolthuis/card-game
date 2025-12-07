@@ -1,5 +1,5 @@
 import { getCardById } from '@game/data';
-import { GameState } from '@game/models';
+import { CardType, GameState } from '@game/models';
 import { Move } from 'boardgame.io';
 import { executeEffect } from '../effects/execute-effect';
 import { INVALID_MOVE } from 'boardgame.io/core';
@@ -54,6 +54,12 @@ export const playCardFromHand: Move<GameState> = (
     playerState.zones.hand.entityIds = playerState.zones.hand.entityIds.filter(
       (handEntityId) => handEntityId !== entityId
     );
+
+    // If the card is a unit (including leader/troop), place it on the battlefield
+    const isUnitCard = card.type === CardType.UNIT || card.type === CardType.LEADER || card.type === CardType.TROOP;
+    if (isUnitCard) {
+      playerState.zones.battlefield.entityIds.push(entityId);
+    }
 
     return G;
   }

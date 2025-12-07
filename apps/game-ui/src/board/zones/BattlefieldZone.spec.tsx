@@ -12,7 +12,11 @@ describe('BattlefieldZone', () => {
 
     const { baseElement } = render(
       <DndProvider backend={HTML5Backend}>
-        <BattlefieldZone onPlayCard={mockOnPlayCard} onPitchCard={mockOnPitchCard} />
+        <BattlefieldZone 
+          onPlayCard={mockOnPlayCard} 
+          onPitchCard={mockOnPitchCard}
+          battlefieldEntities={[]}
+        />
       </DndProvider>
     );
     expect(baseElement).toBeTruthy();

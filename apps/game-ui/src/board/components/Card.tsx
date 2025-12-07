@@ -41,6 +41,27 @@ export function Card(props: CardProps) {
         </div>
       </div>
       <h1 className="text-center font-bold mb-2">{props.card.name}</h1>
+      <div className="text-center mb-2">
+        <span className="inline-block bg-purple-600 text-white px-2 py-1 rounded text-xs">
+          {props.card.type}
+        </span>
+      </div>
+      {props.card.unitStats && (
+        <div className="flex justify-around mb-2 text-xs border-t border-b py-2">
+          <div className="text-center">
+            <div className="font-bold">⚔️ {props.card.unitStats.power}</div>
+            <div className="text-gray-600">PWR</div>
+          </div>
+          <div className="text-center">
+            <div className="font-bold">🛡️ {props.card.unitStats.resistance}</div>
+            <div className="text-gray-600">RES</div>
+          </div>
+          <div className="text-center">
+            <div className="font-bold">❤️ {props.card.unitStats.health}</div>
+            <div className="text-gray-600">HP</div>
+          </div>
+        </div>
+      )}
       <p className="text-xs text-gray-600 text-center mb-2">{props.card.displayText}</p>
       <button
         onClick={() => props.onPlayCard()}

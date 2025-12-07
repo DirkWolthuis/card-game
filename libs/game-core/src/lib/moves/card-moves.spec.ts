@@ -245,4 +245,147 @@ describe('card-moves', () => {
       expect(gameState.players['0'].resources.mana).toBe(5); // Unchanged
     });
   });
+
+  describe('playCardFromHand - unit cards', () => {
+    it('should place a leader card on the battlefield when played', () => {
+      const gameState: GameState = {
+        players: {
+          '0': {
+            ...createPlayerState([], 3),
+            zones: {
+              ...createPlayerState([], 3).zones,
+              hand: { entityIds: ['unit-1'] },
+            },
+            entities: {
+              'unit-1': { id: 'unit-1', cardId: 'leader-1', ownerId: '0', controllerId: '0' }, // Knight Commander - cost 3
+            },
+          },
+          '1': createPlayerState([], 0),
+        },
+      };
+
+      const result = callMove(
+        playCardFromHand,
+        {
+          G: gameState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ctx: { currentPlayer: '0' } as any,
+          playerID: '0',
+        },
+        'unit-1'
+      );
+
+      expect(result).toBe(gameState);
+      expect(gameState.players['0'].zones.hand.entityIds).toEqual([]);
+      expect(gameState.players['0'].zones.battlefield.entityIds).toEqual(['unit-1']);
+      expect(gameState.players['0'].resources.mana).toBe(0); // 3 - 3 = 0
+    });
+
+    it('should place a troop card on the battlefield when played', () => {
+      const gameState: GameState = {
+        players: {
+          '0': {
+            ...createPlayerState([], 1),
+            zones: {
+              ...createPlayerState([], 1).zones,
+              hand: { entityIds: ['unit-2'] },
+            },
+            entities: {
+              'unit-2': { id: 'unit-2', cardId: 'troop-1', ownerId: '0', controllerId: '0' }, // Foot Soldier - cost 1
+            },
+          },
+          '1': createPlayerState([], 0),
+        },
+      };
+
+      const result = callMove(
+        playCardFromHand,
+        {
+          G: gameState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ctx: { currentPlayer: '0' } as any,
+          playerID: '0',
+        },
+        'unit-2'
+      );
+
+      expect(result).toBe(gameState);
+      expect(gameState.players['0'].zones.hand.entityIds).toEqual([]);
+      expect(gameState.players['0'].zones.battlefield.entityIds).toEqual(['unit-2']);
+      expect(gameState.players['0'].resources.mana).toBe(0); // 1 - 1 = 0
+    });
+
+    it('should not place spell cards on the battlefield', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(['hand-1'], 1), // Firebolt spell
+          '1': createPlayerState([], 0),
+        },
+      };
+
+      const result = callMove(
+        playCardFromHand,
+        {
+          G: gameState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ctx: { currentPlayer: '0' } as any,
+          playerID: '0',
+        },
+        'hand-1'
+      );
+
+      expect(result).toBe(gameState);
+      expect(gameState.players['0'].zones.hand.entityIds).toEqual([]);
+      expect(gameState.players['0'].zones.battlefield.entityIds).toEqual([]);
+    });
+
+    it('should place multiple unit cards on the battlefield', () => {
+      const gameState: GameState = {
+        players: {
+          '0': {
+            ...createPlayerState([], 10),
+            zones: {
+              ...createPlayerState([], 10).zones,
+              hand: { entityIds: ['unit-1', 'unit-2'] },
+            },
+            entities: {
+              'unit-1': { id: 'unit-1', cardId: 'leader-1', ownerId: '0', controllerId: '0' }, // Knight Commander - cost 3
+              'unit-2': { id: 'unit-2', cardId: 'troop-1', ownerId: '0', controllerId: '0' }, // Foot Soldier - cost 1
+            },
+          },
+          '1': createPlayerState([], 0),
+        },
+      };
+
+      // Play first unit
+      callMove(
+        playCardFromHand,
+        {
+          G: gameState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ctx: { currentPlayer: '0' } as any,
+          playerID: '0',
+        },
+        'unit-1'
+      );
+
+      expect(gameState.players['0'].zones.battlefield.entityIds).toEqual(['unit-1']);
+      expect(gameState.players['0'].resources.mana).toBe(7); // 10 - 3 = 7
+
+      // Play second unit
+      callMove(
+        playCardFromHand,
+        {
+          G: gameState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ctx: { currentPlayer: '0' } as any,
+          playerID: '0',
+        },
+        'unit-2'
+      );
+
+      expect(gameState.players['0'].zones.battlefield.entityIds).toEqual(['unit-1', 'unit-2']);
+      expect(gameState.players['0'].resources.mana).toBe(6); // 7 - 1 = 6
+    });
+  });
 });
