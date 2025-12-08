@@ -96,7 +96,7 @@ describe('GameEngine - Setup Phase', () => {
       };
 
       const mockCtx = {
-        playOrder: { '0': '0', '1': '1' },
+        playOrder: ['0', '1'],
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -134,7 +134,7 @@ describe('GameEngine - Setup Phase', () => {
   describe('setup', () => {
     it('should initialize setupData with empty player setups', () => {
       const mockCtx = {
-        playOrder: { '0': '0', '1': '1' },
+        playOrder: ['0', '1'],
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -3,21 +3,18 @@ import type { Game } from 'boardgame.io';
 import { GameState, MoveType } from '@game/models';
 import { playCardFromHand, selectTarget } from './moves/card-moves';
 import { pitchCard } from './moves/resource-moves';
+import { endTurn, discardFromHand } from './moves/turn-moves';
 import { setPlayerName, selectDeck, setReady } from './moves/setup-moves';
+import { initializeSetupData } from './util/game-setup';
 import {
-  initializeSetupData,
-  buildPlayerStateFromDecks,
-} from './util/game-setup';
+  shouldEndSetupPhase,
+  onSetupPhaseEnd,
+  onTurnBegin,
+} from './util/phase-utils';
 import {
   checkGameEnd,
   isPlayerEliminated,
-  drawCardForPlayer,
-  discardCardForPlayer,
 } from './util/game-state-utils';
-import { INVALID_MOVE } from 'boardgame.io/core';
-
-/** Maximum hand size - players must discard down to this limit at end of turn */
-const MAX_HAND_SIZE = 7;
 
 export const GameEngine: Game<
   GameState,
@@ -28,6 +25,8 @@ export const GameEngine: Game<
     setPlayerName: typeof setPlayerName;
     selectDeck: typeof selectDeck;
     setReady: typeof setReady;
+    endTurn: typeof endTurn;
+    discardFromHand: typeof discardFromHand;
   }
 > = {
   name: 'card-game',
@@ -43,30 +42,9 @@ export const GameEngine: Game<
         [MoveType.SELECT_DECK]: selectDeck,
         [MoveType.SET_READY]: setReady,
       },
-      endIf: ({ G }) => {
-        // Check if all players are ready
-        if (!G.setupData) return false;
-
-        const allReady = Object.values(G.setupData.playerSetup).every(
-          (setup) => setup.isReady
-        );
-        return allReady;
-      },
+      endIf: shouldEndSetupPhase,
       next: 'play',
-      onEnd: ({ G, ctx }) => {
-        // Build player states from selected decks
-        if (!G.setupData) return;
-
-        for (const playerId of Object.keys(ctx.playOrder)) {
-          const playerSetup = G.setupData.playerSetup[playerId];
-          if (playerSetup.selectedDeckIds.length === 2) {
-            G.players[playerId] = buildPlayerStateFromDecks(
-              playerId,
-              playerSetup.selectedDeckIds
-            );
-          }
-        }
-      },
+      onEnd: onSetupPhaseEnd,
     },
     play: {
       turn: {
@@ -100,25 +78,7 @@ export const GameEngine: Game<
          * - Draw to 7 cards (currently draws 1 card)
          * Then transition to the main stage where the player can make moves.
          */
-        onBegin: ({ G, ctx, events }) => {
-          const currentPlayerId = ctx.currentPlayer;
-          const playerState = G.players[currentPlayerId];
-
-          // Empty mana pool
-          playerState.resources.mana = 0;
-
-          // Move all cards from pitch zone to graveyard
-          playerState.zones.graveyard.entityIds.push(
-            ...playerState.zones.pitch.entityIds
-          );
-          playerState.zones.pitch.entityIds = [];
-
-          // Draw a card if possible (Start Stage - automatic, no manual moves)
-          drawCardForPlayer(G, currentPlayerId);
-
-          // Transition to main stage for player actions
-          events.setActivePlayers({ currentPlayer: 'mainStage' });
-        },
+        onBegin: onTurnBegin,
         stages: {
           /**
            * Main Stage: Player makes their moves (play cards, use abilities, etc.)
@@ -129,22 +89,7 @@ export const GameEngine: Game<
               [MoveType.PLAY_CARD_FROM_HAND]: playCardFromHand,
               [MoveType.SELECT_TARGET]: selectTarget,
               [MoveType.PITCH_CARD]: pitchCard,
-              [MoveType.END_TURN]: {
-                move: ({ G, events, ctx }) => {
-                  const currentPlayerId = ctx.currentPlayer;
-                  const playerState = G.players[currentPlayerId];
-
-                  // Check if player needs to discard
-                  if (playerState.zones.hand.entityIds.length > MAX_HAND_SIZE) {
-                    // Transition to end stage for discarding
-                    events.setActivePlayers({ currentPlayer: 'endStage' });
-                  } else {
-                    // No discarding needed, end the turn directly
-                    events.endTurn();
-                  }
-                  return G;
-                },
-              },
+              [MoveType.END_TURN]: endTurn,
             },
           },
           /**
@@ -153,23 +98,7 @@ export const GameEngine: Game<
            */
           endStage: {
             moves: {
-              [MoveType.DISCARD_FROM_HAND]: (
-                { G, playerID, events },
-                entityId: string
-              ) => {
-                const success = discardCardForPlayer(G, playerID, entityId);
-                if (!success) {
-                  return INVALID_MOVE;
-                }
-
-                // Check if we can end the turn now
-                const playerState = G.players[playerID];
-                if (playerState.zones.hand.entityIds.length <= MAX_HAND_SIZE) {
-                  events.endTurn();
-                }
-
-                return G;
-              },
+              [MoveType.DISCARD_FROM_HAND]: discardFromHand,
             },
           },
         },

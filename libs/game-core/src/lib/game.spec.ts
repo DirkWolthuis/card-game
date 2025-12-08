@@ -191,7 +191,7 @@ describe('GameEngine', () => {
         const mainStage = turn.stages?.['mainStage'] as StageConfig<GameState>;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const endTurnMove = mainStage.moves?.[MoveType.END_TURN] as any;
-        endTurnMove.move({
+        endTurnMove({
           G: gameState,
           ctx: { currentPlayer: '0' },
           events: mockEvents,
@@ -219,7 +219,7 @@ describe('GameEngine', () => {
         const mainStage = turn.stages?.['mainStage'] as StageConfig<GameState>;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const endTurnMove = mainStage.moves?.[MoveType.END_TURN] as any;
-        endTurnMove.move({
+        endTurnMove({
           G: gameState,
           ctx: { currentPlayer: '0' },
           events: mockEvents,
