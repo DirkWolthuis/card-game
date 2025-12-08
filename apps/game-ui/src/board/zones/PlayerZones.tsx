@@ -24,8 +24,9 @@ export function PlayerZones({
   isMyTurn,
   board,
 }: PlayerZonesProps) {
-  const { hand } = zones;
+  const { hand, battlefield } = zones;
   const entitiesInHand = hand.entityIds.map((id) => entities[id]);
+  const entitiesOnBattlefield = battlefield.entityIds.map((id) => entities[id]);
 
   const handlePlayCard = (entityId: string) => {
     board.moves[MoveType.PLAY_CARD_FROM_HAND](entityId);
@@ -41,7 +42,11 @@ export function PlayerZones({
       className="grid w-full h-full"
     >
       <div style={{ gridArea: 'battlefield' }}>
-        <BattlefieldZone onPlayCard={handlePlayCard} onPitchCard={handlePitchCard} />
+        <BattlefieldZone 
+          onPlayCard={handlePlayCard} 
+          onPitchCard={handlePitchCard}
+          battlefieldEntities={entitiesOnBattlefield}
+        />
       </div>
       <div style={{ gridArea: 'resources' }}>resources</div>
       <div style={{ gridArea: 'card-zones' }}>card zones</div>

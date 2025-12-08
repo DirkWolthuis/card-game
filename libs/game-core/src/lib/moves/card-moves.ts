@@ -1,9 +1,16 @@
 import { getCardById } from '@game/data';
-import { GameState } from '@game/models';
+import { Card, CardType, GameState } from '@game/models';
 import { Move } from 'boardgame.io';
 import { executeEffect } from '../effects/execute-effect';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import { needsTargetSelection, getValidTargets } from '../effects/target-utils';
+
+/**
+ * Checks if a card has the UNIT type
+ */
+function isUnitCard(card: Card): boolean {
+  return card.types.includes(CardType.UNIT);
+}
 
 export const playCardFromHand: Move<GameState> = (
   { G, ctx, playerID },
@@ -54,6 +61,11 @@ export const playCardFromHand: Move<GameState> = (
     playerState.zones.hand.entityIds = playerState.zones.hand.entityIds.filter(
       (handEntityId) => handEntityId !== entityId
     );
+
+    // If the card is a unit, place it on the battlefield
+    if (isUnitCard(card)) {
+      playerState.zones.battlefield.entityIds.push(entityId);
+    }
 
     return G;
   }

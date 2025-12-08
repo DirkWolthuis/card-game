@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { Card as CardModel, Entity } from '@game/models';
+import { Card as CardModel, CardType, Entity } from '@game/models';
 import { vi } from 'vitest';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -12,6 +12,7 @@ describe('Card', () => {
       id: 'test-card-1',
       name: 'Test Card',
       displayText: 'Test card description',
+      types: [CardType.SPELL],
       effects: [],
       pitchValue: 1,
       manaCost: 2,

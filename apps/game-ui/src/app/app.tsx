@@ -5,11 +5,20 @@ import { Local } from 'boardgame.io/multiplayer';
 import { Debug } from 'boardgame.io/debug';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
 
 import { GameEngine } from '@game/core';
 import GameBoard from '../board/GameBoard';
 
 const showDebugTools = import.meta.env.VITE_SHOW_DEBUG_TOOLS === 'true';
+
+// Detect if the device supports touch
+const isTouchDevice = () => {
+  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+};
+
+// Use TouchBackend for touch devices, HTML5Backend otherwise
+const dndBackend = isTouchDevice() ? TouchBackend : HTML5Backend;
 
 const CardGameClient = Client({
   game: GameEngine,
@@ -23,7 +32,7 @@ const App = () => {
   const [activePlayer, setActivePlayer] = useState<string>(playerIDs[0]);
 
   return (
-    <DndProvider backend={HTML5Backend}>
+    <DndProvider backend={dndBackend}>
       <div>
         <div className="flex gap-2 mb-4" role="tablist">
           {playerIDs.map((playerID) => (
