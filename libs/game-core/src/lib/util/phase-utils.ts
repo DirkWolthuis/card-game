@@ -30,6 +30,10 @@ export const onSetupPhaseEnd = ({
 
   for (const playerId of ctx.playOrder) {
     const playerSetup = G.setupData.playerSetup[playerId];
+    if (!playerSetup) {
+      console.error(`No setup data found for player ${playerId}`);
+      continue;
+    }
     if (playerSetup.selectedDeckIds.length === 2) {
       G.players[playerId] = buildPlayerStateFromDecks(
         playerId,
