@@ -31,7 +31,7 @@ export const GameEngine: Game<
 > = {
   name: 'card-game',
   setup: ({ ctx }) => {
-    const setupData = initializeSetupData(Object.keys(ctx.playOrder));
+    const setupData = initializeSetupData(ctx.playOrder);
     return { players: {}, setupData };
   },
   phases: {
