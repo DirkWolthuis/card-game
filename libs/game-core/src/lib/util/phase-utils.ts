@@ -1,5 +1,6 @@
 import { GameState } from '@game/models';
 import { buildPlayerStateFromDecks } from './game-setup';
+import { drawCardForPlayer } from './game-state-utils';
 
 /**
  * Check if the setup phase should end.
@@ -69,7 +70,6 @@ export const onTurnBegin = ({
   playerState.zones.pitch.entityIds = [];
 
   // Draw a card if possible (Start Stage - automatic, no manual moves)
-  const { drawCardForPlayer } = require('./game-state-utils');
   drawCardForPlayer(G, currentPlayerId);
 
   // Transition to main stage for player actions

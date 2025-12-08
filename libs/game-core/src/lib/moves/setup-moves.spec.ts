@@ -75,58 +75,66 @@ describe('Setup Moves', () => {
   describe('selectDeck', () => {
     it('should add deck to selection', () => {
       const G = createSetupState();
-      const result = callMove(selectDeck, { G, playerID: '0' }, 'deck-1');
+      const result = callMove(selectDeck, { G, playerID: '0' }, 'aggro-red');
 
       expect(result).not.toBe(INVALID_MOVE);
-      expect(G.setupData?.playerSetup['0'].selectedDeckIds).toContain('deck-1');
+      expect(G.setupData?.playerSetup['0'].selectedDeckIds).toContain('aggro-red');
     });
 
     it('should allow selecting second deck', () => {
       const G = createSetupState({
-        '0': { selectedDeckIds: ['deck-1'] },
+        '0': { selectedDeckIds: ['aggro-red'] },
       });
-      callMove(selectDeck, { G, playerID: '0' }, 'deck-2');
+      callMove(selectDeck, { G, playerID: '0' }, 'control-white');
 
       expect(G.setupData?.playerSetup['0'].selectedDeckIds).toEqual([
-        'deck-1',
-        'deck-2',
+        'aggro-red',
+        'control-white',
       ]);
     });
 
     it('should toggle deck selection when already selected', () => {
       const G = createSetupState({
-        '0': { selectedDeckIds: ['deck-1', 'deck-2'] },
+        '0': { selectedDeckIds: ['aggro-red', 'control-white'] },
       });
-      callMove(selectDeck, { G, playerID: '0' }, 'deck-1');
+      callMove(selectDeck, { G, playerID: '0' }, 'aggro-red');
 
-      expect(G.setupData?.playerSetup['0'].selectedDeckIds).toEqual(['deck-2']);
+      expect(G.setupData?.playerSetup['0'].selectedDeckIds).toEqual(['control-white']);
     });
 
     it('should return INVALID_MOVE when trying to select third deck', () => {
       const G = createSetupState({
-        '0': { selectedDeckIds: ['deck-1', 'deck-2'] },
+        '0': { selectedDeckIds: ['aggro-red', 'control-white'] },
       });
-      const result = callMove(selectDeck, { G, playerID: '0' }, 'deck-3');
+      const result = callMove(selectDeck, { G, playerID: '0' }, 'balanced-green');
 
       expect(result).toBe(INVALID_MOVE);
       expect(G.setupData?.playerSetup['0'].selectedDeckIds).toEqual([
-        'deck-1',
-        'deck-2',
+        'aggro-red',
+        'control-white',
       ]);
+    });
+
+    it('should return INVALID_MOVE when selecting invalid deck ID', () => {
+      const G = createSetupState();
+      const result = callMove(selectDeck, { G, playerID: '0' }, 'non-existent-deck');
+
+      expect(result).toBe(INVALID_MOVE);
+      expect(G.setupData?.playerSetup['0'].selectedDeckIds).toEqual([]);
     });
 
     it('should reset ready state when deck selection changes', () => {
       const G = createSetupState({
-        '0': { selectedDeckIds: ['deck-1'], isReady: true },
+        '0': { selectedDeckIds: ['aggro-red'], isReady: true },
       });
-      callMove(selectDeck, { G, playerID: '0' }, 'deck-2');
+      callMove(selectDeck, { G, playerID: '0' }, 'control-white');
 
       expect(G.setupData?.playerSetup['0'].isReady).toBe(false);
     });
 
     it('should return INVALID_MOVE when setupData is missing', () => {
       const G: GameState = { players: {} };
-      const result = callMove(selectDeck, { G, playerID: '0' }, 'deck-1');
+      const result = callMove(selectDeck, { G, playerID: '0' }, 'aggro-red');
 
       expect(result).toBe(INVALID_MOVE);
     });

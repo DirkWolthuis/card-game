@@ -1,6 +1,7 @@
 import { INVALID_MOVE } from 'boardgame.io/core';
 import type { Move } from 'boardgame.io';
 import { GameState } from '@game/models';
+import { getPreconstructedDeckById } from '@game/data';
 
 /**
  * Set the player's name during setup phase
@@ -39,6 +40,12 @@ export const selectDeck: Move<GameState> = ({ G, playerID }, deckId: string) => 
       (id) => id !== deckId
     );
   } else {
+    // Validate deck exists before adding
+    const deck = getPreconstructedDeckById(deckId);
+    if (!deck) {
+      return INVALID_MOVE;
+    }
+
     // Add the deck if not at limit
     if (playerSetup.selectedDeckIds.length < 2) {
       playerSetup.selectedDeckIds.push(deckId);
