@@ -4,16 +4,13 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 import type { FnContext } from 'boardgame.io';
 
 // Type helper for calling move functions
-const callMove = <T>(
+const callMove = <TArg = void>(
   moveFn: unknown,
   context: Partial<FnContext<GameState>>,
-  arg?: T
-) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (moveFn as (ctx: FnContext<GameState>, arg: T) => any)(
-    context as FnContext<GameState>,
-    arg as T
-  );
+  arg?: TArg
+): GameState | string => {
+  type MoveFn = (ctx: FnContext<GameState>, arg: TArg) => GameState | string;
+  return (moveFn as MoveFn)(context as FnContext<GameState>, arg as TArg);
 };
 
 describe('Setup Moves', () => {

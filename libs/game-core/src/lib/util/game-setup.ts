@@ -92,9 +92,12 @@ export const buildPlayerStateFromDecks = (
   const deckCardIds: string[] = [];
   for (const deckId of deckIds) {
     const deck = getPreconstructedDeckById(deckId);
-    if (deck) {
-      deckCardIds.push(...deck.cardIds);
+    if (!deck) {
+      throw new Error(
+        `Preconstructed deck with id "${deckId}" not found for player ${playerId}`
+      );
     }
+    deckCardIds.push(...deck.cardIds);
   }
 
   const entities = createEntitiesForPlayer(deckCardIds, playerId);

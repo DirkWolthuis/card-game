@@ -1,6 +1,7 @@
 import {
   getAllPreconstructedDecks,
   getPreconstructedDeckById,
+  getAllCards,
 } from './game-data';
 
 describe('Preconstructed Decks', () => {
@@ -31,6 +32,18 @@ describe('Preconstructed Decks', () => {
         expect(deck.name.length).toBeGreaterThan(0);
         expect(deck.description).toBeDefined();
         expect(deck.description.length).toBeGreaterThan(0);
+      });
+    });
+
+    it('should have all card IDs exist in card database', () => {
+      const decks = getAllPreconstructedDecks();
+      const allCards = getAllCards();
+      const validCardIds = new Set(allCards.map((c) => c.id));
+
+      decks.forEach((deck) => {
+        deck.cardIds.forEach((cardId) => {
+          expect(validCardIds.has(cardId)).toBe(true);
+        });
       });
     });
   });
