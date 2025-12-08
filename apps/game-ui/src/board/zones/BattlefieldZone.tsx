@@ -88,7 +88,6 @@ function BattlefieldUnitCard({ entity }: { entity: Entity }) {
   
   return (
     <div
-      key={entity.id}
       className="border-2 border-yellow-400 bg-green-800 rounded-md flex flex-col p-4 shadow-lg min-w-[150px]"
     >
       <h3 className="text-center font-bold text-yellow-300 mb-2">{card.name}</h3>
