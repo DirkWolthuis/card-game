@@ -6,12 +6,10 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 import { needsTargetSelection, getValidTargets } from '../effects/target-utils';
 
 /**
- * Checks if a card has unit types (UNIT, LEADER, or TROOP)
+ * Checks if a card has the UNIT type
  */
 function isUnitCard(card: Card): boolean {
-  return card.types.some(type => 
-    type === CardType.UNIT || type === CardType.LEADER || type === CardType.TROOP
-  );
+  return card.types.includes(CardType.UNIT);
 }
 
 export const playCardFromHand: Move<GameState> = (
