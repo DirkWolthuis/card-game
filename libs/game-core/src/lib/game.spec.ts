@@ -1,6 +1,6 @@
 import { GameEngine } from './game';
 import { GameState, MoveType, PlayerState } from '@game/models';
-import type { StageConfig, TurnConfig } from 'boardgame.io';
+import type { StageConfig, TurnConfig, PhaseConfig } from 'boardgame.io';
 
 describe('GameEngine', () => {
   const createPlayerState = (
@@ -28,9 +28,15 @@ describe('GameEngine', () => {
   const callEndIf = (gameState: GameState) =>
     GameEngine.endIf?.({ G: gameState } as any);
 
+  // Helper to get the play phase turn config
+  const getPlayTurnConfig = (): TurnConfig<GameState> => {
+    const phases = GameEngine.phases as Record<string, PhaseConfig<GameState>>;
+    return phases['play'].turn as TurnConfig<GameState>;
+  };
+
   describe('turn stages', () => {
     it('should have stages defined in turn config', () => {
-      const turn = GameEngine.turn as TurnConfig<GameState>;
+      const turn = getPlayTurnConfig();
       expect(turn).toBeDefined();
       expect(turn.stages).toBeDefined();
       expect(turn.stages?.['mainStage']).toBeDefined();
@@ -38,7 +44,7 @@ describe('GameEngine', () => {
     });
 
     it('should have onBegin hook that draws a card and sets mainStage', () => {
-      const turn = GameEngine.turn as TurnConfig<GameState>;
+      const turn = getPlayTurnConfig();
       expect(turn.onBegin).toBeDefined();
     });
 
@@ -54,7 +60,7 @@ describe('GameEngine', () => {
           setActivePlayers: jest.fn(),
         };
 
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         turn.onBegin?.({
           G: gameState,
           ctx: { currentPlayer: '0' },
@@ -82,7 +88,7 @@ describe('GameEngine', () => {
           setActivePlayers: jest.fn(),
         };
 
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         turn.onBegin?.({
           G: gameState,
           ctx: { currentPlayer: '0' },
@@ -112,7 +118,7 @@ describe('GameEngine', () => {
           setActivePlayers: jest.fn(),
         };
 
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         turn.onBegin?.({
           G: gameState,
           ctx: { currentPlayer: '0' },
@@ -139,7 +145,7 @@ describe('GameEngine', () => {
           setActivePlayers: jest.fn(),
         };
 
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         turn.onBegin?.({
           G: gameState,
           ctx: { currentPlayer: '0' },
@@ -161,7 +167,7 @@ describe('GameEngine', () => {
 
     describe('mainStage', () => {
       it('should have playCardFromHand, selectTarget, and endTurn moves', () => {
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         const mainStage = turn.stages?.['mainStage'] as StageConfig<GameState>;
         expect(mainStage.moves).toBeDefined();
         expect(mainStage.moves?.[MoveType.PLAY_CARD_FROM_HAND]).toBeDefined();
@@ -181,7 +187,7 @@ describe('GameEngine', () => {
           endTurn: jest.fn(),
         };
 
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         const mainStage = turn.stages?.['mainStage'] as StageConfig<GameState>;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const endTurnMove = mainStage.moves?.[MoveType.END_TURN] as any;
@@ -209,7 +215,7 @@ describe('GameEngine', () => {
           endTurn: jest.fn(),
         };
 
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         const mainStage = turn.stages?.['mainStage'] as StageConfig<GameState>;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const endTurnMove = mainStage.moves?.[MoveType.END_TURN] as any;
@@ -226,7 +232,7 @@ describe('GameEngine', () => {
 
     describe('endStage', () => {
       it('should only have discardFromHand move', () => {
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         const endStage = turn.stages?.['endStage'] as StageConfig<GameState>;
         expect(endStage.moves).toBeDefined();
         expect(endStage.moves?.[MoveType.DISCARD_FROM_HAND]).toBeDefined();
@@ -255,7 +261,7 @@ describe('GameEngine', () => {
           endTurn: jest.fn(),
         };
 
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         const endStage = turn.stages?.['endStage'] as StageConfig<GameState>;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const discardMove = endStage.moves?.[MoveType.DISCARD_FROM_HAND] as any;
@@ -293,7 +299,7 @@ describe('GameEngine', () => {
           endTurn: jest.fn(),
         };
 
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         const endStage = turn.stages?.['endStage'] as StageConfig<GameState>;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const discardMove = endStage.moves?.[MoveType.DISCARD_FROM_HAND] as any;
@@ -329,7 +335,7 @@ describe('GameEngine', () => {
           endTurn: jest.fn(),
         };
 
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         const endStage = turn.stages?.['endStage'] as StageConfig<GameState>;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const discardMove = endStage.moves?.[MoveType.DISCARD_FROM_HAND] as any;
@@ -365,7 +371,7 @@ describe('GameEngine', () => {
           endTurn: jest.fn(),
         };
 
-        const turn = GameEngine.turn as TurnConfig<GameState>;
+        const turn = getPlayTurnConfig();
         const endStage = turn.stages?.['endStage'] as StageConfig<GameState>;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const discardMove = endStage.moves?.[MoveType.DISCARD_FROM_HAND] as any;
@@ -423,10 +429,11 @@ describe('GameEngine', () => {
 
   describe('turn order', () => {
     it('should have custom turn order defined', () => {
-      expect(GameEngine.turn).toBeDefined();
-      expect(GameEngine.turn?.order).toBeDefined();
-      expect(GameEngine.turn?.order?.first).toBeDefined();
-      expect(GameEngine.turn?.order?.next).toBeDefined();
+      const turn = getPlayTurnConfig();
+      expect(turn).toBeDefined();
+      expect(turn.order).toBeDefined();
+      expect(turn.order?.first).toBeDefined();
+      expect(turn.order?.next).toBeDefined();
     });
 
     it('should skip eliminated player and go to next alive player', () => {
@@ -444,8 +451,9 @@ describe('GameEngine', () => {
         playOrder: ['0', '1', '2'],
       };
 
+      const turn = getPlayTurnConfig();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nextPos = GameEngine.turn?.order?.next?.({
+      const nextPos = turn.order?.next?.({
         G: gameState,
         ctx: mockCtx,
       } as any);
@@ -469,8 +477,9 @@ describe('GameEngine', () => {
         playOrder: ['0', '1', '2', '3'],
       };
 
+      const turn = getPlayTurnConfig();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nextPos = GameEngine.turn?.order?.next?.({
+      const nextPos = turn.order?.next?.({
         G: gameState,
         ctx: mockCtx,
       } as any);
@@ -492,8 +501,9 @@ describe('GameEngine', () => {
         playOrder: ['0', '1'],
       };
 
+      const turn = getPlayTurnConfig();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nextPos = GameEngine.turn?.order?.next?.({
+      const nextPos = turn.order?.next?.({
         G: gameState,
         ctx: mockCtx,
       } as any);

@@ -1,5 +1,11 @@
-import { Entity, EntityId, GameState, PlayerState } from '@game/models';
-import { getAllCards } from '@game/data';
+import {
+  Entity,
+  EntityId,
+  GameState,
+  PlayerState,
+  SetupData,
+} from '@game/models';
+import { getAllCards, getPreconstructedDeckById } from '@game/data';
 
 const DECK_SIZE = 40;
 const STARTING_HAND_SIZE = 7;
@@ -73,6 +79,61 @@ const buildPlayerState = (
     },
     entities,
   };
+};
+
+/**
+ * Build PlayerState from selected preconstructed decks
+ */
+export const buildPlayerStateFromDecks = (
+  playerId: string,
+  deckIds: string[]
+): PlayerState => {
+  // Combine card IDs from both selected decks
+  const deckCardIds: string[] = [];
+  for (const deckId of deckIds) {
+    const deck = getPreconstructedDeckById(deckId);
+    if (deck) {
+      deckCardIds.push(...deck.cardIds);
+    }
+  }
+
+  const entities = createEntitiesForPlayer(deckCardIds, playerId);
+  const { handIds, deckIds: remainingDeckIds } = splitStartingHand(
+    entities,
+    STARTING_HAND_SIZE
+  );
+
+  return {
+    resources: { life: 20, mana: 0 },
+    zones: {
+      hand: { entityIds: handIds },
+      battlefield: { entityIds: [] },
+      graveyard: { entityIds: [] },
+      exile: { entityIds: [] },
+      deck: { entityIds: remainingDeckIds },
+      pitch: { entityIds: [] },
+    },
+    entities,
+  };
+};
+
+/**
+ * Initialize setup data for pre-game phase
+ */
+export const initializeSetupData = (playerIds: string[]): SetupData => {
+  const playerSetup = playerIds.reduce<SetupData['playerSetup']>(
+    (acc, pid) => {
+      acc[pid] = {
+        name: undefined,
+        selectedDeckIds: [],
+        isReady: false,
+      };
+      return acc;
+    },
+    {}
+  );
+
+  return { playerSetup };
 };
 
 export const setupPlayersState = (playerIds: string[]): GameState => {

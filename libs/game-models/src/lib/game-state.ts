@@ -6,6 +6,20 @@ import { Effect } from './effect';
 export interface GameState {
   players: Record<PlayerId, PlayerState>;
   pendingTargetSelection?: PendingTargetSelection;
+  setupData?: SetupData;
+}
+
+/**
+ * Setup data for the pre-game phase where players select their names and decks
+ */
+export interface SetupData {
+  playerSetup: Record<PlayerId, PlayerSetup>;
+}
+
+export interface PlayerSetup {
+  name?: string;
+  selectedDeckIds: string[]; // Array of 2 deck IDs
+  isReady: boolean;
 }
 
 /**
