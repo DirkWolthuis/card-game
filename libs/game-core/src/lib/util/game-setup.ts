@@ -35,7 +35,7 @@ const createEntitiesForPlayer = (
       cardId,
       ownerId: playerId,
       controllerId: playerId,
-      id: `${cardId}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `${cardId}-${Math.random().toString(36).substring(2, 11)}`,
     }))
     .reduce((acc, entity) => {
       acc[entity.id] = entity;
