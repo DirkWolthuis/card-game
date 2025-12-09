@@ -346,7 +346,6 @@ describe('chain mechanics', () => {
         },
       };
 
-      const initialLife0 = gameState.players['0'].resources.life;
       const initialLife1 = gameState.players['1'].resources.life;
 
       // Player 0 plays Firebolt (2 damage to opponent)

@@ -16,8 +16,9 @@ import { executeEffect } from '../effects/execute-effect';
 /**
  * Determines if a card action is chainable (i.e., starts a chain or can be added to a chain).
  * According to game design:
- * - Playing a spell card is chainable
- * - Playing a unit card is chainable
+ * - Playing a spell card is chainable (ActionSpeed.NORMAL)
+ * - Playing a unit card is chainable (ActionSpeed.NORMAL)
+ * - Reaction cards can be played in response (ActionSpeed.REACTION)
  * - Declaring an attack is chainable (not yet implemented)
  * - Activating an ability is chainable (not yet implemented)
  * 
@@ -27,10 +28,10 @@ import { executeEffect } from '../effects/execute-effect';
  * - Untapping cards
  * - Discarding cards
  * - Trading in marketplace
+ * 
+ * Implementation note: Currently checks ActionSpeed, which defaults to NORMAL for spells and units.
  */
 export function isChainableAction(card: Card): boolean {
-  // For MVP: Spells and units are chainable
-  // Reactions can be played in response to chainable actions
   const speed = card.speed || ActionSpeed.NORMAL;
   return speed === ActionSpeed.NORMAL || speed === ActionSpeed.REACTION;
 }
@@ -164,6 +165,9 @@ export function resolveChain(gameState: GameState, ctx: Ctx): void {
 
   // Resolve in LIFO order (last action added resolves first)
   // We resolve from the end of the array to the beginning
+  // Example: Chain = [Firebolt, Counterspell]
+  // - Resolve Counterspell (i=1): counters Firebolt at i-1=0
+  // - Resolve Firebolt (i=0): skipped because countered=true
   for (let i = chain.actions.length - 1; i >= 0; i--) {
     const action = chain.actions[i];
     
@@ -172,7 +176,8 @@ export function resolveChain(gameState: GameState, ctx: Ctx): void {
       for (const effect of action.effects) {
         // Special handling for COUNTER effects
         if (effect.type === EffectType.COUNTER) {
-          // Counter the action below this one in the chain (the action it's responding to)
+          // Counter the action that was added to the chain before this counter
+          // In LIFO resolution, we mark it as countered before we reach it
           if (i > 0) {
             chain.actions[i - 1].countered = true;
           }
