@@ -4,6 +4,7 @@ import {
   EffectType,
   TargetType,
   PreconstructedDeck,
+  ActionSpeed,
 } from '@game/models';
 
 export const getAllCards = (): Card[] => {
@@ -205,6 +206,16 @@ const CARD_DATABASE: Card[] = [
       resistance: 1,
       health: 1,
     },
+  },
+  {
+    id: 'counterspell-1',
+    displayText: 'Counter target spell',
+    name: 'Counterspell',
+    types: [CardType.REACTION],
+    pitchValue: 2,
+    manaCost: 2,
+    speed: ActionSpeed.REACTION,
+    effects: [{ type: EffectType.COUNTER, target: TargetType.CHAIN_ACTION }],
   },
 ];
 

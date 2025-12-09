@@ -7,6 +7,12 @@ export enum CardType {
   UNIT = 'UNIT',
   LEADER = 'LEADER',
   TROOP = 'TROOP',
+  REACTION = 'REACTION',
+}
+
+export enum ActionSpeed {
+  NORMAL = 'NORMAL',
+  REACTION = 'REACTION',
 }
 
 export interface UnitStats {
@@ -24,4 +30,5 @@ export interface Card {
   pitchValue: number; // 1, 2, or 3 - mana value when pitched
   manaCost: number; // Mana cost required to play the card
   unitStats?: UnitStats; // Only present for unit types (UNIT, LEADER, TROOP)
+  speed?: ActionSpeed; // Speed at which the card/action can be played. Defaults to NORMAL if not specified.
 }

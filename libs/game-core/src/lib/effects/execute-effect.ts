@@ -35,5 +35,10 @@ export const executeEffect = (
       gameState.players[ctx.currentPlayer].resources.life += effect.value;
       break;
     }
+    case EffectType.COUNTER: {
+      // COUNTER effects are handled during chain resolution
+      // This case is here for type completeness but should not execute outside chain resolution
+      break;
+    }
   }
 };

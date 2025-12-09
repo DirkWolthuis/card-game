@@ -4,6 +4,13 @@ import { Move } from 'boardgame.io';
 import { executeEffect } from '../effects/execute-effect';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import { needsTargetSelection, getValidTargets } from '../effects/target-utils';
+import {
+  isChainableAction,
+  canPlayAsReaction,
+  initializeChain,
+  addActionToChain,
+  hasActiveChain,
+} from '../chain/chain-utils';
 
 /**
  * Checks if a card has the UNIT type
@@ -33,29 +40,24 @@ export const playCardFromHand: Move<GameState> = (
       return INVALID_MOVE;
     }
 
+    // Check if this is a reaction card being played during an active chain
+    const isReaction = canPlayAsReaction(card);
+    const activeChain = hasActiveChain(G);
+
+    if (isReaction && !activeChain) {
+      // Reaction cards can only be played when there's an active chain
+      return INVALID_MOVE;
+    }
+
+    if (isReaction && activeChain) {
+      // Check if it's this player's priority
+      if (G.chain!.priorityPlayer !== playerID) {
+        return INVALID_MOVE;
+      }
+    }
+
     // Reduce mana before playing the card
     playerState.resources.mana -= card.manaCost;
-
-    // Check if any effect needs target selection
-    const firstEffectNeedingTarget = card.effects.find(needsTargetSelection);
-    
-    if (firstEffectNeedingTarget) {
-      const effectIndex = card.effects.indexOf(firstEffectNeedingTarget);
-      
-      // Execute all effects before the first targeting effect
-      for (let i = 0; i < effectIndex; i++) {
-        executeEffect(G, ctx, card.effects[i]);
-      }
-      
-      // Set up pending target selection for the first targeting effect
-      G.pendingTargetSelection = {
-        effect: firstEffectNeedingTarget,
-        remainingEffects: card.effects.slice(effectIndex + 1),
-      };
-    } else {
-      // No targeting needed, execute all effects immediately
-      card.effects.forEach((effect) => executeEffect(G, ctx, effect));
-    }
 
     // Remove card from hand
     playerState.zones.hand.entityIds = playerState.zones.hand.entityIds.filter(
@@ -63,8 +65,48 @@ export const playCardFromHand: Move<GameState> = (
     );
 
     // If the card is a unit, place it on the battlefield
+    // Units go to battlefield immediately, not on the chain
     if (isUnitCard(card)) {
       playerState.zones.battlefield.entityIds.push(entityId);
+    }
+
+    // Check if this action is chainable
+    if (isChainableAction(card)) {
+      // If there's no active chain, start one
+      if (!G.chain) {
+        G.chain = initializeChain(playerID, entityId, card.effects, ctx);
+      } else {
+        // Add to existing chain
+        addActionToChain(G.chain, playerID, entityId, card.effects, ctx);
+        // Pass priority to the next player
+        const playOrder = ctx.playOrder || ['0', '1'];
+        const numPlayers = ctx.numPlayers || playOrder.length;
+        const nextPlayerIndex =
+          (playOrder.indexOf(playerID) + 1) % numPlayers;
+        G.chain.priorityPlayer = playOrder[nextPlayerIndex];
+      }
+    } else {
+      // Non-chainable actions execute immediately
+      // Check if any effect needs target selection
+      const firstEffectNeedingTarget = card.effects.find(needsTargetSelection);
+
+      if (firstEffectNeedingTarget) {
+        const effectIndex = card.effects.indexOf(firstEffectNeedingTarget);
+
+        // Execute all effects before the first targeting effect
+        for (let i = 0; i < effectIndex; i++) {
+          executeEffect(G, ctx, card.effects[i]);
+        }
+
+        // Set up pending target selection for the first targeting effect
+        G.pendingTargetSelection = {
+          effect: firstEffectNeedingTarget,
+          remainingEffects: card.effects.slice(effectIndex + 1),
+        };
+      } else {
+        // No targeting needed, execute all effects immediately
+        card.effects.forEach((effect) => executeEffect(G, ctx, effect));
+      }
     }
 
     return G;

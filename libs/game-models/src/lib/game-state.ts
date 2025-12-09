@@ -2,11 +2,13 @@ import { Entity, EntityId } from './entity';
 import { PlayerId } from './player';
 import { Zones } from './zone';
 import { Effect } from './effect';
+import { Chain } from './chain';
 
 export interface GameState {
   players: Record<PlayerId, PlayerState>;
   pendingTargetSelection?: PendingTargetSelection;
   setupData?: SetupData;
+  chain?: Chain; // The active chain, if any
 }
 
 /**
