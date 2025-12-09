@@ -3,6 +3,7 @@ import type { BoardProps } from 'boardgame.io/react';
 import { PlayerZones } from './zones/PlayerZones';
 import { TargetSelectionModal } from './components/TargetSelectionModal';
 import { EndGameScreen } from './components/EndGameScreen';
+import { SetupPhase } from './components/SetupPhase';
 import { getValidTargets } from '@game/core';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 
@@ -26,6 +27,12 @@ function PanelResizeHandleWrapper() {
 export function GameBoard(props: BoardProps<GameState>) {
   const { playerID, G, ctx, moves } = props;
   const currentPlayerID = playerID as string;
+
+  // Show setup phase if we're in the setup phase
+  if (ctx.phase === 'setup') {
+    return <SetupPhase {...props} playerID={currentPlayerID} />;
+  }
+
   const { zones, entities, resources } = G.players[currentPlayerID];
 
   const isMyTurn = ctx.currentPlayer === playerID;
