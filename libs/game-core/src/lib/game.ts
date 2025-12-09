@@ -37,10 +37,17 @@ export const GameEngine: Game<
   phases: {
     setup: {
       start: true,
-      moves: {
-        [MoveType.SET_PLAYER_NAME]: setPlayerName,
-        [MoveType.SELECT_DECK]: selectDeck,
-        [MoveType.SET_READY]: setReady,
+      turn: {
+        activePlayers: { all: 'setupStage' },
+        stages: {
+          setupStage: {
+            moves: {
+              [MoveType.SET_PLAYER_NAME]: setPlayerName,
+              [MoveType.SELECT_DECK]: selectDeck,
+              [MoveType.SET_READY]: setReady,
+            },
+          },
+        },
       },
       endIf: shouldEndSetupPhase,
       next: 'play',

@@ -10,13 +10,16 @@ describe('GameEngine - Setup Phase', () => {
       expect(phases['setup'].start).toBe(true);
     });
 
-    it('should have setPlayerName, selectDeck, and setReady moves', () => {
+    it('should have setPlayerName, selectDeck, and setReady moves in setupStage', () => {
       const phases = GameEngine.phases as Record<string, PhaseConfig<GameState>>;
       const setupPhase = phases['setup'];
-      expect(setupPhase.moves).toBeDefined();
-      expect(setupPhase.moves?.[MoveType.SET_PLAYER_NAME]).toBeDefined();
-      expect(setupPhase.moves?.[MoveType.SELECT_DECK]).toBeDefined();
-      expect(setupPhase.moves?.[MoveType.SET_READY]).toBeDefined();
+      expect(setupPhase.turn).toBeDefined();
+      expect(setupPhase.turn?.stages).toBeDefined();
+      const setupStage = setupPhase.turn?.stages?.['setupStage'];
+      expect(setupStage).toBeDefined();
+      expect(setupStage?.moves?.[MoveType.SET_PLAYER_NAME]).toBeDefined();
+      expect(setupStage?.moves?.[MoveType.SELECT_DECK]).toBeDefined();
+      expect(setupStage?.moves?.[MoveType.SET_READY]).toBeDefined();
     });
 
     it('should transition to play phase when both players are ready', () => {
