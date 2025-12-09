@@ -1,4 +1,4 @@
-import { discardFromHand } from './turn-moves';
+import { discardFromHand, endTurn } from './turn-moves';
 import { GameState, PlayerState } from '@game/models';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import type { FnContext } from 'boardgame.io';
@@ -34,6 +34,58 @@ describe('turn-moves', () => {
     entities: {},
   });
 
+  describe('endTurn', () => {
+    it('should end turn directly when hand size is 7 or less', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(['hand-1', 'hand-2', 'hand-3'], [], []),
+        },
+      };
+
+      const mockEvents = {
+        endTurn: jest.fn(),
+        setActivePlayers: jest.fn(),
+      };
+
+      callMove(endTurn, {
+        G: gameState,
+        ctx: { currentPlayer: '0' } as any,
+        events: mockEvents as any,
+      });
+
+      expect(mockEvents.endTurn).toHaveBeenCalled();
+      expect(mockEvents.setActivePlayers).not.toHaveBeenCalled();
+    });
+
+    it('should transition to endStage when hand size is more than 7', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(
+            ['hand-1', 'hand-2', 'hand-3', 'hand-4', 'hand-5', 'hand-6', 'hand-7', 'hand-8'],
+            [],
+            []
+          ),
+        },
+      };
+
+      const mockEvents = {
+        endTurn: jest.fn(),
+        setActivePlayers: jest.fn(),
+      };
+
+      callMove(endTurn, {
+        G: gameState,
+        ctx: { currentPlayer: '0' } as any,
+        events: mockEvents as any,
+      });
+
+      expect(mockEvents.setActivePlayers).toHaveBeenCalledWith({
+        currentPlayer: 'endStage',
+      });
+      expect(mockEvents.endTurn).not.toHaveBeenCalled();
+    });
+  });
+
   describe('discardFromHand', () => {
     it('should move a card from hand to graveyard', () => {
       const gameState: GameState = {
@@ -46,11 +98,16 @@ describe('turn-moves', () => {
         },
       };
 
+      const mockEvents = {
+        endTurn: jest.fn(),
+      };
+
       const result = callMove(
         discardFromHand,
         {
           G: gameState,
           playerID: '0',
+          events: mockEvents as any,
         },
         'hand-2'
       );
@@ -63,6 +120,38 @@ describe('turn-moves', () => {
       expect(gameState.players['0'].zones.graveyard.entityIds).toEqual([
         'hand-2',
       ]);
+      // Should end turn since hand is now 2 cards (≤ 7)
+      expect(mockEvents.endTurn).toHaveBeenCalled();
+    });
+
+    it('should end turn when hand size reaches 7 or below after discard', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(
+            ['hand-1', 'hand-2', 'hand-3', 'hand-4', 'hand-5', 'hand-6', 'hand-7', 'hand-8'],
+            [],
+            []
+          ),
+        },
+      };
+
+      const mockEvents = {
+        endTurn: jest.fn(),
+      };
+
+      // Discard one card, bringing hand to 7
+      callMove(
+        discardFromHand,
+        {
+          G: gameState,
+          playerID: '0',
+          events: mockEvents as any,
+        },
+        'hand-8'
+      );
+
+      expect(gameState.players['0'].zones.hand.entityIds).toHaveLength(7);
+      expect(mockEvents.endTurn).toHaveBeenCalled();
     });
 
     it('should return INVALID_MOVE if card is not in hand', () => {
@@ -72,11 +161,16 @@ describe('turn-moves', () => {
         },
       };
 
+      const mockEvents = {
+        endTurn: jest.fn(),
+      };
+
       const result = callMove(
         discardFromHand,
         {
           G: gameState,
           playerID: '0',
+          events: mockEvents as any,
         },
         'non-existent'
       );
@@ -97,11 +191,16 @@ describe('turn-moves', () => {
         },
       };
 
+      const mockEvents = {
+        endTurn: jest.fn(),
+      };
+
       callMove(
         discardFromHand,
         {
           G: gameState,
           playerID: '1',
+          events: mockEvents as any,
         },
         'hand-1-1'
       );
