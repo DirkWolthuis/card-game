@@ -29,6 +29,9 @@ P --> U[Effect resolves]
 K -->|Yes| J
 G -->|No| J
 H --> J[Action effect is added to chain]
+J --> T([Did both pass priority without adding actions?])
+T -->|Yes| R[Chain is locked]
+R --> L[Effects on chain resolve in LIFO order]
 F -->|No| END
 D -->|No| END
 B -->|No| END[No effect]
