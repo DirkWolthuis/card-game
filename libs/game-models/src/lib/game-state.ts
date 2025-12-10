@@ -7,6 +7,11 @@ export interface GameState {
   players: Record<PlayerId, PlayerState>;
   pendingTargetSelection?: PendingTargetSelection;
   setupData?: SetupData;
+  /** 
+   * Priority system state for tracking which player can currently take actions.
+   * When undefined, follows boardgame.io's default turn-based priority.
+   */
+  priority?: PriorityState;
 }
 
 /**
@@ -32,6 +37,20 @@ export interface PendingTargetSelection {
   effect: Effect;
   /** Remaining effects from the same card that will be executed after the current effect is resolved */
   remainingEffects: Effect[];
+}
+
+/**
+ * State tracking for the priority system.
+ * Priority determines which player can currently take actions and respond.
+ */
+export interface PriorityState {
+  /** The player who currently has priority */
+  currentPriorityPlayer: PlayerId;
+  /** 
+   * Number of consecutive passes without adding to chain.
+   * When both players pass consecutively, the chain locks.
+   */
+  consecutivePasses: number;
 }
 
 export interface PlayerState {

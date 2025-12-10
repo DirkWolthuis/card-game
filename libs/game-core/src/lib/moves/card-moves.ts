@@ -1,9 +1,11 @@
 import { getCardById } from '@game/data';
-import { Card, CardType, GameState } from '@game/models';
+import { Card, CardType, GameState, ActionType, PlayCardAction } from '@game/models';
 import { Move } from 'boardgame.io';
 import { executeEffect } from '../effects/execute-effect';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import { needsTargetSelection, getValidTargets } from '../effects/target-utils';
+import { validateAction, payCosts } from '../actions/action-validation';
+import { createPlayCardContext } from '../actions/action-context';
 
 /**
  * Checks if a card has the UNIT type
@@ -23,54 +25,64 @@ export const playCardFromHand: Move<GameState> = (
   const cardId = playerState.entities[entityId]?.cardId;
 
   const card = getCardById(cardId);
-  if (!card) {
+  if (!card || !hasCardInHand) {
     return INVALID_MOVE;
   }
 
-  if (hasCardInHand && card) {
-    // Check if player has enough mana to play the card
-    if (playerState.resources.mana < card.manaCost) {
-      return INVALID_MOVE;
-    }
+  // Create action for validation
+  const action: PlayCardAction = {
+    type: ActionType.PLAY_CARD,
+    playerId: playerID,
+    entityId,
+  };
 
-    // Reduce mana before playing the card
-    playerState.resources.mana -= card.manaCost;
-
-    // Check if any effect needs target selection
-    const firstEffectNeedingTarget = card.effects.find(needsTargetSelection);
-    
-    if (firstEffectNeedingTarget) {
-      const effectIndex = card.effects.indexOf(firstEffectNeedingTarget);
-      
-      // Execute all effects before the first targeting effect
-      for (let i = 0; i < effectIndex; i++) {
-        executeEffect(G, ctx, card.effects[i]);
-      }
-      
-      // Set up pending target selection for the first targeting effect
-      G.pendingTargetSelection = {
-        effect: firstEffectNeedingTarget,
-        remainingEffects: card.effects.slice(effectIndex + 1),
-      };
-    } else {
-      // No targeting needed, execute all effects immediately
-      card.effects.forEach((effect) => executeEffect(G, ctx, effect));
-    }
-
-    // Remove card from hand
-    playerState.zones.hand.entityIds = playerState.zones.hand.entityIds.filter(
-      (handEntityId) => handEntityId !== entityId
-    );
-
-    // If the card is a unit, place it on the battlefield
-    if (isUnitCard(card)) {
-      playerState.zones.battlefield.entityIds.push(entityId);
-    }
-
-    return G;
+  // Create action context (costs and effects)
+  const actionContext = createPlayCardContext(action, G);
+  if (!actionContext) {
+    return INVALID_MOVE;
   }
 
-  return INVALID_MOVE;
+  // Validate the action (priority and cost checks)
+  const validationResult = validateAction(action, actionContext.costs, G, ctx);
+  if (!validationResult.valid) {
+    return INVALID_MOVE;
+  }
+
+  // Pay costs
+  payCosts(actionContext.costs, G, playerID);
+
+  // Check if any effect needs target selection
+  const firstEffectNeedingTarget = actionContext.effects.find(needsTargetSelection);
+  
+  if (firstEffectNeedingTarget) {
+    const effectIndex = actionContext.effects.indexOf(firstEffectNeedingTarget);
+    
+    // Execute all effects before the first targeting effect
+    for (let i = 0; i < effectIndex; i++) {
+      executeEffect(G, ctx, actionContext.effects[i]);
+    }
+    
+    // Set up pending target selection for the first targeting effect
+    G.pendingTargetSelection = {
+      effect: firstEffectNeedingTarget,
+      remainingEffects: actionContext.effects.slice(effectIndex + 1),
+    };
+  } else {
+    // No targeting needed, execute all effects immediately
+    actionContext.effects.forEach((effect) => executeEffect(G, ctx, effect));
+  }
+
+  // Remove card from hand
+  playerState.zones.hand.entityIds = playerState.zones.hand.entityIds.filter(
+    (handEntityId) => handEntityId !== entityId
+  );
+
+  // If the card is a unit, place it on the battlefield
+  if (isUnitCard(card)) {
+    playerState.zones.battlefield.entityIds.push(entityId);
+  }
+
+  return G;
 };
 
 /**

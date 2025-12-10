@@ -5,6 +5,7 @@ export enum MoveType {
   DRAW_CARD = 'drawCard',
   DISCARD_FROM_HAND = 'discardFromHand',
   PITCH_CARD = 'pitchCard',
+  PASS_PRIORITY = 'passPriority',
   // Setup phase moves
   SET_PLAYER_NAME = 'setPlayerName',
   SELECT_DECK = 'selectDeck',
