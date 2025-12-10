@@ -41,7 +41,7 @@ export interface PlayCardAction extends BaseAction {
 
 /**
  * Action to activate an ability.
- * Note: Ability system not yet implemented - this is a placeholder.
+ * TODO: Implement ability system - this is a placeholder.
  */
 export interface ActivateAbilityAction extends BaseAction {
   type: ActionType.ACTIVATE_ABILITY;
@@ -53,7 +53,7 @@ export interface ActivateAbilityAction extends BaseAction {
 
 /**
  * Action to attack with a unit.
- * Note: Combat system not yet implemented - this is a placeholder.
+ * TODO: Implement combat system - this is a placeholder.
  */
 export interface AttackAction extends BaseAction {
   type: ActionType.ATTACK;
@@ -118,7 +118,7 @@ export interface ManaCost extends BaseCost {
 
 /**
  * Tap cost - requires tapping a card.
- * Note: Tapping system not yet implemented - this is a placeholder.
+ * TODO: Implement tapping system - this is a placeholder.
  */
 export interface TapCost extends BaseCost {
   type: CostType.TAP;
@@ -128,7 +128,7 @@ export interface TapCost extends BaseCost {
 
 /**
  * Sacrifice cost - requires sacrificing cards.
- * Note: Sacrifice system not yet implemented - this is a placeholder.
+ * TODO: Implement sacrifice system - this is a placeholder.
  */
 export interface SacrificeCost extends BaseCost {
   type: CostType.SACRIFICE;

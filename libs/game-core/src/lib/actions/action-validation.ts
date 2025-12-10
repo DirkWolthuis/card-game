@@ -84,7 +84,7 @@ export function checkCosts(
         break;
       }
       case CostType.TAP: {
-        // TAP cost validation - not yet implemented
+        // TODO: Implement TAP cost validation
         // Would check if entities exist and are untapped
         return {
           valid: false,
@@ -92,7 +92,7 @@ export function checkCosts(
         };
       }
       case CostType.SACRIFICE: {
-        // SACRIFICE cost validation - not yet implemented
+        // TODO: Implement SACRIFICE cost validation
         // Would check if entities exist and can be sacrificed
         return {
           valid: false,
@@ -127,11 +127,11 @@ export function payCosts(
         break;
       }
       case CostType.TAP: {
-        // TAP cost payment - not yet implemented
+        // TODO: Implement TAP cost payment
         break;
       }
       case CostType.SACRIFICE: {
-        // SACRIFICE cost payment - not yet implemented
+        // TODO: Implement SACRIFICE cost payment
         break;
       }
     }
