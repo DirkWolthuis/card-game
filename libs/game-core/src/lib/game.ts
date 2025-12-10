@@ -5,6 +5,7 @@ import { playCardFromHand, selectTarget } from './moves/card-moves';
 import { pitchCard } from './moves/resource-moves';
 import { endTurn, discardFromHand } from './moves/turn-moves';
 import { setPlayerName, selectDeck, setReady } from './moves/setup-moves';
+import { passPriority } from './moves/priority-moves';
 import { initializeSetupData } from './util/game-setup';
 import {
   shouldEndSetupPhase,
@@ -22,6 +23,7 @@ export const GameEngine: Game<
     playCardFromHand: typeof playCardFromHand;
     selectTarget: typeof selectTarget;
     pitchCard: typeof pitchCard;
+    passPriority: typeof passPriority;
     setPlayerName: typeof setPlayerName;
     selectDeck: typeof selectDeck;
     setReady: typeof setReady;
@@ -96,6 +98,7 @@ export const GameEngine: Game<
               [MoveType.PLAY_CARD_FROM_HAND]: playCardFromHand,
               [MoveType.SELECT_TARGET]: selectTarget,
               [MoveType.PITCH_CARD]: pitchCard,
+              [MoveType.PASS_PRIORITY]: passPriority,
               [MoveType.END_TURN]: endTurn,
             },
           },
