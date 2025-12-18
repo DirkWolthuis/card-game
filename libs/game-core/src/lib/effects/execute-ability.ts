@@ -2,7 +2,6 @@ import {
   Ability,
   AbilityType,
   ActivatedAbility,
-  TriggeredAbility,
   GameState,
 } from '@game/models';
 import { Ctx } from 'boardgame.io';
