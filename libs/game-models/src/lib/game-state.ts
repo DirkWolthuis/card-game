@@ -25,16 +25,17 @@ export interface PlayerSetup {
 
 /**
  * Tracks the state of target selection during ability/effect resolution.
- * When an ability has multiple effects and one requires a target, the game pauses
- * to allow the player to select a target before continuing with remaining effects.
+ * All targets must be selected before any effects resolve.
  */
 export interface PendingTargetSelection {
-  /** The current effect waiting for a target to be selected */
-  effect: Effect;
-  /** Remaining effects from the same ability that will be executed after the current effect is resolved */
-  remainingEffects: Effect[];
-  /** The source ability for context */
-  sourceAbility?: Ability;
+  /** The source ability being resolved */
+  sourceAbility: Ability;
+  /** All effects from the ability that will be executed after targets are collected */
+  allEffects: Effect[];
+  /** Effects that need target selection, in order */
+  effectsNeedingTargets: Effect[];
+  /** Map of effect index to selected target player ID */
+  selectedTargets: Record<number, string>;
 }
 
 export interface PlayerState {

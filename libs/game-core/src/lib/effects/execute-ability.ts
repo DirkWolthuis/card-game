@@ -12,10 +12,10 @@ import { needsTargetSelection } from './target-utils';
  * Executes an ability's effects.
  * Handles different ability types and manages target selection flow.
  * 
- * For abilities with effects that need targeting:
- * - Executes all non-targeting effects first
- * - Sets up pendingTargetSelection for the first targeting effect
- * - Remaining effects will be handled after target selection
+ * NEW BEHAVIOR: All targets must be selected before any effects resolve.
+ * - Identifies all effects that need targeting
+ * - Sets up pendingTargetSelection with all effects and empty target map
+ * - Effects only execute after all targets are collected
  * 
  * @param gameState - The current game state
  * @param ctx - The boardgame.io context
@@ -29,22 +29,17 @@ export const executeAbility = (
 ): boolean => {
   const effects = ability.effects;
 
-  // Find the first effect that needs target selection
-  const firstEffectNeedingTarget = effects.find(needsTargetSelection);
+  // Find all effects that need target selection
+  const effectsNeedingTargets = effects.filter(needsTargetSelection);
 
-  if (firstEffectNeedingTarget) {
-    const effectIndex = effects.indexOf(firstEffectNeedingTarget);
-
-    // Execute all effects before the first targeting effect
-    for (let i = 0; i < effectIndex; i++) {
-      executeEffect(gameState, ctx, effects[i]);
-    }
-
-    // Set up pending target selection for the first targeting effect
+  if (effectsNeedingTargets.length > 0) {
+    // Set up pending target selection for all targeting effects
+    // No effects execute until all targets are collected
     gameState.pendingTargetSelection = {
-      effect: firstEffectNeedingTarget,
-      remainingEffects: effects.slice(effectIndex + 1),
       sourceAbility: ability,
+      allEffects: effects,
+      effectsNeedingTargets: effectsNeedingTargets,
+      selectedTargets: {},
     };
 
     return true; // Target selection needed

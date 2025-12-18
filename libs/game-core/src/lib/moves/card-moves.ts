@@ -73,8 +73,8 @@ export const playCardFromHand: Move<GameState> = (
 
 /**
  * Handles player selection of a target for a pending effect.
- * Validates the target is valid for the current effect, executes the effect with the target,
- * and either continues with remaining effects or sets up the next targeting selection.
+ * Collects targets for all effects that need targeting.
+ * Once all targets are collected, executes all effects with their targets.
  * 
  * @param G - The current game state
  * @param ctx - The boardgame.io context
@@ -94,40 +94,44 @@ export const selectTarget: Move<GameState> = (
     return INVALID_MOVE;
   }
 
-  const { effect, remainingEffects } = G.pendingTargetSelection;
+  const {
+    sourceAbility,
+    allEffects,
+    effectsNeedingTargets,
+    selectedTargets,
+  } = G.pendingTargetSelection;
+
+  // Determine which effect we're selecting a target for
+  const numTargetsSelected = Object.keys(selectedTargets).length;
+  if (numTargetsSelected >= effectsNeedingTargets.length) {
+    // All targets already selected
+    return INVALID_MOVE;
+  }
+
+  const currentEffect = effectsNeedingTargets[numTargetsSelected];
 
   // Validate the target is valid for this effect
-  const validTargets = getValidTargets(effect, G, ctx.currentPlayer);
+  const validTargets = getValidTargets(currentEffect, G, ctx.currentPlayer);
   if (!validTargets.includes(targetPlayerId)) {
     return INVALID_MOVE;
   }
 
-  // Execute the current effect with the selected target
-  executeEffect(G, ctx, effect, targetPlayerId);
+  // Store the selected target
+  const effectIndex = allEffects.indexOf(currentEffect);
+  selectedTargets[effectIndex] = targetPlayerId;
 
-  // Clear the pending selection
-  G.pendingTargetSelection = undefined;
+  // Check if we have all targets now
+  if (Object.keys(selectedTargets).length === effectsNeedingTargets.length) {
+    // All targets collected - now execute all effects
+    allEffects.forEach((effect, index) => {
+      const target = selectedTargets[index];
+      executeEffect(G, ctx, effect, target);
+    });
 
-  // Process remaining effects
-  const nextEffectNeedingTarget = remainingEffects.find(needsTargetSelection);
-
-  if (nextEffectNeedingTarget) {
-    const effectIndex = remainingEffects.indexOf(nextEffectNeedingTarget);
-
-    // Execute all effects before the next targeting effect
-    for (let i = 0; i < effectIndex; i++) {
-      executeEffect(G, ctx, remainingEffects[i]);
-    }
-
-    // Set up pending target selection for the next targeting effect
-    G.pendingTargetSelection = {
-      effect: nextEffectNeedingTarget,
-      remainingEffects: remainingEffects.slice(effectIndex + 1),
-    };
-  } else {
-    // Execute all remaining effects that don't need targeting
-    remainingEffects.forEach((effect) => executeEffect(G, ctx, effect));
+    // Clear the pending selection
+    G.pendingTargetSelection = undefined;
   }
+  // Otherwise, keep pendingTargetSelection for next target selection
 
   return G;
 };

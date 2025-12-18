@@ -207,6 +207,8 @@ export const playCardFromHand: Move<GameState> = ({ G, ctx, playerID }, entityId
 
 The `executeAbility` function handles the execution flow:
 
+**IMPORTANT**: All targets must be selected before any effects resolve.
+
 ```typescript
 export const executeAbility = (
   gameState: GameState,
@@ -215,15 +217,15 @@ export const executeAbility = (
 ): boolean => {
   const effects = ability.effects;
 
-  // Find first effect that needs target selection
-  const firstEffectNeedingTarget = effects.find(needsTargetSelection);
+  // Find all effects that need target selection
+  const effectsNeedingTargets = effects.filter(needsTargetSelection);
 
-  if (firstEffectNeedingTarget) {
-    // Execute all non-targeting effects first
-    // Set up pending target selection
+  if (effectsNeedingTargets.length > 0) {
+    // Set up pending target selection for all targeting effects
+    // NO effects execute until all targets are collected
     // Return true (target selection needed)
   } else {
-    // Execute all effects immediately
+    // No targeting needed, execute all effects immediately
     // Return false (no target selection needed)
   }
 };
@@ -233,19 +235,37 @@ export const executeAbility = (
 
 When an ability has effects that require targeting:
 
-1. **Execute Non-Targeting Effects**: Effects before the first targeting effect execute immediately
-2. **Set Pending Selection**: Game state stores the targeting effect and remaining effects
-3. **Wait for Player**: Game pauses for player to select target via `selectTarget` move
-4. **Execute Targeting Effect**: Once target selected, effect executes with the target
-5. **Continue with Remaining**: Process remaining effects (may trigger more targeting)
+1. **Identify Targeting Effects**: Find all effects that need target selection
+2. **Set Pending Selection**: Game state stores all effects and prepares to collect targets
+3. **Wait for Player**: Game pauses for player to select targets via `selectTarget` move
+4. **Collect All Targets**: Player selects a target for each effect that needs one
+5. **Execute All Effects**: Once all targets are collected, ALL effects execute with their targets
+
+**Key Difference**: No effects execute until ALL targets are selected. This ensures predictable execution order.
 
 ```typescript
 interface PendingTargetSelection {
-  effect: Effect;
-  remainingEffects: Effect[];
-  sourceAbility?: Ability;
+  sourceAbility: Ability;
+  allEffects: Effect[];
+  effectsNeedingTargets: Effect[];
+  selectedTargets: Record<number, string>;
 }
 ```
+
+#### Example Flow
+
+For an ability with: `[Heal self 3, Deal 2 damage to opponent]`
+
+**OLD behavior** (incorrect):
+1. Heal executes immediately → Player gains 3 life
+2. Pause for target selection
+3. Target selected → Damage executes
+
+**NEW behavior** (correct):
+1. Identify damage needs target
+2. Pause for target selection
+3. Target selected
+4. Both heal AND damage execute together
 
 ### Activated Ability System
 

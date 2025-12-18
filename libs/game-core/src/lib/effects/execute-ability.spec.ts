@@ -15,7 +15,20 @@ import {
   TriggeredAbility,
   StaticAbility,
 } from '@game/models';
-import type { Ctx } from 'boardgame.io';
+import type { Ctx, FnContext } from 'boardgame.io';
+
+// Type helper for calling move functions
+const callMove = <T>(
+  moveFn: unknown,
+  context: Partial<FnContext<GameState>>,
+  arg?: T
+) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (moveFn as (ctx: FnContext<GameState>, arg: T) => any)(
+    context as FnContext<GameState>,
+    arg as T
+  );
+};
 
 const createPlayerState = (mana = 0): PlayerState => ({
   resources: { life: 20, mana },
@@ -76,11 +89,11 @@ describe('execute-ability', () => {
 
       expect(needsTarget).toBe(true);
       expect(gameState.pendingTargetSelection).toBeDefined();
-      expect(gameState.pendingTargetSelection?.effect).toBe(ability.effects[0]);
+      expect(gameState.pendingTargetSelection?.effectsNeedingTargets[0]).toBe(ability.effects[0]);
       expect(gameState.pendingTargetSelection?.sourceAbility).toBe(ability);
     });
 
-    it('should execute non-targeting effects before setting up targeting', () => {
+    it('should NOT execute effects before collecting all targets', () => {
       const gameState: GameState = {
         players: {
           '0': createPlayerState(5),
@@ -102,9 +115,62 @@ describe('execute-ability', () => {
       const needsTarget = executeAbility(gameState, ctx, ability);
 
       expect(needsTarget).toBe(true);
-      expect(gameState.players['0'].resources.life).toBe(23); // Heal happened
+      // NEW BEHAVIOR: Heal should NOT happen yet - waiting for targets
+      expect(gameState.players['0'].resources.life).toBe(20); // Unchanged
       expect(gameState.pendingTargetSelection).toBeDefined();
-      expect(gameState.pendingTargetSelection?.effect).toBe(ability.effects[1]); // Damage is pending
+      expect(gameState.pendingTargetSelection?.effectsNeedingTargets).toHaveLength(1);
+      expect(gameState.pendingTargetSelection?.effectsNeedingTargets[0]).toBe(ability.effects[1]);
+      expect(gameState.pendingTargetSelection?.allEffects).toEqual(ability.effects);
+    });
+
+    it('should execute all effects after all targets are selected', () => {
+      // Import at the top level would cause circular dependency, so import here
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { selectTarget } = require('../moves/card-moves');
+      
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(5),
+          '1': createPlayerState(0),
+        },
+      };
+
+      const ability: TriggeredAbility = {
+        type: AbilityType.TRIGGERED,
+        description: 'Heal yourself for 3, then deal 2 damage to opponent',
+        effects: [
+          { target: TargetType.SELF, type: EffectType.HEAL, value: 3 },
+          { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 2 },
+        ],
+      };
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const ctx = { currentPlayer: '0' } as any as Ctx;
+      
+      // Execute ability - should set up target selection
+      const needsTarget = executeAbility(gameState, ctx, ability);
+      expect(needsTarget).toBe(true);
+      
+      // Verify nothing executed yet
+      expect(gameState.players['0'].resources.life).toBe(20);
+      expect(gameState.players['1'].resources.life).toBe(20);
+      
+      // Select target for the damage effect
+      callMove(
+        selectTarget,
+        {
+          G: gameState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ctx: { currentPlayer: '0' } as any,
+          playerID: '0',
+        },
+        '1'
+      );
+      
+      // Now all effects should have executed
+      expect(gameState.players['0'].resources.life).toBe(23); // Healed
+      expect(gameState.players['1'].resources.life).toBe(18); // Damaged
+      expect(gameState.pendingTargetSelection).toBeUndefined();
     });
   });
 
