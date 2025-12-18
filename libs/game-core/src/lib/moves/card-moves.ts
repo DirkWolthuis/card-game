@@ -7,7 +7,7 @@ import {
   getAbilitiesToActivateOnPlay,
 } from '../effects/execute-ability';
 import { INVALID_MOVE } from 'boardgame.io/core';
-import { needsTargetSelection, getValidTargets } from '../effects/target-utils';
+import { getValidTargets } from '../effects/target-utils';
 
 /**
  * Checks if a card has the UNIT type
@@ -95,7 +95,6 @@ export const selectTarget: Move<GameState> = (
   }
 
   const {
-    sourceAbility,
     allEffects,
     effectsNeedingTargets,
     selectedTargets,
