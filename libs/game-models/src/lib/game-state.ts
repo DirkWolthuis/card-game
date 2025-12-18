@@ -2,6 +2,7 @@ import { Entity, EntityId } from './entity';
 import { PlayerId } from './player';
 import { Zones } from './zone';
 import { Effect } from './effect';
+import { Ability } from './ability';
 
 export interface GameState {
   players: Record<PlayerId, PlayerState>;
@@ -23,15 +24,17 @@ export interface PlayerSetup {
 }
 
 /**
- * Tracks the state of target selection during card effect resolution.
- * When a card has multiple effects and one requires a target, the game pauses
+ * Tracks the state of target selection during ability/effect resolution.
+ * When an ability has multiple effects and one requires a target, the game pauses
  * to allow the player to select a target before continuing with remaining effects.
  */
 export interface PendingTargetSelection {
   /** The current effect waiting for a target to be selected */
   effect: Effect;
-  /** Remaining effects from the same card that will be executed after the current effect is resolved */
+  /** Remaining effects from the same ability that will be executed after the current effect is resolved */
   remainingEffects: Effect[];
+  /** The source ability for context */
+  sourceAbility?: Ability;
 }
 
 export interface PlayerState {

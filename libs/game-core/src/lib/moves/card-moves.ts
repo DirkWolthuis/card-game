@@ -2,6 +2,10 @@ import { getCardById } from '@game/data';
 import { Card, CardType, GameState } from '@game/models';
 import { Move } from 'boardgame.io';
 import { executeEffect } from '../effects/execute-effect';
+import {
+  executeAbility,
+  getAbilitiesToActivateOnPlay,
+} from '../effects/execute-ability';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import { needsTargetSelection, getValidTargets } from '../effects/target-utils';
 
@@ -36,27 +40,6 @@ export const playCardFromHand: Move<GameState> = (
     // Reduce mana before playing the card
     playerState.resources.mana -= card.manaCost;
 
-    // Check if any effect needs target selection
-    const firstEffectNeedingTarget = card.effects.find(needsTargetSelection);
-    
-    if (firstEffectNeedingTarget) {
-      const effectIndex = card.effects.indexOf(firstEffectNeedingTarget);
-      
-      // Execute all effects before the first targeting effect
-      for (let i = 0; i < effectIndex; i++) {
-        executeEffect(G, ctx, card.effects[i]);
-      }
-      
-      // Set up pending target selection for the first targeting effect
-      G.pendingTargetSelection = {
-        effect: firstEffectNeedingTarget,
-        remainingEffects: card.effects.slice(effectIndex + 1),
-      };
-    } else {
-      // No targeting needed, execute all effects immediately
-      card.effects.forEach((effect) => executeEffect(G, ctx, effect));
-    }
-
     // Remove card from hand
     playerState.zones.hand.entityIds = playerState.zones.hand.entityIds.filter(
       (handEntityId) => handEntityId !== entityId
@@ -65,6 +48,21 @@ export const playCardFromHand: Move<GameState> = (
     // If the card is a unit, place it on the battlefield
     if (isUnitCard(card)) {
       playerState.zones.battlefield.entityIds.push(entityId);
+    }
+
+    // Get abilities that should activate when the card is played
+    // For spells, this includes all triggered abilities
+    // For units, this would be "enters battlefield" triggered abilities
+    const abilitiesToActivate = getAbilitiesToActivateOnPlay(card.abilities);
+
+    // Execute the abilities
+    for (const ability of abilitiesToActivate) {
+      const needsTarget = executeAbility(G, ctx, ability);
+      if (needsTarget) {
+        // If an ability needs a target, execution will pause here
+        // The player must use selectTarget to continue
+        break;
+      }
     }
 
     return G;
@@ -112,15 +110,15 @@ export const selectTarget: Move<GameState> = (
 
   // Process remaining effects
   const nextEffectNeedingTarget = remainingEffects.find(needsTargetSelection);
-  
+
   if (nextEffectNeedingTarget) {
     const effectIndex = remainingEffects.indexOf(nextEffectNeedingTarget);
-    
+
     // Execute all effects before the next targeting effect
     for (let i = 0; i < effectIndex; i++) {
       executeEffect(G, ctx, remainingEffects[i]);
     }
-    
+
     // Set up pending target selection for the next targeting effect
     G.pendingTargetSelection = {
       effect: nextEffectNeedingTarget,
