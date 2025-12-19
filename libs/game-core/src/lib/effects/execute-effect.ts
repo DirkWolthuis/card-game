@@ -7,6 +7,12 @@ export const executeEffect = (
   effect: Effect,
   targetPlayerId?: string
 ): void => {
+  // Defensive check: ensure effect is not null/undefined
+  if (!effect) {
+    console.error('executeEffect called with null/undefined effect');
+    return;
+  }
+
   switch (effect.type) {
     case EffectType.DEAL_DAMAGE: {
       // Resolve target: use SELF for TargetType.SELF, otherwise require explicit target

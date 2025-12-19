@@ -29,15 +29,22 @@ export const executeAbility = (
 ): boolean => {
   const effects = ability.effects;
 
+  // Defensive check: filter out any undefined or null effects
+  const validEffects = effects.filter((effect) => effect != null);
+  
+  if (validEffects.length !== effects.length) {
+    console.error(`Warning: Ability had ${effects.length - validEffects.length} undefined/null effects that were filtered out`);
+  }
+
   // Find all effects that need target selection
-  const effectsNeedingTargets = effects.filter(needsTargetSelection);
+  const effectsNeedingTargets = validEffects.filter(needsTargetSelection);
 
   if (effectsNeedingTargets.length > 0) {
     // Set up pending target selection for all targeting effects
     // No effects execute until all targets are collected
     gameState.pendingTargetSelection = {
       sourceAbility: ability,
-      allEffects: effects,
+      allEffects: validEffects,
       effectsNeedingTargets: effectsNeedingTargets,
       selectedTargets: {},
     };
@@ -45,7 +52,12 @@ export const executeAbility = (
     return true; // Target selection needed
   } else {
     // No targeting needed, execute all effects immediately
-    effects.forEach((effect) => executeEffect(gameState, ctx, effect));
+    validEffects.forEach((effect) => {
+      // Double-check effect is valid before executing
+      if (effect) {
+        executeEffect(gameState, ctx, effect);
+      }
+    });
     return false; // No target selection needed
   }
 };
