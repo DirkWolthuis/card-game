@@ -59,8 +59,9 @@ export const playCardFromHand: Move<GameState> = (
     for (const ability of abilitiesToActivate) {
       const needsTarget = executeAbility(G, ctx, ability);
       if (needsTarget) {
-        // If an ability needs a target, execution will pause here
-        // The player must use selectTarget to continue
+        // If an ability needs a target, resolution of that ability will pause here.
+        // The player must use selectTarget to continue resolving that pending effect.
+        // We break here because only one ability can have pending target selection at a time.
         break;
       }
     }
@@ -100,6 +101,17 @@ export const selectTarget: Move<GameState> = (
     selectedTargets,
   } = G.pendingTargetSelection;
 
+  // Defensive check: ensure we have valid effects arrays
+  if (!allEffects || !Array.isArray(allEffects) || allEffects.length === 0) {
+    console.error('Invalid pendingTargetSelection: allEffects is missing or empty');
+    return INVALID_MOVE;
+  }
+
+  if (!effectsNeedingTargets || !Array.isArray(effectsNeedingTargets)) {
+    console.error('Invalid pendingTargetSelection: effectsNeedingTargets is missing or invalid');
+    return INVALID_MOVE;
+  }
+
   // Determine which effect we're selecting a target for
   const numTargetsSelected = Object.keys(selectedTargets).length;
   if (numTargetsSelected >= effectsNeedingTargets.length) {
@@ -123,6 +135,11 @@ export const selectTarget: Move<GameState> = (
   if (Object.keys(selectedTargets).length === effectsNeedingTargets.length) {
     // All targets collected - now execute all effects
     allEffects.forEach((effect, index) => {
+      // Defensive check: ensure effect is not undefined
+      if (!effect) {
+        console.error(`Effect at index ${index} is undefined in allEffects`);
+        return;
+      }
       const target = selectedTargets[index];
       executeEffect(G, ctx, effect, target);
     });
