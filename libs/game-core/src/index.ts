@@ -5,3 +5,4 @@ export * from './lib/moves/setup-moves';
 export * from './lib/util/game-setup';
 export * from './lib/util/phase-utils';
 export * from './lib/moves/turn-moves';
+export * from './lib/actions/action-validation';
