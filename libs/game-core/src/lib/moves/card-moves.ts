@@ -101,19 +101,21 @@ export const selectTarget: Move<GameState> = (
     return INVALID_MOVE;
   }
 
-  if (!G.pendingTargetSelection.effectsNeedingTargets || !Array.isArray(G.pendingTargetSelection.effectsNeedingTargets)) {
-    console.error('Invalid pendingTargetSelection: effectsNeedingTargets is missing or invalid');
+  if (!G.pendingTargetSelection.effectIndicesNeedingTargets || !Array.isArray(G.pendingTargetSelection.effectIndicesNeedingTargets)) {
+    console.error('Invalid pendingTargetSelection: effectIndicesNeedingTargets is missing or invalid');
     return INVALID_MOVE;
   }
 
   // Determine which effect we're selecting a target for
   const numTargetsSelected = Object.keys(G.pendingTargetSelection.selectedTargets).length;
-  if (numTargetsSelected >= G.pendingTargetSelection.effectsNeedingTargets.length) {
+  if (numTargetsSelected >= G.pendingTargetSelection.effectIndicesNeedingTargets.length) {
     // All targets already selected
     return INVALID_MOVE;
   }
 
-  const currentEffect = G.pendingTargetSelection.effectsNeedingTargets[numTargetsSelected];
+  // Get the index of the effect that needs a target
+  const effectIndex = G.pendingTargetSelection.effectIndicesNeedingTargets[numTargetsSelected];
+  const currentEffect = G.pendingTargetSelection.allEffects[effectIndex];
 
   // Validate the target is valid for this effect
   const validTargets = getValidTargets(currentEffect, G, ctx.currentPlayer);
@@ -122,11 +124,10 @@ export const selectTarget: Move<GameState> = (
   }
 
   // Store the selected target - directly mutate G to work correctly with immer
-  const effectIndex = G.pendingTargetSelection.allEffects.indexOf(currentEffect);
   G.pendingTargetSelection.selectedTargets[effectIndex] = targetPlayerId;
 
   // Check if we have all targets now
-  if (Object.keys(G.pendingTargetSelection.selectedTargets).length === G.pendingTargetSelection.effectsNeedingTargets.length) {
+  if (Object.keys(G.pendingTargetSelection.selectedTargets).length === G.pendingTargetSelection.effectIndicesNeedingTargets.length) {
     // All targets collected - now execute all effects
     G.pendingTargetSelection.allEffects.forEach((effect, index) => {
       // Defensive check: ensure effect is not undefined

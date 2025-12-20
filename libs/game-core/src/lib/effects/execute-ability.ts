@@ -36,16 +36,21 @@ export const executeAbility = (
     console.error(`Warning: Ability had ${effects.length - validEffects.length} undefined/null effects that were filtered out`);
   }
 
-  // Find all effects that need target selection
-  const effectsNeedingTargets = validEffects.filter(needsTargetSelection);
+  // Find indices of effects that need target selection
+  const effectIndicesNeedingTargets: number[] = [];
+  validEffects.forEach((effect, index) => {
+    if (needsTargetSelection(effect)) {
+      effectIndicesNeedingTargets.push(index);
+    }
+  });
 
-  if (effectsNeedingTargets.length > 0) {
+  if (effectIndicesNeedingTargets.length > 0) {
     // Set up pending target selection for all targeting effects
     // No effects execute until all targets are collected
     gameState.pendingTargetSelection = {
       sourceAbility: ability,
       allEffects: validEffects,
-      effectsNeedingTargets: effectsNeedingTargets,
+      effectIndicesNeedingTargets: effectIndicesNeedingTargets,
       selectedTargets: {},
     };
 
