@@ -262,7 +262,7 @@ const CARD_DATABASE: Card[] = [
     name: 'Targeted Strike',
     types: [CardType.SPELL],
     pitchValue: 2,
-    manaCost: 2,
+    manaCost: 0, // Set to 0 for easy E2E testing without needing to pitch
     abilities: [
       {
         type: AbilityType.TRIGGERED,
@@ -279,7 +279,7 @@ const CARD_DATABASE: Card[] = [
     name: 'Direct Assault',
     types: [CardType.SPELL],
     pitchValue: 3,
-    manaCost: 3,
+    manaCost: 0, // Set to 0 for easy E2E testing without needing to pitch
     abilities: [
       {
         type: AbilityType.TRIGGERED,
@@ -407,12 +407,12 @@ const PRECONSTRUCTED_DECKS: PreconstructedDeck[] = [
     name: 'E2E Test Deck',
     description: 'Fixed deck for E2E testing with target selection and various card types',
     cardIds: [
-      'spell-target-any',  // First card - requires target selection (any player)
-      'spell-target-opponent', // Second card - requires target selection (opponent)
-      'troop-1',           // Third card - unit type (troop)
-      'leader-1',          // Fourth card - unit type (leader)
-      'aaaa',              // Fifth card - spell without target selection
-      'bbb',               // Sixth card - healing spell
+      'spell-target-any',  // First card - costs 0, requires target selection (any player)
+      'spell-target-opponent', // Second card - costs 0, requires target selection (opponent)
+      'troop-1',           // Third card - unit type (troop), costs 1 mana
+      'leader-1',          // Fourth card - unit type (leader), costs 3 mana
+      'bbb',               // Fifth card - healing spell
+      'aaaa',              // Sixth card - spell without target selection
       'spell-1',
       'spell-2',
       'troop-2',

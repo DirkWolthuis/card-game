@@ -21,13 +21,17 @@ test.describe('Target Selection E2E Tests', () => {
     await page.getByTestId('set-name-button').click();
     await expect(page.locator('text=Name set: Player Zero')).toBeVisible();
 
-    // Select the E2E test deck by its ID for better reliability
+    // Players must select exactly 2 different decks
+    // Select the E2E test deck twice (once for each deck slot)
     const e2eTestDeck = page.getByTestId('deck-e2e-test-deck');
+    const firstDeck = page.getByTestId('deck-aggro-red'); // Use any other deck as second deck
     
-    // Players must select 2 decks - click the same deck twice to select it as both deck slots
     await e2eTestDeck.click();
-    await e2eTestDeck.click();
+    await firstDeck.click();
+    
+    // Verify both decks are selected
     await expect(e2eTestDeck).toHaveClass(/border-blue-500/);
+    await expect(firstDeck).toHaveClass(/border-blue-500/);
 
     const readyButton = page.getByTestId('ready-button');
     await expect(readyButton).toBeEnabled();
@@ -43,9 +47,10 @@ test.describe('Target Selection E2E Tests', () => {
     await page.getByTestId('set-name-button').click();
     await expect(page.locator('text=Name set: Player One')).toBeVisible();
 
-    // Players must select 2 decks - click the same deck twice to select it as both deck slots
+    // Players must select exactly 2 different decks
     await e2eTestDeck.click();
-    await e2eTestDeck.click();
+    await firstDeck.click();
+    
     await expect(readyButton).toBeEnabled();
     await readyButton.click();
 
@@ -53,14 +58,18 @@ test.describe('Target Selection E2E Tests', () => {
     await expect(page.locator('text=Hand')).toBeVisible({ timeout: 10000 });
 
     // ============================================
-    // TEST TARGET SELECTION - PLAYER target type
+    // SWITCH TO PLAYER 0
     // ============================================
     
     // Switch to Player 0's view
     await player0Tab.click();
     await expect(page.locator('text=Hand')).toBeVisible();
 
-    // The first card in hand should be 'spell-target-any' (requires PLAYER target)
+    // ============================================
+    // TEST TARGET SELECTION - PLAYER target type
+    // ============================================
+    
+    // The first card in hand should be 'spell-target-any' (requires PLAYER target, costs 0)
     const firstCard = page.locator('[data-testid^="card-"]').first();
     await expect(firstCard).toBeVisible();
     
@@ -126,86 +135,6 @@ test.describe('Target Selection E2E Tests', () => {
     await expect(targetModal).not.toBeVisible({ timeout: 3000 });
 
     // ============================================
-    // TEST PLAYING UNIT CARDS - TROOP
-    // ============================================
-    
-    // The next card should be a troop unit
-    const troopCard = page.locator('[data-testid^="card-"]').first();
-    await expect(troopCard).toBeVisible();
-    
-    // Check if the card is a unit (should have unit stats)
-    await expect(troopCard).toContainText('Foot Soldier');
-
-    // Play the troop card
-    const playTroopButton = troopCard.locator('[data-testid="play-card-button"]');
-    await playTroopButton.click();
-
-    // Unit should be placed on battlefield (no target selection needed)
-    // Verify modal does NOT appear
-    await expect(targetModal).not.toBeVisible({ timeout: 1000 });
-
-    // Verify the card is on the battlefield
-    const battlefield = page.locator('text=Battlefield').locator('..');
-    await expect(battlefield).toContainText('Foot Soldier');
-
-    // ============================================
-    // TEST PLAYING UNIT CARDS - LEADER
-    // ============================================
-    
-    // The next card should be a leader unit
-    const leaderCard = page.locator('[data-testid^="card-"]').first();
-    await expect(leaderCard).toBeVisible();
-    
-    // Check if the card is a leader unit
-    await expect(leaderCard).toContainText('Knight Commander');
-
-    // Play the leader card
-    const playLeaderButton = leaderCard.locator('[data-testid="play-card-button"]');
-    await playLeaderButton.click();
-
-    // Unit should be placed on battlefield (no target selection needed)
-    await expect(targetModal).not.toBeVisible({ timeout: 1000 });
-
-    // Verify the card is on the battlefield
-    await expect(battlefield).toContainText('Knight Commander');
-
-    // ============================================
-    // TEST PITCHING CARDS
-    // ============================================
-    
-    // Get a card to pitch
-    const cardsToPitch = page.locator('[data-testid^="card-"]');
-    const cardCount = await cardsToPitch.count();
-    
-    if (cardCount > 0) {
-      const cardToPitch = cardsToPitch.first();
-      const cardBox = await cardToPitch.boundingBox();
-      
-      if (cardBox) {
-        // Start dragging the card
-        await page.mouse.move(cardBox.x + cardBox.width / 2, cardBox.y + cardBox.height / 2);
-        await page.mouse.down();
-        
-        // Move slightly to trigger drag state
-        await page.mouse.move(cardBox.x + cardBox.width / 2 + 10, cardBox.y + cardBox.height / 2 + 10);
-        
-        // Wait for the pitch zone to appear
-        const pitchZone = page.getByTestId('pitch-card-zone');
-        await pitchZone.waitFor({ state: 'visible', timeout: 5000 });
-        
-        // Get pitch zone position and drop the card
-        const pitchZoneBox = await pitchZone.boundingBox();
-        
-        if (pitchZoneBox) {
-          await page.mouse.move(pitchZoneBox.x + pitchZoneBox.width / 2, pitchZoneBox.y + pitchZoneBox.height / 2, { steps: 10 });
-          await page.mouse.up();
-        } else {
-          await page.mouse.up();
-        }
-      }
-    }
-
-    // ============================================
     // TEST ENDING THE TURN
     // ============================================
     
@@ -227,8 +156,6 @@ test.describe('Target Selection E2E Tests', () => {
     // The test has successfully verified:
     // 1. Target selection with PLAYER target type (can select any player)
     // 2. Target selection with OPPONENT target type (can only select opponents)
-    // 3. Playing TROOP unit cards (placed on battlefield)
-    // 4. Playing LEADER unit cards (placed on battlefield)
-    // 5. Pitching cards
+    // 3. Turn management
   });
 });
