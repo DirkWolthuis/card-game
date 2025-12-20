@@ -255,6 +255,41 @@ const CARD_DATABASE: Card[] = [
       health: 1,
     },
   },
+  // Cards with target selection for E2E testing
+  {
+    id: 'spell-target-any',
+    displayText: 'Deal 4 damage to any player',
+    name: 'Targeted Strike',
+    types: [CardType.SPELL],
+    pitchValue: 2,
+    manaCost: 2,
+    abilities: [
+      {
+        type: AbilityType.TRIGGERED,
+        description: 'Deal 4 damage to any player',
+        effects: [
+          { target: TargetType.PLAYER, type: EffectType.DEAL_DAMAGE, value: 4 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'spell-target-opponent',
+    displayText: 'Deal 6 damage to target opponent',
+    name: 'Direct Assault',
+    types: [CardType.SPELL],
+    pitchValue: 3,
+    manaCost: 3,
+    abilities: [
+      {
+        type: AbilityType.TRIGGERED,
+        description: 'Deal 6 damage to target opponent',
+        effects: [
+          { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 6 },
+        ],
+      },
+    ],
+  },
 ];
 
 const PRECONSTRUCTED_DECKS: PreconstructedDeck[] = [
@@ -364,6 +399,34 @@ const PRECONSTRUCTED_DECKS: PreconstructedDeck[] = [
       'aaaa',
       'bbb',
       'bbb',
+    ],
+  },
+  // E2E testing deck with predictable cards for target selection testing
+  {
+    id: 'e2e-test-deck',
+    name: 'E2E Test Deck',
+    description: 'Fixed deck for E2E testing with target selection and various card types',
+    cardIds: [
+      'spell-target-any',  // First card - requires target selection (any player)
+      'spell-target-opponent', // Second card - requires target selection (opponent)
+      'troop-1',           // Third card - unit type (troop)
+      'leader-1',          // Fourth card - unit type (leader)
+      'aaaa',              // Fifth card - spell without target selection
+      'bbb',               // Sixth card - healing spell
+      'spell-1',
+      'spell-2',
+      'troop-2',
+      'troop-3',
+      'leader-2',
+      'spell-3',
+      'spell-4',
+      'troop-4',
+      'spell-target-any',
+      'spell-target-opponent',
+      'aaaa',
+      'bbb',
+      'troop-1',
+      'leader-1',
     ],
   },
 ];

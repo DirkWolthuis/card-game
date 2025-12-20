@@ -15,6 +15,7 @@ export function TargetSelectionModal(props: TargetSelectionModalProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="target-modal-title"
+      data-testid="target-selection-modal"
     >
       <div className="bg-white rounded-lg p-6 shadow-xl max-w-md w-full">
         <h2 id="target-modal-title" className="text-xl font-bold mb-4">Select a Target</h2>
@@ -27,6 +28,7 @@ export function TargetSelectionModal(props: TargetSelectionModalProps) {
                 key={playerId}
                 onClick={() => onSelectTarget(playerId)}
                 className="w-full px-4 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors flex justify-between items-center"
+                data-testid={`target-player-${playerId}`}
               >
                 <span>Player {playerId}</span>
                 <span className="text-sm">Life: {player.resources.life}</span>

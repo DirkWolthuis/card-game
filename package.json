@@ -5,6 +5,7 @@
   "scripts": {
     "serve:ui": "nx run game-ui:dev",
     "test:ui": "nx run game-ui:test",
+    "e2e:ui": "nx run game-ui-e2e:e2e --ui",
     "reset": "nx reset"
   },
   "private": true,
