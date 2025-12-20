@@ -10,6 +10,12 @@
       "options": {
         "passWithNoTests": true
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p libs/game-data/tsconfig.json"
+      }
     }
   }
 }

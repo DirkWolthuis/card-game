@@ -24,6 +24,7 @@ This document outlines the acceptance criteria that all contributions to the Lor
 
 ### Type Safety
 - [ ] TypeScript code compiles without errors
+- [ ] Run `pnpm nx run-many --target=typecheck --all` successfully
 - [ ] No use of `any` type without explicit justification and eslint-disable comment
 - [ ] Type definitions are complete and accurate
 
@@ -108,6 +109,7 @@ This document outlines the acceptance criteria that all contributions to the Lor
 
 ### GitHub Actions
 - [ ] All CI checks pass (`.github/workflows/pr-checks.yml`)
+- [ ] Type checking step passes (`pnpm nx run-many --target=typecheck --all`)
 - [ ] Linting step passes
 - [ ] Testing step passes
 - [ ] No build errors

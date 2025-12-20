@@ -84,6 +84,12 @@
       "options": {
         "passWithNoTests": true
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p apps/game-server/tsconfig.json"
+      }
     }
   }
 }

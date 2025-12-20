@@ -32,9 +32,9 @@ export interface PendingTargetSelection {
   sourceAbility: Ability;
   /** All effects from the ability that will be executed after targets are collected */
   allEffects: Effect[];
-  /** Effects that need target selection, in order */
-  effectsNeedingTargets: Effect[];
-  /** Map of effect index to selected target player ID */
+  /** Indices of effects in allEffects that need target selection, in order */
+  effectIndicesNeedingTargets: number[];
+  /** Map of effect index in allEffects to selected target player ID */
   selectedTargets: Record<number, string>;
 }
 

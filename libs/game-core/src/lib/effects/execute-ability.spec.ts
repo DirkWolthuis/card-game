@@ -89,7 +89,8 @@ describe('execute-ability', () => {
 
       expect(needsTarget).toBe(true);
       expect(gameState.pendingTargetSelection).toBeDefined();
-      expect(gameState.pendingTargetSelection?.effectsNeedingTargets[0]).toBe(ability.effects[0]);
+      expect(gameState.pendingTargetSelection?.effectIndicesNeedingTargets[0]).toBe(0);
+      expect(gameState.pendingTargetSelection?.allEffects[0]).toBe(ability.effects[0]);
       expect(gameState.pendingTargetSelection?.sourceAbility).toBe(ability);
     });
 
@@ -118,8 +119,9 @@ describe('execute-ability', () => {
       // NEW BEHAVIOR: Heal should NOT happen yet - waiting for targets
       expect(gameState.players['0'].resources.life).toBe(20); // Unchanged
       expect(gameState.pendingTargetSelection).toBeDefined();
-      expect(gameState.pendingTargetSelection?.effectsNeedingTargets).toHaveLength(1);
-      expect(gameState.pendingTargetSelection?.effectsNeedingTargets[0]).toBe(ability.effects[1]);
+      expect(gameState.pendingTargetSelection?.effectIndicesNeedingTargets).toHaveLength(1);
+      expect(gameState.pendingTargetSelection?.effectIndicesNeedingTargets[0]).toBe(1); // Index of damage effect
+      expect(gameState.pendingTargetSelection?.allEffects[1]).toBe(ability.effects[1]);
       expect(gameState.pendingTargetSelection?.allEffects).toEqual(ability.effects);
     });
 

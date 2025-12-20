@@ -95,31 +95,27 @@ export const selectTarget: Move<GameState> = (
     return INVALID_MOVE;
   }
 
-  const {
-    allEffects,
-    effectsNeedingTargets,
-    selectedTargets,
-  } = G.pendingTargetSelection;
-
   // Defensive check: ensure we have valid effects arrays
-  if (!allEffects || !Array.isArray(allEffects) || allEffects.length === 0) {
+  if (!G.pendingTargetSelection.allEffects || !Array.isArray(G.pendingTargetSelection.allEffects) || G.pendingTargetSelection.allEffects.length === 0) {
     console.error('Invalid pendingTargetSelection: allEffects is missing or empty');
     return INVALID_MOVE;
   }
 
-  if (!effectsNeedingTargets || !Array.isArray(effectsNeedingTargets)) {
-    console.error('Invalid pendingTargetSelection: effectsNeedingTargets is missing or invalid');
+  if (!G.pendingTargetSelection.effectIndicesNeedingTargets || !Array.isArray(G.pendingTargetSelection.effectIndicesNeedingTargets)) {
+    console.error('Invalid pendingTargetSelection: effectIndicesNeedingTargets is missing or invalid');
     return INVALID_MOVE;
   }
 
   // Determine which effect we're selecting a target for
-  const numTargetsSelected = Object.keys(selectedTargets).length;
-  if (numTargetsSelected >= effectsNeedingTargets.length) {
+  const numTargetsSelected = Object.keys(G.pendingTargetSelection.selectedTargets).length;
+  if (numTargetsSelected >= G.pendingTargetSelection.effectIndicesNeedingTargets.length) {
     // All targets already selected
     return INVALID_MOVE;
   }
 
-  const currentEffect = effectsNeedingTargets[numTargetsSelected];
+  // Get the index of the effect that needs a target
+  const effectIndex = G.pendingTargetSelection.effectIndicesNeedingTargets[numTargetsSelected];
+  const currentEffect = G.pendingTargetSelection.allEffects[effectIndex];
 
   // Validate the target is valid for this effect
   const validTargets = getValidTargets(currentEffect, G, ctx.currentPlayer);
@@ -127,20 +123,20 @@ export const selectTarget: Move<GameState> = (
     return INVALID_MOVE;
   }
 
-  // Store the selected target
-  const effectIndex = allEffects.indexOf(currentEffect);
-  selectedTargets[effectIndex] = targetPlayerId;
+  // Store the selected target - directly mutate G to work correctly with immer
+  G.pendingTargetSelection.selectedTargets[effectIndex] = targetPlayerId;
 
   // Check if we have all targets now
-  if (Object.keys(selectedTargets).length === effectsNeedingTargets.length) {
+  if (Object.keys(G.pendingTargetSelection.selectedTargets).length === G.pendingTargetSelection.effectIndicesNeedingTargets.length) {
     // All targets collected - now execute all effects
-    allEffects.forEach((effect, index) => {
+    G.pendingTargetSelection.allEffects.forEach((effect, index) => {
       // Defensive check: ensure effect is not undefined
       if (!effect) {
         console.error(`Effect at index ${index} is undefined in allEffects`);
         return;
       }
-      const target = selectedTargets[index];
+      // Non-null assertion is safe here because we're inside the if block that checks pendingTargetSelection exists
+      const target = G.pendingTargetSelection!.selectedTargets[index];
       executeEffect(G, ctx, effect, target);
     });
 
