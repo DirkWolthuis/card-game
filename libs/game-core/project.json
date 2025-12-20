@@ -9,7 +9,7 @@
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsc --noEmit -p libs/game-core/tsconfig.lib.json"
+        "command": "tsc --noEmit -p libs/game-core/tsconfig.json"
       }
     }
   }
