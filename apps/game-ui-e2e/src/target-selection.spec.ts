@@ -112,7 +112,7 @@ test.describe('Target Selection E2E Tests', () => {
     
     // Player 0 should NOT be visible as a target (since they are the current player)
     const selfButton = page.getByTestId('target-player-0');
-    await expect(selfButton).not.toBeVisible();
+    await expect(selfButton).toBeHidden();
 
     // Select the opponent
     await opponentButton.click();
