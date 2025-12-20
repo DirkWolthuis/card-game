@@ -1,3 +1,4 @@
+import React from 'react';
 import { Card as CardModel, Entity } from '@game/models';
 import { useDrag } from 'react-dnd';
 
@@ -89,7 +90,7 @@ export function Card(props: CardProps) {
 
   return (
     <div
-      ref={drag}
+      ref={drag as unknown as React.Ref<HTMLDivElement>}
       className="border-2 border-black bg-white rounded-md flex flex-col p-4 shadow-md cursor-grab active:cursor-grabbing min-w-[150px]"
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >
