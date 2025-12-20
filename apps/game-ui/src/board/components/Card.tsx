@@ -68,6 +68,7 @@ function CardDescription({ displayText }: { displayText: string }) {
 function PlayCardButton({ onClick }: { onClick: () => void }) {
   return (
     <button
+      data-testid="play-card-button"
       onClick={onClick}
       className="px-2 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600"
     >
@@ -94,6 +95,7 @@ export function Card(props: CardProps) {
       // Type assertion needed for react-dnd v16.0.1 compatibility with React 19
       // ConnectDragSource from useDrag is not directly compatible with React.Ref
       ref={drag as unknown as React.Ref<HTMLDivElement>}
+      data-testid={`card-${props.entity.id}`}
       className="border-2 border-black bg-white rounded-md flex flex-col p-4 shadow-md cursor-grab active:cursor-grabbing min-w-[150px]"
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >

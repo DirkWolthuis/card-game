@@ -21,7 +21,8 @@ function DropZone({
   title, 
   description, 
   overColor, 
-  defaultColor 
+  defaultColor,
+  testId 
 }: { 
   dropRef: (node: HTMLDivElement | null) => void;
   isOver: boolean;
@@ -29,10 +30,12 @@ function DropZone({
   description: string;
   overColor: string;
   defaultColor: string;
+  testId: string;
 }) {
   return (
     <div
       ref={dropRef}
+      data-testid={testId}
       className={`flex-1 border-4 border-dashed rounded-lg flex items-center justify-center transition-colors ${
         isOver ? overColor : defaultColor
       }`}
@@ -65,6 +68,7 @@ function DragDropZones({
         description="Drop here to play"
         overColor="bg-blue-500 border-blue-300"
         defaultColor="bg-green-800 border-green-500"
+        testId="play-card-zone"
       />
       <DropZone
         dropRef={dropPitchRef}
@@ -73,6 +77,7 @@ function DragDropZones({
         description="Drop here to pitch for mana"
         overColor="bg-yellow-500 border-yellow-300"
         defaultColor="bg-green-800 border-green-500"
+        testId="pitch-card-zone"
       />
     </div>
   );

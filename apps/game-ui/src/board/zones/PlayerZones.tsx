@@ -55,6 +55,7 @@ export function PlayerZones({
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-white font-bold">Hand</h3>
             <button
+              data-testid="end-turn-button"
               onClick={() => board.moves[MoveType.END_TURN]()}
               disabled={!isMyTurn}
               className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed"

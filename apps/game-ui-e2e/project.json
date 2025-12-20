@@ -5,6 +5,21 @@
   "sourceRoot": "apps/game-ui-e2e/src",
   "tags": [],
   "implicitDependencies": ["game-ui"],
-  "// targets": "to see all targets run: nx show project game-ui-e2e --web",
-  "targets": {}
+  "targets": {
+    "e2e": {
+      "executor": "@nx/playwright:playwright",
+      "outputs": ["{workspaceRoot}/dist/.playwright/apps/game-ui-e2e"],
+      "options": {
+        "config": "apps/game-ui-e2e/playwright.config.ts"
+      },
+      "configurations": {
+        "ci": {
+          "project": ["chromium"]
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
 }
