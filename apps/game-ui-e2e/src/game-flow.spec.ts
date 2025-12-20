@@ -95,22 +95,9 @@ test.describe('Game Flow E2E Tests', () => {
     const firstCard = page.locator('[data-testid^="card-"]').first();
     await expect(firstCard).toBeVisible();
 
-    // Get the card's ID for later verification
-    const firstCardTestId = await firstCard.getAttribute('data-testid');
-
-    // Wait for drop zones to be ready by dragging a card (this reveals the zones)
-    await firstCard.hover();
-    
     // Use the play card button as an alternative to drag and drop for stability
     const playCardButton = firstCard.locator('[data-testid="play-card-button"]');
     await playCardButton.click();
-
-    // Wait a moment for the card action to process
-    await page.waitForTimeout(500);
-
-    // Verify the card is no longer in hand (moved to battlefield or processed)
-    // The card count in hand should change
-    const cardsInHand = await page.locator('[data-testid^="card-"]').count();
     
     // ============================================
     // TEST PITCHING CARDS
@@ -120,6 +107,8 @@ test.describe('Game Flow E2E Tests', () => {
     const cardsToPitch = page.locator('[data-testid^="card-"]');
     const cardCount = await cardsToPitch.count();
     
+    // Only pitch a card if there are cards in hand
+    // This is a necessary conditional based on game state
     if (cardCount > 0) {
       const cardToPitch = cardsToPitch.first();
       
@@ -127,6 +116,7 @@ test.describe('Game Flow E2E Tests', () => {
       // The zones become visible when we start dragging
       const cardBox = await cardToPitch.boundingBox();
       
+      // Only proceed if we can get the card's bounding box
       if (cardBox) {
         // Start dragging the card - this will reveal the pitch and play zones
         await page.mouse.move(cardBox.x + cardBox.width / 2, cardBox.y + cardBox.height / 2);
@@ -142,12 +132,10 @@ test.describe('Game Flow E2E Tests', () => {
         // Get pitch zone position and drop the card
         const pitchZoneBox = await pitchZone.boundingBox();
         
+        // Only drop if we can get the pitch zone box
         if (pitchZoneBox) {
           await page.mouse.move(pitchZoneBox.x + pitchZoneBox.width / 2, pitchZoneBox.y + pitchZoneBox.height / 2, { steps: 10 });
           await page.mouse.up();
-          
-          // Wait for the action to process
-          await page.waitForTimeout(500);
         } else {
           // If we can't get the pitch zone box, just release the mouse
           await page.mouse.up();
@@ -165,9 +153,6 @@ test.describe('Game Flow E2E Tests', () => {
     await expect(endTurnButton).toBeEnabled();
     await endTurnButton.click();
 
-    // Wait for turn to change
-    await page.waitForTimeout(500);
-
     // Verify the button is now disabled (it's not our turn anymore)
     await expect(endTurnButton).toBeDisabled();
 
@@ -177,7 +162,6 @@ test.describe('Game Flow E2E Tests', () => {
     
     // Switch to Player 1's view to verify they can now act
     await player1Tab.click();
-    await page.waitForTimeout(500);
 
     // Player 1 should now have an enabled end turn button
     const player1EndTurnButton = page.getByTestId('end-turn-button');
@@ -185,7 +169,6 @@ test.describe('Game Flow E2E Tests', () => {
 
     // End Player 1's turn
     await player1EndTurnButton.click();
-    await page.waitForTimeout(500);
 
     // The test has successfully verified:
     // 1. Game setup for both players with tab switching
