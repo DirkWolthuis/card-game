@@ -43,8 +43,10 @@ export function GameBoard(props: BoardProps<GameState>) {
   
   // Determine which effect we're currently selecting a target for
   const currentEffect = pendingSelection
-    ? pendingSelection.effectsNeedingTargets[
-        Object.keys(pendingSelection.selectedTargets).length
+    ? pendingSelection.allEffects[
+        pendingSelection.effectIndicesNeedingTargets[
+          Object.keys(pendingSelection.selectedTargets).length
+        ]
       ]
     : undefined;
   
