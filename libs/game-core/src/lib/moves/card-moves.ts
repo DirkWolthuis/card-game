@@ -134,6 +134,7 @@ export const selectTarget: Move<GameState> = (
         console.error(`Effect at index ${index} is undefined in allEffects`);
         return;
       }
+      // Non-null assertion is safe here because we're inside the if block that checks pendingTargetSelection exists
       const target = G.pendingTargetSelection!.selectedTargets[index];
       executeEffect(G, ctx, effect, target);
     });
