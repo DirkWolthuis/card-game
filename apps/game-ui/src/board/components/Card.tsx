@@ -90,7 +90,8 @@ export function Card(props: CardProps) {
 
   return (
     <div
-      // Type assertion needed for react-dnd compatibility with React 19
+      // TODO: Remove type assertion when react-dnd is updated with React 19 type definitions
+      // Type assertion needed for react-dnd v16.0.1 compatibility with React 19
       // ConnectDragSource from useDrag is not directly compatible with React.Ref
       ref={drag as unknown as React.Ref<HTMLDivElement>}
       className="border-2 border-black bg-white rounded-md flex flex-col p-4 shadow-md cursor-grab active:cursor-grabbing min-w-[150px]"
