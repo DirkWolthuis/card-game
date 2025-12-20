@@ -40,9 +40,18 @@ export function GameBoard(props: BoardProps<GameState>) {
   // Check if there's a pending target selection
   const pendingSelection = G.pendingTargetSelection;
   const showTargetModal = !!pendingSelection && isMyTurn;
-  const validTargets = pendingSelection
-    ? getValidTargets(pendingSelection.effect, G, ctx.currentPlayer)
-    : [];
+  
+  // Determine which effect we're currently selecting a target for
+  const currentEffect = pendingSelection
+    ? pendingSelection.effectsNeedingTargets[
+        Object.keys(pendingSelection.selectedTargets).length
+      ]
+    : undefined;
+  
+  const validTargets =
+    pendingSelection && currentEffect
+      ? getValidTargets(currentEffect, G, ctx.currentPlayer)
+      : [];
 
   return (
     <>

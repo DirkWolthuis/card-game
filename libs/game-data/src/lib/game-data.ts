@@ -4,6 +4,7 @@ import {
   EffectType,
   TargetType,
   PreconstructedDeck,
+  AbilityType,
 } from '@game/models';
 
 export const getAllCards = (): Card[] => {
@@ -32,8 +33,14 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.SPELL],
     pitchValue: 1,
     manaCost: 1,
-    effects: [
-      { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 2 },
+    abilities: [
+      {
+        type: AbilityType.TRIGGERED,
+        description: 'Deal 2 damage to opponent',
+        effects: [
+          { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 2 },
+        ],
+      },
     ],
   },
   {
@@ -43,7 +50,13 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.SPELL],
     pitchValue: 2,
     manaCost: 2,
-    effects: [{ target: TargetType.SELF, type: EffectType.HEAL, value: 2 }],
+    abilities: [
+      {
+        type: AbilityType.TRIGGERED,
+        description: 'Heal yourself for 2 health',
+        effects: [{ target: TargetType.SELF, type: EffectType.HEAL, value: 2 }],
+      },
+    ],
   },
   {
     id: 'cccc',
@@ -52,8 +65,14 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.SPELL],
     pitchValue: 3,
     manaCost: 5,
-    effects: [
-      { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 999 },
+    abilities: [
+      {
+        type: AbilityType.TRIGGERED,
+        description: 'Deal 999 damage to opponent',
+        effects: [
+          { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 999 },
+        ],
+      },
     ],
   },
   {
@@ -63,8 +82,14 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.SPELL],
     pitchValue: 2,
     manaCost: 3,
-    effects: [
-      { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 20 },
+    abilities: [
+      {
+        type: AbilityType.TRIGGERED,
+        description: 'Deal 20 damage to opponent',
+        effects: [
+          { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 20 },
+        ],
+      },
     ],
   },
   {
@@ -74,7 +99,7 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.UNIT, CardType.LEADER],
     pitchValue: 2,
     manaCost: 3,
-    effects: [],
+    abilities: [],
     unitStats: {
       power: 3,
       resistance: 1,
@@ -88,7 +113,7 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.UNIT, CardType.TROOP],
     pitchValue: 1,
     manaCost: 1,
-    effects: [],
+    abilities: [],
     unitStats: {
       power: 2,
       resistance: 0,
@@ -103,8 +128,14 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.SPELL],
     pitchValue: 1,
     manaCost: 2,
-    effects: [
-      { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 3 },
+    abilities: [
+      {
+        type: AbilityType.TRIGGERED,
+        description: 'Deal 3 damage to opponent',
+        effects: [
+          { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 3 },
+        ],
+      },
     ],
   },
   {
@@ -114,7 +145,13 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.SPELL],
     pitchValue: 1,
     manaCost: 1,
-    effects: [{ target: TargetType.SELF, type: EffectType.HEAL, value: 3 }],
+    abilities: [
+      {
+        type: AbilityType.TRIGGERED,
+        description: 'Heal yourself for 3 health',
+        effects: [{ target: TargetType.SELF, type: EffectType.HEAL, value: 3 }],
+      },
+    ],
   },
   {
     id: 'spell-3',
@@ -123,8 +160,14 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.SPELL],
     pitchValue: 2,
     manaCost: 3,
-    effects: [
-      { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 5 },
+    abilities: [
+      {
+        type: AbilityType.TRIGGERED,
+        description: 'Deal 5 damage to opponent',
+        effects: [
+          { target: TargetType.OPPONENT, type: EffectType.DEAL_DAMAGE, value: 5 },
+        ],
+      },
     ],
   },
   {
@@ -134,7 +177,13 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.SPELL],
     pitchValue: 2,
     manaCost: 3,
-    effects: [{ target: TargetType.SELF, type: EffectType.HEAL, value: 5 }],
+    abilities: [
+      {
+        type: AbilityType.TRIGGERED,
+        description: 'Heal yourself for 5 health',
+        effects: [{ target: TargetType.SELF, type: EffectType.HEAL, value: 5 }],
+      },
+    ],
   },
   {
     id: 'troop-2',
@@ -143,7 +192,7 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.UNIT, CardType.TROOP],
     pitchValue: 1,
     manaCost: 2,
-    effects: [],
+    abilities: [],
     unitStats: {
       power: 3,
       resistance: 0,
@@ -157,7 +206,7 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.UNIT, CardType.TROOP],
     pitchValue: 2,
     manaCost: 2,
-    effects: [],
+    abilities: [],
     unitStats: {
       power: 1,
       resistance: 2,
@@ -171,7 +220,7 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.UNIT, CardType.LEADER],
     pitchValue: 2,
     manaCost: 4,
-    effects: [],
+    abilities: [],
     unitStats: {
       power: 2,
       resistance: 2,
@@ -185,7 +234,7 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.UNIT, CardType.LEADER],
     pitchValue: 3,
     manaCost: 5,
-    effects: [],
+    abilities: [],
     unitStats: {
       power: 5,
       resistance: 1,
@@ -199,7 +248,7 @@ const CARD_DATABASE: Card[] = [
     types: [CardType.UNIT, CardType.TROOP],
     pitchValue: 2,
     manaCost: 3,
-    effects: [],
+    abilities: [],
     unitStats: {
       power: 3,
       resistance: 1,

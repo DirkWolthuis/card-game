@@ -1,4 +1,4 @@
-import { Effect } from './effect';
+import { Ability } from './ability';
 
 export type CardId = string;
 
@@ -20,7 +20,7 @@ export interface Card {
   name: string;
   displayText: string;
   types: CardType[]; // Array of types - a card can have multiple types (e.g., UNIT and LEADER)
-  effects: Effect[];
+  abilities: Ability[]; // Abilities that wrap effects
   pitchValue: number; // 1, 2, or 3 - mana value when pitched
   manaCost: number; // Mana cost required to play the card
   unitStats?: UnitStats; // Only present for unit types (UNIT, LEADER, TROOP)
