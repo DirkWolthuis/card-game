@@ -76,6 +76,10 @@ test.describe('Target Selection E2E Tests', () => {
     await expect(targetModal).toContainText('Select a Target');
 
     // Should show both players as valid targets
+    // Check the count of target buttons - should be 2 (both Player 0 and Player 1)
+    const allTargetButtons = page.locator('[data-testid^="target-player-"]');
+    await expect(allTargetButtons).toHaveCount(2);
+    
     const player0Button = page.getByTestId('target-player-0');
     const player1Button = page.getByTestId('target-player-1');
     await expect(player0Button).toBeVisible();
@@ -107,12 +111,12 @@ test.describe('Target Selection E2E Tests', () => {
     await expect(targetModal).toContainText('Select a Target');
 
     // Should show only opponents as valid targets (Player 1 only)
+    // Check the count of target buttons - should be 1 (only Player 1)
+    const targetButtons = page.locator('[data-testid^="target-player-"]');
+    await expect(targetButtons).toHaveCount(1);
+    
     const opponentButton = page.getByTestId('target-player-1');
     await expect(opponentButton).toBeVisible();
-    
-    // Player 0 should NOT be visible as a target (since they are the current player)
-    const selfButton = page.getByTestId('target-player-0');
-    await expect(selfButton).toBeHidden();
 
     // Select the opponent
     await opponentButton.click();
