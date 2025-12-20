@@ -21,12 +21,12 @@ test.describe('Target Selection E2E Tests', () => {
     await page.getByTestId('set-name-button').click();
     await expect(page.locator('text=Name set: Player Zero')).toBeVisible();
 
-    // Select the E2E test deck (it should be the 5th deck - index 4)
-    const deckButtons = page.locator('[data-testid^="deck-"]');
-    const e2eTestDeck = deckButtons.nth(4); // e2e-test-deck
+    // Select the E2E test deck by its ID for better reliability
+    const e2eTestDeck = page.getByTestId('deck-e2e-test-deck');
     
+    // Players must select 2 decks - click the same deck twice to select it as both deck slots
     await e2eTestDeck.click();
-    await e2eTestDeck.click(); // Select it twice
+    await e2eTestDeck.click();
     await expect(e2eTestDeck).toHaveClass(/border-blue-500/);
 
     const readyButton = page.getByTestId('ready-button');
@@ -43,8 +43,9 @@ test.describe('Target Selection E2E Tests', () => {
     await page.getByTestId('set-name-button').click();
     await expect(page.locator('text=Name set: Player One')).toBeVisible();
 
+    // Players must select 2 decks - click the same deck twice to select it as both deck slots
     await e2eTestDeck.click();
-    await e2eTestDeck.click(); // Select it twice
+    await e2eTestDeck.click();
     await expect(readyButton).toBeEnabled();
     await readyButton.click();
 
