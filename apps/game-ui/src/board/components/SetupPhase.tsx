@@ -51,6 +51,7 @@ export function SetupPhase({ playerID, G, moves }: SetupPhaseProps) {
           <div className="flex gap-2">
             <input
               type="text"
+              data-testid="player-name-input"
               value={nameInput}
               onChange={(e) => setNameInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleNameSubmit()}
@@ -60,6 +61,7 @@ export function SetupPhase({ playerID, G, moves }: SetupPhaseProps) {
             />
             {!playerSetup.name && (
               <button
+                data-testid="set-name-button"
                 onClick={handleNameSubmit}
                 disabled={!nameInput.trim()}
                 className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
@@ -84,6 +86,7 @@ export function SetupPhase({ playerID, G, moves }: SetupPhaseProps) {
               return (
                 <button
                   key={deck.id}
+                  data-testid={`deck-${deck.id}`}
                   onClick={() => handleDeckClick(deck.id)}
                   className={`p-4 rounded-lg border-2 text-left transition-all ${
                     isSelected
@@ -122,6 +125,7 @@ export function SetupPhase({ playerID, G, moves }: SetupPhaseProps) {
         {/* Ready Button */}
         <div className="border-t pt-6">
           <button
+            data-testid="ready-button"
             onClick={handleReadyToggle}
             disabled={!canReady}
             className={`w-full py-3 px-6 rounded-md font-semibold text-lg transition-all ${
