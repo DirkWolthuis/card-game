@@ -39,6 +39,7 @@ const App = () => {
             <button
               key={playerID}
               id={`player-${playerID}-tab`}
+              data-testid={`player-${playerID}-tab`}
               role="tab"
               aria-selected={activePlayer === playerID}
               aria-controls={`player-${playerID}-panel`}

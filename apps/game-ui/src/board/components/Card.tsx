@@ -67,6 +67,7 @@ function CardDescription({ displayText }: { displayText: string }) {
 function PlayCardButton({ onClick }: { onClick: () => void }) {
   return (
     <button
+      data-testid="play-card-button"
       onClick={onClick}
       className="px-2 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600"
     >
@@ -90,6 +91,7 @@ export function Card(props: CardProps) {
   return (
     <div
       ref={drag}
+      data-testid={`card-${props.entity.id}`}
       className="border-2 border-black bg-white rounded-md flex flex-col p-4 shadow-md cursor-grab active:cursor-grabbing min-w-[150px]"
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >
