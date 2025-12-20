@@ -13,6 +13,7 @@ Thank you for your interest in contributing to the Lords of Estraven Card Game p
 Before submitting any pull request, please ensure your contribution meets all applicable criteria in our [Definition of Done](docs/DEFINITION_OF_DONE.md).
 
 Key requirements include:
+- ✅ TypeScript compiles without errors: `pnpm nx run-many --target=typecheck --all`
 - ✅ All linting passes: `pnpm nx run-many --target=lint --all`
 - ✅ All tests pass: `pnpm nx run-many --target=test --all`
 - ✅ Code follows TypeScript best practices
@@ -30,6 +31,9 @@ pnpm install --frozen-lockfile
 # Serve the UI
 pnpm serve:ui
 
+# Run type checking
+pnpm nx run-many --target=typecheck --all
+
 # Run linting
 pnpm nx run-many --target=lint --all
 
@@ -41,7 +45,7 @@ pnpm nx run-many --target=test --all
 
 1. Create a feature branch: `git checkout -b feature/your-feature-name`
 2. Make your changes following the [Definition of Done](docs/DEFINITION_OF_DONE.md)
-3. Run linting and tests locally
+3. Run type checking, linting and tests locally
 4. Commit with a descriptive message
 5. Push to your fork and create a pull request
 6. Ensure all CI checks pass
