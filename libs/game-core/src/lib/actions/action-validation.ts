@@ -50,6 +50,13 @@ export const checkResourcesForCost = (
   return ({ gameState, playerID }) => {
     const playerState = gameState.players[playerID];
     
+    if (!playerState) {
+      return {
+        valid: false,
+        error: `Invalid player ID: ${playerID}`,
+      };
+    }
+    
     if (playerState.resources.mana < requiredMana) {
       return {
         valid: false,
@@ -62,7 +69,11 @@ export const checkResourcesForCost = (
 };
 
 /**
- * Checks if an ability requires target selection
+ * Checks if an ability requires target selection.
+ * 
+ * Note: Returns boolean (not ValidationResult) because this is typically used
+ * to determine control flow (pause for targeting vs. execute immediately)
+ * rather than as a validation check that can fail.
  */
 export const checkRequiresTargetSelection = (ability: Ability): boolean => {
   // Check if any effects in the ability need target selection

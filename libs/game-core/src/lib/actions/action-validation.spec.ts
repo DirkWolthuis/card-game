@@ -134,6 +134,25 @@ describe('action-validation', () => {
 
       expect(result.valid).toBe(true);
     });
+
+    it('should reject action when player ID is invalid', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(5),
+        },
+      };
+
+      const context: ActionContext = {
+        gameState,
+        ctx: { currentPlayer: '0' } as Ctx,
+        playerID: '999', // Invalid player ID
+      };
+
+      const result = checkResourcesForCost(3)(context);
+
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('Invalid player ID');
+    });
   });
 
   describe('checkRequiresTargetSelection', () => {
