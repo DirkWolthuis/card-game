@@ -6,9 +6,9 @@ import {
 
 describe('Preconstructed Decks', () => {
   describe('getAllPreconstructedDecks', () => {
-    it('should return 4 preconstructed decks', () => {
+    it('should return 5 preconstructed decks', () => {
       const decks = getAllPreconstructedDecks();
-      expect(decks).toHaveLength(4);
+      expect(decks).toHaveLength(5);
     });
 
     it('should have decks with unique IDs', () => {
@@ -61,8 +61,8 @@ describe('Preconstructed Decks', () => {
       expect(deck).toBeUndefined();
     });
 
-    it('should find all 4 decks by their IDs', () => {
-      const deckIds = ['aggro-red', 'control-white', 'balanced-green', 'combo-blue'];
+    it('should find all 5 decks by their IDs', () => {
+      const deckIds = ['aggro-red', 'control-white', 'balanced-green', 'combo-blue', 'e2e-test-deck'];
       deckIds.forEach((id) => {
         const deck = getPreconstructedDeckById(id);
         expect(deck).toBeDefined();
