@@ -109,6 +109,7 @@ export const GameEngine: Game<
             moves: {
               [MoveType.PLAY_CARD_FROM_HAND]: playCardFromHand,
               [MoveType.SELECT_TARGET]: selectTarget,
+              [MoveType.PITCH_CARD]: pitchCard,
               [MoveType.PASS_PRIORITY]: passPriority,
             },
           },
