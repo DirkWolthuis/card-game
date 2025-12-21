@@ -213,15 +213,3 @@ export function hasActiveChain(gameState: GameState): boolean {
 export function isChainLocked(gameState: GameState): boolean {
   return gameState.chain?.isLocked === true;
 }
-
-/**
- * Gets the next player who should have priority.
- * Priority passes in play order after each action or pass.
- */
-export function getNextPriorityPlayer(ctx: Ctx): PlayerId {
-  // For now, use simple rotation through play order
-  // In the future, this might need to be more sophisticated
-  const currentIndex = ctx.playOrder.indexOf(ctx.currentPlayer);
-  const nextIndex = (currentIndex + 1) % ctx.playOrder.length;
-  return ctx.playOrder[nextIndex];
-}

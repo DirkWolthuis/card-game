@@ -6,9 +6,10 @@ interface ChainDisplayProps {
   chain: ChainState;
   currentPlayerId: string;
   board: BoardProps<GameState>;
+  numPlayers: number;
 }
 
-export function ChainDisplay({ chain, currentPlayerId, board }: ChainDisplayProps) {
+export function ChainDisplay({ chain, currentPlayerId, board, numPlayers }: ChainDisplayProps) {
   const handlePassPriority = () => {
     board.moves[MoveType.PASS_PRIORITY]();
   };
@@ -85,7 +86,7 @@ export function ChainDisplay({ chain, currentPlayerId, board }: ChainDisplayProp
           <div className="flex-1 py-2 px-4 bg-gray-700 rounded text-white text-center">
             <div className="text-sm text-gray-400">Passes:</div>
             <div className="font-bold">
-              {Object.values(chain.consecutivePasses).filter(Boolean).length} / {Object.keys(chain.consecutivePasses).length || 2}
+              {Object.values(chain.consecutivePasses).filter(Boolean).length} / {numPlayers}
             </div>
           </div>
         </div>

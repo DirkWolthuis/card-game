@@ -85,6 +85,7 @@ export function GameBoard(props: BoardProps<GameState>) {
           chain={G.chain} 
           currentPlayerId={currentPlayerID}
           board={props}
+          numPlayers={ctx.numPlayers}
         />
       )}
 
