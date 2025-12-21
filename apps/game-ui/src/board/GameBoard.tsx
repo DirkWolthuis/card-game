@@ -80,7 +80,7 @@ export function GameBoard(props: BoardProps<GameState>) {
         </PanelGroup>
       </div>
 
-      {hasChain && G.chain && (
+      {hasChain && G.chain && !showTargetModal && (
         <ChainDisplay 
           chain={G.chain} 
           currentPlayerId={currentPlayerID}

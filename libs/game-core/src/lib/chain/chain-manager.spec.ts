@@ -1,4 +1,4 @@
-import { GameState, PlayerState, Ability, AbilityType, Effect, EffectType, TargetType } from '@game/models';
+import { GameState, PlayerState, Ability, AbilityType, EffectType, TargetType } from '@game/models';
 import type { Ctx } from 'boardgame.io';
 import {
   startChain,

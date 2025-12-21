@@ -16,6 +16,9 @@ import { executeEffect } from '../effects/execute-effect';
  * - Activating an ability (future)
  * - Playing a unit card (future)
  * - Using a card effect that targets (future)
+ * 
+ * Only normal-speed actions should start a chain. For MVP, abilities without
+ * an explicit speed are treated as normal-speed.
  */
 export function shouldStartChain(ability: Ability): boolean {
   // For now, all abilities with effects are chainable
@@ -80,7 +83,7 @@ export function addToChain(
 
 /**
  * Handles a player passing priority on the chain.
- * If both players pass consecutively, the chain is locked.
+ * If all players pass consecutively, the chain is locked.
  */
 export function passPriority(
   gameState: GameState,

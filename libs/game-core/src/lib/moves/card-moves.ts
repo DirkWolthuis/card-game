@@ -66,6 +66,11 @@ export const playCardFromHand: Move<GameState> = (
     checkResourcesForCost(card.manaCost),
   ];
 
+  // Normal speed actions (like spell cards) can only be played when the chain is empty
+  if (isSpellCard(card) && hasActiveChain(G)) {
+    return INVALID_MOVE;
+  }
+
   const validationResult = runChecks(checks, actionContext);
   if (!validationResult.valid) {
     return INVALID_MOVE;

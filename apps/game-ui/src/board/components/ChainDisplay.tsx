@@ -80,6 +80,11 @@ export function ChainDisplay({ chain, currentPlayerId, board, numPlayers }: Chai
                 ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 text-white hover:bg-blue-700'
             }`}
+            aria-label={
+              hasPlayerPassed
+                ? 'You have passed priority. Waiting for other players to respond to the chain.'
+                : 'Pass priority and allow other players to respond to the chain.'
+            }
           >
             {hasPlayerPassed ? 'Priority Passed' : 'Pass Priority'}
           </button>

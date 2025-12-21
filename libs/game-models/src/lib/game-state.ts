@@ -69,7 +69,7 @@ export interface PendingTargetSelection {
   selectedTargets: Record<number, string>;
   /** If true, this targeting is for adding to chain (not immediate resolution) */
   isForChain?: boolean;
-  /** Player ID who is performing this action (for chain) */
+  /** Player ID who initiated the pending action that will be added to the chain */
   chainPlayerId?: string;
 }
 
