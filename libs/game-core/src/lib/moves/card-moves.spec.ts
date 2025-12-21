@@ -430,4 +430,81 @@ describe('card-moves', () => {
       // This is a known limitation that will be addressed in a future update
     });
   });
+
+  describe('playCardFromHand - priority validation', () => {
+    it('should reject action when player does not have priority', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(['hand-1'], 5),
+          '1': createPlayerState([], 0),
+        },
+      };
+
+      const result = callMove(
+        playCardFromHand,
+        {
+          G: gameState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ctx: { currentPlayer: '0' } as any, // Player 0 has priority
+          playerID: '1', // But player 1 is trying to act
+        },
+        'hand-1'
+      );
+
+      expect(result).toBe(INVALID_MOVE);
+      // State should not change
+      expect(gameState.players['0'].zones.hand.entityIds).toEqual(['hand-1']);
+      expect(gameState.players['0'].resources.mana).toBe(5); // Unchanged
+    });
+
+    it('should allow action when player has priority', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(['hand-1'], 5),
+          '1': createPlayerState([], 0),
+        },
+      };
+
+      const result = callMove(
+        playCardFromHand,
+        {
+          G: gameState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ctx: { currentPlayer: '0' } as any,
+          playerID: '0', // Same player has priority and is acting
+        },
+        'hand-1'
+      );
+
+      expect(result).toBe(gameState);
+      expect(gameState.players['0'].zones.hand.entityIds).toEqual([]);
+      expect(gameState.players['0'].resources.mana).toBe(4); // 5 - 1 = 4
+    });
+
+    it('should validate priority before checking mana cost', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(['hand-1'], 0), // No mana
+          '1': createPlayerState([], 0),
+        },
+      };
+
+      // Wrong player tries to act
+      const result = callMove(
+        playCardFromHand,
+        {
+          G: gameState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ctx: { currentPlayer: '0' } as any,
+          playerID: '1', // Player 1 trying to act when player 0 has priority
+        },
+        'hand-1'
+      );
+
+      expect(result).toBe(INVALID_MOVE);
+      // Should fail on priority check, not mana check
+      // State should remain unchanged
+      expect(gameState.players['0'].zones.hand.entityIds).toEqual(['hand-1']);
+    });
+  });
 });

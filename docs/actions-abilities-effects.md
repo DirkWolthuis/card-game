@@ -164,44 +164,95 @@ interface Card {
 
 ### Playing Cards
 
-When a card is played:
+When a card is played, the action now follows a structured validation and resolution flow:
 
-1. **Mana Cost Check**: Validate player has enough mana
-2. **Pay Cost**: Reduce player's mana
-3. **Remove from Hand**: Card moves from hand zone
-4. **Place on Battlefield**: If unit card, add to battlefield zone
+1. **Validate Card Exists**: Check card is valid and in hand
+2. **Run Validation Checks**: Composable checks in sequence
+   - **Priority Check**: Validate player has priority (is current player)
+   - **Cost Check**: Validate player has enough resources (mana)
+3. **Pay Costs**: After all checks pass, reduce player's mana
+4. **Execute Action**: Move card and update zones
+   - Remove from hand
+   - Place on battlefield if unit card
 5. **Activate Abilities**: Get abilities that activate on play (triggered abilities)
-6. **Execute Abilities**: Execute each ability's effects
+6. **Resolve Abilities**: Execute each ability's effects (may pause for targeting)
 
 ```typescript
 export const playCardFromHand: Move<GameState> = ({ G, ctx, playerID }, entityId: string) => {
   // 1. Validate and get card
   const card = getCardById(cardId);
-  
-  // 2. Check mana cost
-  if (playerState.resources.mana < card.manaCost) {
+  if (!card || !hasCardInHand) {
     return INVALID_MOVE;
   }
   
-  // 3. Pay cost
+  // 2. Run all validation checks before making state changes
+  const actionContext: ActionContext = { gameState: G, ctx, playerID };
+  const checks = [
+    checkPlayerPriority,           // Has priority?
+    checkResourcesForCost(card.manaCost), // Has resources?
+  ];
+  
+  const validationResult = runChecks(checks, actionContext);
+  if (!validationResult.valid) {
+    return INVALID_MOVE;
+  }
+  
+  // 3. All checks passed - pay costs
   playerState.resources.mana -= card.manaCost;
   
-  // 4. Move card
+  // 4. Execute action - move card
   // Remove from hand, add to battlefield if unit
   
   // 5. Activate triggered abilities
   const abilitiesToActivate = getAbilitiesToActivateOnPlay(card.abilities);
   
-  // 6. Execute abilities
+  // 6. Resolve abilities (may pause for target selection)
   for (const ability of abilitiesToActivate) {
     const needsTarget = executeAbility(G, ctx, ability);
     if (needsTarget) {
-      // Pause for target selection
-      break;
+      break; // Pause for target selection
     }
   }
 };
 ```
+
+### Action Validation System
+
+The validation system provides composable checks that can be applied to any action:
+
+```typescript
+// Core validation types
+interface ValidationResult {
+  valid: boolean;
+  error?: string;
+}
+
+interface ActionContext {
+  gameState: GameState;
+  ctx: Ctx;
+  playerID: string;
+}
+
+type ActionCheck = (context: ActionContext) => ValidationResult;
+
+// Available checks
+checkPlayerPriority: ActionCheck          // Validates player has priority
+checkResourcesForCost(mana: number): ActionCheck  // Validates resources
+checkRequiresTargetSelection(ability: Ability): boolean // Checks if targeting needed
+
+// Composing checks
+const checks = [checkPlayerPriority, checkResourcesForCost(3)];
+const result = runChecks(checks, context);
+if (!result.valid) {
+  return INVALID_MOVE;
+}
+```
+
+**Key Benefits:**
+- Checks run **before** any state changes (no partial updates on failure)
+- Checks are composable and reusable across different actions
+- Clear separation between validation, cost payment, and resolution
+- Foundation for future chain and reaction systems
 
 ### Ability Execution
 
@@ -361,6 +412,12 @@ Future implementation:
 
 The implementation includes comprehensive tests:
 
+- **Action Validation Tests** (16 tests)
+  - Priority validation
+  - Resource cost validation
+  - Target requirement checks
+  - Composable check system
+  
 - **Ability Execution Tests** (12 tests)
   - Execute non-targeting effects
   - Set up target selection for targeting effects
@@ -373,10 +430,25 @@ The implementation includes comprehensive tests:
   
 - **Integration Tests**
   - Playing cards with abilities
+  - Priority validation in moves
   - Target selection flow
-  - All existing functionality maintained (122 total tests)
+  - All existing functionality maintained (143 total tests)
 
 ## Future Enhancements
+
+### Chain and Reaction System
+The validation system provides the foundation for implementing chains:
+- Priority system is now in place for basic turn-based play
+- Can be extended to support chain priority (both players can respond)
+- Validation checks can include "can action be added to chain?"
+- Cost payment and effect resolution already separated as required
+
+**Implementation path for chains:**
+1. Add chain state to game state
+2. Extend priority check to support chain responses
+3. Add "pass priority" action
+4. Implement LIFO resolution when both players pass
+5. Add reaction ability support
 
 ### Activated Abilities for Units
 - Add move to activate unit abilities
@@ -423,6 +495,7 @@ The refactoring maintains backward compatibility:
 
 - See `libs/game-models/src/lib/ability.ts` for type definitions
 - See `libs/game-core/src/lib/effects/execute-ability.ts` for execution logic
+- See `libs/game-core/src/lib/actions/action-validation.ts` for validation system
 - See `libs/game-core/src/lib/moves/card-moves.ts` for action implementation
 - See `docs/game-design.md` for game design context
 - See `docs/taking-actions.md` for action flow diagrams

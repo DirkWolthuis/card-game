@@ -8,6 +8,12 @@ import {
 } from '../effects/execute-ability';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import { getValidTargets } from '../effects/target-utils';
+import {
+  checkPlayerPriority,
+  checkResourcesForCost,
+  runChecks,
+  ActionContext,
+} from '../actions/action-validation';
 
 /**
  * Checks if a card has the UNIT type
@@ -31,45 +37,58 @@ export const playCardFromHand: Move<GameState> = (
     return INVALID_MOVE;
   }
 
-  if (hasCardInHand && card) {
-    // Check if player has enough mana to play the card
-    if (playerState.resources.mana < card.manaCost) {
-      return INVALID_MOVE;
-    }
-
-    // Reduce mana before playing the card
-    playerState.resources.mana -= card.manaCost;
-
-    // Remove card from hand
-    playerState.zones.hand.entityIds = playerState.zones.hand.entityIds.filter(
-      (handEntityId) => handEntityId !== entityId
-    );
-
-    // If the card is a unit, place it on the battlefield
-    if (isUnitCard(card)) {
-      playerState.zones.battlefield.entityIds.push(entityId);
-    }
-
-    // Get abilities that should activate when the card is played
-    // For spells, this includes all triggered abilities
-    // For units, this would be "enters battlefield" triggered abilities
-    const abilitiesToActivate = getAbilitiesToActivateOnPlay(card.abilities);
-
-    // Execute the abilities
-    for (const ability of abilitiesToActivate) {
-      const needsTarget = executeAbility(G, ctx, ability);
-      if (needsTarget) {
-        // If an ability needs a target, resolution of that ability will pause here.
-        // The player must use selectTarget to continue resolving that pending effect.
-        // We break here because only one ability can have pending target selection at a time.
-        break;
-      }
-    }
-
-    return G;
+  if (!hasCardInHand) {
+    return INVALID_MOVE;
   }
 
-  return INVALID_MOVE;
+  // STEP 1: Run all validation checks before making any state changes
+  const actionContext: ActionContext = {
+    gameState: G,
+    ctx,
+    playerID,
+  };
+
+  const checks = [
+    checkPlayerPriority,
+    checkResourcesForCost(card.manaCost),
+  ];
+
+  const validationResult = runChecks(checks, actionContext);
+  if (!validationResult.valid) {
+    return INVALID_MOVE;
+  }
+
+  // STEP 2: All checks passed - now pay the costs
+  playerState.resources.mana -= card.manaCost;
+
+  // STEP 3: Execute the action - move card and activate abilities
+  // Remove card from hand
+  playerState.zones.hand.entityIds = playerState.zones.hand.entityIds.filter(
+    (handEntityId) => handEntityId !== entityId
+  );
+
+  // If the card is a unit, place it on the battlefield
+  if (isUnitCard(card)) {
+    playerState.zones.battlefield.entityIds.push(entityId);
+  }
+
+  // Get abilities that should activate when the card is played
+  // For spells, this includes all triggered abilities
+  // For units, this would be "enters battlefield" triggered abilities
+  const abilitiesToActivate = getAbilitiesToActivateOnPlay(card.abilities);
+
+  // STEP 4: Resolve abilities (may pause for target selection)
+  for (const ability of abilitiesToActivate) {
+    const needsTarget = executeAbility(G, ctx, ability);
+    if (needsTarget) {
+      // If an ability needs a target, resolution of that ability will pause here.
+      // The player must use selectTarget to continue resolving that pending effect.
+      // We break here because only one ability can have pending target selection at a time.
+      break;
+    }
+  }
+
+  return G;
 };
 
 /**
@@ -90,8 +109,15 @@ export const selectTarget: Move<GameState> = (
     return INVALID_MOVE;
   }
 
-  // Validate the caller is the current player
-  if (ctx.currentPlayer !== playerID) {
+  // STEP 1: Validate player has priority
+  const actionContext: ActionContext = {
+    gameState: G,
+    ctx,
+    playerID,
+  };
+
+  const validationResult = checkPlayerPriority(actionContext);
+  if (!validationResult.valid) {
     return INVALID_MOVE;
   }
 
