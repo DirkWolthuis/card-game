@@ -14,12 +14,25 @@ import {
   runChecks,
   ActionContext,
 } from '../actions/action-validation';
+import {
+  startChain,
+  shouldStartChain,
+  hasActiveChain,
+  addToChain,
+} from '../chain/chain-manager';
 
 /**
  * Checks if a card has the UNIT type
  */
 function isUnitCard(card: Card): boolean {
   return card.types.includes(CardType.UNIT);
+}
+
+/**
+ * Checks if a card has the SPELL type
+ */
+function isSpellCard(card: Card): boolean {
+  return card.types.includes(CardType.SPELL);
 }
 
 export const playCardFromHand: Move<GameState> = (
@@ -77,14 +90,35 @@ export const playCardFromHand: Move<GameState> = (
   // For units, this would be "enters battlefield" triggered abilities
   const abilitiesToActivate = getAbilitiesToActivateOnPlay(card.abilities);
 
-  // STEP 4: Resolve abilities (may pause for target selection)
-  for (const ability of abilitiesToActivate) {
-    const needsTarget = executeAbility(G, ctx, ability);
-    if (needsTarget) {
-      // If an ability needs a target, resolution of that ability will pause here.
-      // The player must use selectTarget to continue resolving that pending effect.
-      // We break here because only one ability can have pending target selection at a time.
-      break;
+  // STEP 4: Determine if we should use the chain mechanic
+  // For now, playing spell cards starts a chain
+  if (isSpellCard(card) && abilitiesToActivate.length > 0) {
+    // Playing a spell starts a chain
+    for (const ability of abilitiesToActivate) {
+      if (shouldStartChain(ability)) {
+        if (!hasActiveChain(G)) {
+          // Start a new chain with this ability
+          startChain(G, ability, playerID, ability.effects);
+        } else {
+          // Add to existing chain
+          addToChain(G, ability, playerID, ability.effects);
+        }
+        // Note: We don't resolve the ability yet - it will resolve when the chain resolves
+        // This means we don't check for target selection here
+      }
+    }
+    // Chain is now active, waiting for other players to respond or pass priority
+  } else {
+    // For non-spell cards (units for now), resolve abilities immediately
+    // This is the old behavior - will be updated in future to also use chains
+    for (const ability of abilitiesToActivate) {
+      const needsTarget = executeAbility(G, ctx, ability);
+      if (needsTarget) {
+        // If an ability needs a target, resolution of that ability will pause here.
+        // The player must use selectTarget to continue resolving that pending effect.
+        // We break here because only one ability can have pending target selection at a time.
+        break;
+      }
     }
   }
 

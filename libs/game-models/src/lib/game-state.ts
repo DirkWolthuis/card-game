@@ -8,6 +8,37 @@ export interface GameState {
   players: Record<PlayerId, PlayerState>;
   pendingTargetSelection?: PendingTargetSelection;
   setupData?: SetupData;
+  chain?: ChainState;
+}
+
+/**
+ * Represents the state of an active chain.
+ * The chain contains actions/abilities that will resolve in LIFO order.
+ */
+export interface ChainState {
+  /** Array of links on the chain, ordered from first to last added */
+  links: ChainLink[];
+  /** Track consecutive passes by player ID - used to detect chain lock */
+  consecutivePasses: Record<PlayerId, boolean>;
+  /** Whether the chain is locked (no more actions can be added) */
+  isLocked: boolean;
+  /** Index of the next link to resolve (used during resolution) */
+  resolutionIndex?: number;
+}
+
+/**
+ * Represents a single action/ability on the chain.
+ * Each link contains the ability to be resolved and its context.
+ */
+export interface ChainLink {
+  /** The ability that was added to the chain */
+  ability: Ability;
+  /** ID of the player who added this link */
+  playerId: PlayerId;
+  /** All effects from the ability */
+  effects: Effect[];
+  /** Selected targets for effects that need targeting */
+  selectedTargets?: Record<number, string>;
 }
 
 /**
