@@ -1,6 +1,5 @@
 import {
   GameState,
-  ChainState,
   ChainLink,
   PlayerId,
   Ability,
