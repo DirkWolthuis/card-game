@@ -99,6 +99,40 @@ test.describe('Game Flow E2E Tests', () => {
     const playCardButton = firstCard.locator('[data-testid="play-card-button"]');
     await playCardButton.click();
     
+    // If the card was a spell and started a chain, we may need to:
+    // 1. Select a target (if it requires targeting)
+    // 2. Pass priority (to resolve the chain)
+    
+    // Check if target selection modal appeared (timeout quickly if not)
+    const targetModal = page.getByTestId('target-selection-modal');
+    const targetModalVisible = await targetModal.isVisible().catch(() => false);
+    
+    if (targetModalVisible) {
+      // Select the first available target
+      const targetButton = page.locator('[data-testid^="target-player-"]').first();
+      await targetButton.click();
+      await expect(targetModal).not.toBeVisible({ timeout: 3000 });
+    }
+    
+    // Check if Pass Priority button appeared (indicates a chain was started)
+    const passPriorityButton = page.getByText('Pass Priority');
+    const passPriorityVisible = await passPriorityButton.isVisible().catch(() => false);
+    
+    if (passPriorityVisible) {
+      // Pass priority as Player 0
+      await passPriorityButton.click();
+      await expect(page.getByText('Priority Passed')).toBeVisible({ timeout: 3000 });
+      
+      // Switch to Player 1 to pass priority
+      await player1Tab.click();
+      const player1PassButton = page.getByText('Pass Priority');
+      await expect(player1PassButton).toBeVisible({ timeout: 5000 });
+      await player1PassButton.click();
+      
+      // Switch back to Player 0
+      await player0Tab.click();
+    }
+    
     // ============================================
     // TEST PITCHING CARDS
     // ============================================
