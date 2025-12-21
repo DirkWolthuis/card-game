@@ -19,6 +19,7 @@ import {
   shouldStartChain,
   hasActiveChain,
   addToChain,
+  isChainLocked,
 } from '../chain/chain-manager';
 
 /**
@@ -66,8 +67,9 @@ export const playCardFromHand: Move<GameState> = (
     checkResourcesForCost(card.manaCost),
   ];
 
-  // Normal speed actions (like spell cards) can only be played when the chain is empty
-  if (isSpellCard(card) && hasActiveChain(G)) {
+  // Normal speed actions (like spell cards) cannot be played when the chain is locked (resolving)
+  // However, for MVP, spell cards can be added to an active (unlocked) chain
+  if (isSpellCard(card) && isChainLocked(G)) {
     return INVALID_MOVE;
   }
 

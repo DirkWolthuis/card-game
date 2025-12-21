@@ -1,5 +1,5 @@
 import { playCardFromHand } from './card-moves';
-import { GameState, PlayerState } from '@game/models';
+import { GameState, PlayerState, AbilityType } from '@game/models';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import type { FnContext } from 'boardgame.io';
 
@@ -505,6 +505,94 @@ describe('card-moves', () => {
       // Should fail on priority check, not mana check
       // State should remain unchanged
       expect(gameState.players['0'].zones.hand.entityIds).toEqual(['hand-1']);
+    });
+  });
+
+  describe('playCardFromHand - chain interactions', () => {
+    it('should allow playing spell card when chain is active but not locked', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(['hand-1', 'hand-2'], 3), // 3 mana, has Firebolt and Divine touch
+          '1': createPlayerState([], 0),
+        },
+        chain: {
+          links: [
+            {
+              ability: {
+                type: AbilityType.TRIGGERED,
+                description: 'Test',
+                effects: [],
+              },
+              playerId: '1',
+              effects: [],
+            },
+          ],
+          consecutivePasses: {},
+          isLocked: false, // Chain is active but not locked
+        },
+      };
+
+      const result = callMove(
+        playCardFromHand,
+        {
+          G: gameState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ctx: { currentPlayer: '0' } as any,
+          playerID: '0',
+        },
+        'hand-1' // Play Firebolt (cost 1) - requires target selection
+      );
+
+      expect(result).toBe(gameState);
+      expect(gameState.players['0'].zones.hand.entityIds).toEqual(['hand-2']);
+      expect(gameState.players['0'].resources.mana).toBe(2); // 3 - 1 = 2
+      // Chain should still have 1 link (Firebolt not added yet - waiting for target selection)
+      expect(gameState.chain?.links.length).toBe(1);
+      // pendingTargetSelection should be set with isForChain: true
+      expect(gameState.pendingTargetSelection).toBeDefined();
+      expect(gameState.pendingTargetSelection?.isForChain).toBe(true);
+      expect(gameState.pendingTargetSelection?.chainPlayerId).toBe('0');
+    });
+
+    it('should not allow playing spell card when chain is locked', () => {
+      const gameState: GameState = {
+        players: {
+          '0': createPlayerState(['hand-1'], 3), // 3 mana, has Firebolt
+          '1': createPlayerState([], 0),
+        },
+        chain: {
+          links: [
+            {
+              ability: {
+                type: AbilityType.TRIGGERED,
+                description: 'Test',
+                effects: [],
+              },
+              playerId: '1',
+              effects: [],
+            },
+          ],
+          consecutivePasses: {},
+          isLocked: true, // Chain is locked (resolving)
+          resolutionIndex: 0,
+        },
+      };
+
+      const result = callMove(
+        playCardFromHand,
+        {
+          G: gameState,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ctx: { currentPlayer: '0' } as any,
+          playerID: '0',
+        },
+        'hand-1'
+      );
+
+      expect(result).toBe(INVALID_MOVE);
+      // State should remain unchanged
+      expect(gameState.players['0'].zones.hand.entityIds).toEqual(['hand-1']);
+      expect(gameState.players['0'].resources.mana).toBe(3);
     });
   });
 });
