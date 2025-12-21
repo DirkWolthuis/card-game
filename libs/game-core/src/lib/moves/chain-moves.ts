@@ -12,7 +12,7 @@ import {
  * Pass priority on the active chain.
  * When all players pass consecutively, the chain locks and resolves in LIFO order.
  */
-export const passPriority: Move<GameState> = ({ G, ctx, playerID }) => {
+export const passPriority: Move<GameState> = ({ G, ctx, playerID, events }) => {
   // Must have an active chain to pass priority
   if (!hasActiveChain(G)) {
     return INVALID_MOVE;
@@ -24,6 +24,8 @@ export const passPriority: Move<GameState> = ({ G, ctx, playerID }) => {
   // If the chain is now locked, resolve it immediately
   if (isChainLocked(G)) {
     resolveChain(G, ctx);
+    // Return all players to main stage after chain resolution
+    events?.setActivePlayers({ currentPlayer: 'mainStage' });
   }
 
   return G;

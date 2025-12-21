@@ -99,6 +99,16 @@ export const GameEngine: Game<
               [MoveType.SELECT_TARGET]: selectTarget,
               [MoveType.PITCH_CARD]: pitchCard,
               [MoveType.END_TURN]: endTurn,
+            },
+          },
+          /**
+           * Chain Response Stage: When a chain is active, all players can respond
+           * by playing cards or passing priority.
+           */
+          chainResponse: {
+            moves: {
+              [MoveType.PLAY_CARD_FROM_HAND]: playCardFromHand,
+              [MoveType.SELECT_TARGET]: selectTarget,
               [MoveType.PASS_PRIORITY]: passPriority,
             },
           },

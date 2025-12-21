@@ -37,7 +37,7 @@ function isSpellCard(card: Card): boolean {
 }
 
 export const playCardFromHand: Move<GameState> = (
-  { G, ctx, playerID },
+  { G, ctx, playerID, events },
   entityId: string
 ) => {
   const playerState = G.players[playerID];
@@ -128,8 +128,11 @@ export const playCardFromHand: Move<GameState> = (
           break;
         } else {
           // No targeting needed, add to chain immediately
-          if (!hasActiveChain(G)) {
+          const chainWasEmpty = !hasActiveChain(G);
+          if (chainWasEmpty) {
             startChain(G, ability, playerID, ability.effects);
+            // Activate all players for chain response
+            events?.setActivePlayers({ all: 'chainResponse' });
           } else {
             addToChain(G, ability, playerID, ability.effects);
           }
@@ -165,7 +168,7 @@ export const playCardFromHand: Move<GameState> = (
  * @returns Updated game state or INVALID_MOVE if the target is invalid
  */
 export const selectTarget: Move<GameState> = (
-  { G, ctx, playerID },
+  { G, ctx, playerID, events },
   targetPlayerId: string
 ) => {
   if (!G.pendingTargetSelection) {
@@ -231,8 +234,11 @@ export const selectTarget: Move<GameState> = (
       G.pendingTargetSelection = undefined;
       
       // Add to chain with targets
-      if (!hasActiveChain(G)) {
+      const chainWasEmpty = !hasActiveChain(G);
+      if (chainWasEmpty) {
         startChain(G, ability, chainPlayerId, effects, selectedTargets);
+        // Activate all players for chain response
+        events?.setActivePlayers({ all: 'chainResponse' });
       } else {
         addToChain(G, ability, chainPlayerId, effects, selectedTargets);
       }
