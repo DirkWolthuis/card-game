@@ -67,6 +67,10 @@ export interface PendingTargetSelection {
   effectIndicesNeedingTargets: number[];
   /** Map of effect index in allEffects to selected target player ID */
   selectedTargets: Record<number, string>;
+  /** If true, this targeting is for adding to chain (not immediate resolution) */
+  isForChain?: boolean;
+  /** Player ID who is performing this action (for chain) */
+  chainPlayerId?: string;
 }
 
 export interface PlayerState {

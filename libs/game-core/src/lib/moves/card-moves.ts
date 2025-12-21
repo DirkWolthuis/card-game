@@ -1,5 +1,5 @@
 import { getCardById } from '@game/data';
-import { Card, CardType, GameState } from '@game/models';
+import { Card, CardType, GameState, TargetType } from '@game/models';
 import { Move } from 'boardgame.io';
 import { executeEffect } from '../effects/execute-effect';
 import {
@@ -96,15 +96,37 @@ export const playCardFromHand: Move<GameState> = (
     // Playing a spell starts a chain
     for (const ability of abilitiesToActivate) {
       if (shouldStartChain(ability)) {
-        if (!hasActiveChain(G)) {
-          // Start a new chain with this ability
-          startChain(G, ability, playerID, ability.effects);
+        // Check if ability needs target selection
+        const effectIndicesNeedingTargets: number[] = [];
+        ability.effects.forEach((effect, index) => {
+          if (
+            effect.target === TargetType.PLAYER ||
+            effect.target === TargetType.OPPONENT
+          ) {
+            effectIndicesNeedingTargets.push(index);
+          }
+        });
+
+        if (effectIndicesNeedingTargets.length > 0) {
+          // Set up target selection for chain
+          G.pendingTargetSelection = {
+            sourceAbility: ability,
+            allEffects: ability.effects,
+            effectIndicesNeedingTargets,
+            selectedTargets: {},
+            isForChain: true,
+            chainPlayerId: playerID,
+          };
+          // Break here - player must select targets before ability is added to chain
+          break;
         } else {
-          // Add to existing chain
-          addToChain(G, ability, playerID, ability.effects);
+          // No targeting needed, add to chain immediately
+          if (!hasActiveChain(G)) {
+            startChain(G, ability, playerID, ability.effects);
+          } else {
+            addToChain(G, ability, playerID, ability.effects);
+          }
         }
-        // Note: We don't resolve the ability yet - it will resolve when the chain resolves
-        // This means we don't check for target selection here
       }
     }
     // Chain is now active, waiting for other players to respond or pass priority
@@ -188,20 +210,41 @@ export const selectTarget: Move<GameState> = (
 
   // Check if we have all targets now
   if (Object.keys(G.pendingTargetSelection.selectedTargets).length === G.pendingTargetSelection.effectIndicesNeedingTargets.length) {
-    // All targets collected - now execute all effects
-    G.pendingTargetSelection.allEffects.forEach((effect, index) => {
-      // Defensive check: ensure effect is not undefined
-      if (!effect) {
-        console.error(`Effect at index ${index} is undefined in allEffects`);
-        return;
+    // All targets collected
+    const isForChain = G.pendingTargetSelection.isForChain;
+    const chainPlayerId = G.pendingTargetSelection.chainPlayerId;
+    
+    if (isForChain && chainPlayerId) {
+      // Add ability with targets to chain
+      const ability = G.pendingTargetSelection.sourceAbility;
+      const effects = G.pendingTargetSelection.allEffects;
+      const selectedTargets = { ...G.pendingTargetSelection.selectedTargets };
+      
+      // Clear pending selection first
+      G.pendingTargetSelection = undefined;
+      
+      // Add to chain with targets
+      if (!hasActiveChain(G)) {
+        startChain(G, ability, chainPlayerId, effects, selectedTargets);
+      } else {
+        addToChain(G, ability, chainPlayerId, effects, selectedTargets);
       }
-      // Non-null assertion is safe here because we're inside the if block that checks pendingTargetSelection exists
-      const target = G.pendingTargetSelection!.selectedTargets[index];
-      executeEffect(G, ctx, effect, target);
-    });
+    } else {
+      // Execute all effects immediately (non-chain mode)
+      G.pendingTargetSelection.allEffects.forEach((effect, index) => {
+        // Defensive check: ensure effect is not undefined
+        if (!effect) {
+          console.error(`Effect at index ${index} is undefined in allEffects`);
+          return;
+        }
+        // Non-null assertion is safe here because we're inside the if block that checks pendingTargetSelection exists
+        const target = G.pendingTargetSelection!.selectedTargets[index];
+        executeEffect(G, ctx, effect, target);
+      });
 
-    // Clear the pending selection
-    G.pendingTargetSelection = undefined;
+      // Clear the pending selection
+      G.pendingTargetSelection = undefined;
+    }
   }
   // Otherwise, keep pendingTargetSelection for next target selection
 
