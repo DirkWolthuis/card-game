@@ -84,6 +84,53 @@ Nx Console is an editor extension that enriches your developer experience. It le
 
 Before submitting a pull request, please review our [Definition of Done](docs/DEFINITION_OF_DONE.md) to ensure your contribution meets all quality standards.
 
+## Environment Variables
+
+The game supports the following environment variables:
+
+### `VITE_GAME_SEED`
+Set a specific seed for reproducible game sessions. Useful for testing and debugging.
+- If not set, a random seed will be generated for each game
+- For E2E tests, set to `"e2e-test"` for predictable deck shuffling
+
+Example:
+```sh
+VITE_GAME_SEED=my-test-seed pnpm nx run game-ui:build
+```
+
+### `VITE_E2E_MODE`
+Enable E2E test mode to make the E2E test deck selectable.
+- Set to `"true"` to enable E2E mode
+- In E2E mode, the E2E test deck becomes available for selection
+
+Example:
+```sh
+VITE_E2E_MODE=true pnpm nx run game-ui:build
+```
+
+### `VITE_SHOW_DEBUG_TOOLS`
+Show boardgame.io debug tools (sidebar panel).
+- Set to `"true"` to enable debug tools
+- Useful for debugging on release and PR preview deploys
+
+## Running Tests
+
+### Unit Tests
+```sh
+pnpm nx run-many --target=test --all
+```
+
+### E2E Tests
+The E2E tests automatically build the UI with the appropriate environment variables:
+```sh
+pnpm nx run game-ui-e2e:e2e
+```
+
+For interactive mode:
+```sh
+pnpm e2e:ui
+```
+
 ## Useful links
 
 Learn more:
