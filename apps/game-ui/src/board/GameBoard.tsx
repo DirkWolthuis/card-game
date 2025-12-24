@@ -4,6 +4,7 @@ import { PlayerZones } from './zones/PlayerZones';
 import { TargetSelectionModal } from './components/TargetSelectionModal';
 import { EndGameScreen } from './components/EndGameScreen';
 import { SetupPhase } from './components/SetupPhase';
+import { ChainDisplay } from './components/ChainDisplay';
 import { getValidTargets } from '@game/core';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 
@@ -55,6 +56,9 @@ export function GameBoard(props: BoardProps<GameState>) {
       ? getValidTargets(currentEffect, G, ctx.currentPlayer)
       : [];
 
+  // Check if there's an active chain
+  const hasChain = !!G.chain;
+
   return (
     <>
       <div className="h-screen w-screen">
@@ -75,6 +79,15 @@ export function GameBoard(props: BoardProps<GameState>) {
           </Panel>
         </PanelGroup>
       </div>
+
+      {hasChain && G.chain && !showTargetModal && (
+        <ChainDisplay 
+          chain={G.chain} 
+          currentPlayerId={currentPlayerID}
+          board={props}
+          numPlayers={ctx.numPlayers}
+        />
+      )}
 
       {showTargetModal && (
         <TargetSelectionModal

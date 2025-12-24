@@ -5,6 +5,7 @@ import { playCardFromHand, selectTarget } from './moves/card-moves';
 import { pitchCard } from './moves/resource-moves';
 import { endTurn, discardFromHand } from './moves/turn-moves';
 import { setPlayerName, selectDeck, setReady } from './moves/setup-moves';
+import { passPriority } from './moves/chain-moves';
 import { initializeSetupData } from './util/game-setup';
 import {
   shouldEndSetupPhase,
@@ -27,6 +28,7 @@ export const GameEngine: Game<
     setReady: typeof setReady;
     endTurn: typeof endTurn;
     discardFromHand: typeof discardFromHand;
+    passPriority: typeof passPriority;
   }
 > = {
   name: 'card-game',
@@ -97,6 +99,18 @@ export const GameEngine: Game<
               [MoveType.SELECT_TARGET]: selectTarget,
               [MoveType.PITCH_CARD]: pitchCard,
               [MoveType.END_TURN]: endTurn,
+            },
+          },
+          /**
+           * Chain Response Stage: When a chain is active, all players can respond
+           * by playing cards or passing priority.
+           */
+          chainResponse: {
+            moves: {
+              [MoveType.PLAY_CARD_FROM_HAND]: playCardFromHand,
+              [MoveType.SELECT_TARGET]: selectTarget,
+              [MoveType.PITCH_CARD]: pitchCard,
+              [MoveType.PASS_PRIORITY]: passPriority,
             },
           },
           /**

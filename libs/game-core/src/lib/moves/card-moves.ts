@@ -1,5 +1,5 @@
 import { getCardById } from '@game/data';
-import { Card, CardType, GameState } from '@game/models';
+import { Card, CardType, GameState, TargetType } from '@game/models';
 import { Move } from 'boardgame.io';
 import { executeEffect } from '../effects/execute-effect';
 import {
@@ -14,6 +14,13 @@ import {
   runChecks,
   ActionContext,
 } from '../actions/action-validation';
+import {
+  startChain,
+  shouldStartChain,
+  hasActiveChain,
+  addToChain,
+  isChainLocked,
+} from '../chain/chain-manager';
 
 /**
  * Checks if a card has the UNIT type
@@ -22,8 +29,15 @@ function isUnitCard(card: Card): boolean {
   return card.types.includes(CardType.UNIT);
 }
 
+/**
+ * Checks if a card has the SPELL type
+ */
+function isSpellCard(card: Card): boolean {
+  return card.types.includes(CardType.SPELL);
+}
+
 export const playCardFromHand: Move<GameState> = (
-  { G, ctx, playerID },
+  { G, ctx, playerID, events },
   entityId: string
 ) => {
   const playerState = G.players[playerID];
@@ -53,6 +67,12 @@ export const playCardFromHand: Move<GameState> = (
     checkResourcesForCost(card.manaCost),
   ];
 
+  // Normal speed actions (like spell cards) cannot be played when the chain is locked (resolving)
+  // However, for MVP, spell cards can be added to an active (unlocked) chain
+  if (isSpellCard(card) && isChainLocked(G)) {
+    return INVALID_MOVE;
+  }
+
   const validationResult = runChecks(checks, actionContext);
   if (!validationResult.valid) {
     return INVALID_MOVE;
@@ -77,14 +97,60 @@ export const playCardFromHand: Move<GameState> = (
   // For units, this would be "enters battlefield" triggered abilities
   const abilitiesToActivate = getAbilitiesToActivateOnPlay(card.abilities);
 
-  // STEP 4: Resolve abilities (may pause for target selection)
-  for (const ability of abilitiesToActivate) {
-    const needsTarget = executeAbility(G, ctx, ability);
-    if (needsTarget) {
-      // If an ability needs a target, resolution of that ability will pause here.
-      // The player must use selectTarget to continue resolving that pending effect.
-      // We break here because only one ability can have pending target selection at a time.
-      break;
+  // STEP 4: Determine if we should use the chain mechanic
+  // For now, playing spell cards starts a chain
+  if (isSpellCard(card) && abilitiesToActivate.length > 0) {
+    // Playing a spell starts a chain
+    for (const ability of abilitiesToActivate) {
+      if (shouldStartChain(ability)) {
+        // Check if ability needs target selection
+        const effectIndicesNeedingTargets: number[] = [];
+        ability.effects.forEach((effect, index) => {
+          if (
+            effect.target === TargetType.PLAYER ||
+            effect.target === TargetType.OPPONENT
+          ) {
+            effectIndicesNeedingTargets.push(index);
+          }
+        });
+
+        if (effectIndicesNeedingTargets.length > 0) {
+          // Set up target selection for chain
+          G.pendingTargetSelection = {
+            sourceAbility: ability,
+            allEffects: ability.effects,
+            effectIndicesNeedingTargets,
+            selectedTargets: {},
+            isForChain: true,
+            chainPlayerId: playerID,
+          };
+          // Break here - player must select targets before ability is added to chain
+          break;
+        } else {
+          // No targeting needed, add to chain immediately
+          const chainWasEmpty = !hasActiveChain(G);
+          if (chainWasEmpty) {
+            startChain(G, ability, playerID, ability.effects);
+            // Activate all players for chain response
+            events?.setActivePlayers({ all: 'chainResponse' });
+          } else {
+            addToChain(G, ability, playerID, ability.effects);
+          }
+        }
+      }
+    }
+    // Chain is now active, waiting for other players to respond or pass priority
+  } else {
+    // For non-spell cards (units for now), resolve abilities immediately
+    // This is the old behavior - will be updated in future to also use chains
+    for (const ability of abilitiesToActivate) {
+      const needsTarget = executeAbility(G, ctx, ability);
+      if (needsTarget) {
+        // If an ability needs a target, resolution of that ability will pause here.
+        // The player must use selectTarget to continue resolving that pending effect.
+        // We break here because only one ability can have pending target selection at a time.
+        break;
+      }
     }
   }
 
@@ -102,7 +168,7 @@ export const playCardFromHand: Move<GameState> = (
  * @returns Updated game state or INVALID_MOVE if the target is invalid
  */
 export const selectTarget: Move<GameState> = (
-  { G, ctx, playerID },
+  { G, ctx, playerID, events },
   targetPlayerId: string
 ) => {
   if (!G.pendingTargetSelection) {
@@ -154,20 +220,44 @@ export const selectTarget: Move<GameState> = (
 
   // Check if we have all targets now
   if (Object.keys(G.pendingTargetSelection.selectedTargets).length === G.pendingTargetSelection.effectIndicesNeedingTargets.length) {
-    // All targets collected - now execute all effects
-    G.pendingTargetSelection.allEffects.forEach((effect, index) => {
-      // Defensive check: ensure effect is not undefined
-      if (!effect) {
-        console.error(`Effect at index ${index} is undefined in allEffects`);
-        return;
+    // All targets collected
+    const isForChain = G.pendingTargetSelection.isForChain;
+    const chainPlayerId = G.pendingTargetSelection.chainPlayerId;
+    
+    if (isForChain && chainPlayerId) {
+      // Add ability with targets to chain
+      const ability = G.pendingTargetSelection.sourceAbility;
+      const effects = G.pendingTargetSelection.allEffects;
+      const selectedTargets = { ...G.pendingTargetSelection.selectedTargets };
+      
+      // Clear pending selection first
+      G.pendingTargetSelection = undefined;
+      
+      // Add to chain with targets
+      const chainWasEmpty = !hasActiveChain(G);
+      if (chainWasEmpty) {
+        startChain(G, ability, chainPlayerId, effects, selectedTargets);
+        // Activate all players for chain response
+        events?.setActivePlayers({ all: 'chainResponse' });
+      } else {
+        addToChain(G, ability, chainPlayerId, effects, selectedTargets);
       }
-      // Non-null assertion is safe here because we're inside the if block that checks pendingTargetSelection exists
-      const target = G.pendingTargetSelection!.selectedTargets[index];
-      executeEffect(G, ctx, effect, target);
-    });
+    } else {
+      // Execute all effects immediately (non-chain mode)
+      G.pendingTargetSelection.allEffects.forEach((effect, index) => {
+        // Defensive check: ensure effect is not undefined
+        if (!effect) {
+          console.error(`Effect at index ${index} is undefined in allEffects`);
+          return;
+        }
+        // Non-null assertion is safe here because we're inside the if block that checks pendingTargetSelection exists
+        const target = G.pendingTargetSelection!.selectedTargets[index];
+        executeEffect(G, ctx, effect, target);
+      });
 
-    // Clear the pending selection
-    G.pendingTargetSelection = undefined;
+      // Clear the pending selection
+      G.pendingTargetSelection = undefined;
+    }
   }
   // Otherwise, keep pendingTargetSelection for next target selection
 

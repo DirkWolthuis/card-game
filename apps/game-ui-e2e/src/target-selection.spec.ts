@@ -101,6 +101,28 @@ test.describe('Target Selection E2E Tests', () => {
     // Modal should close after selection
     await expect(targetModal).not.toBeVisible({ timeout: 3000 });
 
+    // After playing a spell card, a chain is started and all players enter chainResponse stage
+    // We need to pass priority to allow the chain to resolve before we can end our turn
+    const passPriorityButton = page.getByRole('button', { name: /Pass Priority/i });
+    await expect(passPriorityButton).toBeVisible({ timeout: 5000 });
+    await passPriorityButton.click();
+
+    // Wait a moment for the state to update
+    await page.waitForTimeout(1000);
+
+    // Switch to Player 1 to have them pass priority too
+    await player1Tab.click();
+    const player1PassButton = page.getByRole('button', { name: /Pass Priority/i });
+    await expect(player1PassButton).toBeVisible({ timeout: 5000 });
+    await player1PassButton.click();
+
+    // Wait for chain to resolve
+    await page.waitForTimeout(1000);
+
+    // After both players pass, the chain should resolve and we should return to mainStage
+    // Switch back to Player 0
+    await player0Tab.click();
+
     // ============================================
     // TEST TARGET SELECTION - OPPONENT target type
     // ============================================
@@ -133,6 +155,25 @@ test.describe('Target Selection E2E Tests', () => {
 
     // Modal should close
     await expect(targetModal).not.toBeVisible({ timeout: 3000 });
+
+    // After playing the second spell, it's added to the existing chain
+    // Now we need to pass priority again to resolve the chain
+    await expect(passPriorityButton).toBeVisible({ timeout: 5000 });
+    await passPriorityButton.click();
+
+    // Wait a moment for the state to update
+    await page.waitForTimeout(1000);
+
+    // Switch to Player 1 to have them pass priority
+    await player1Tab.click();
+    await expect(player1PassButton).toBeVisible({ timeout: 5000 });
+    await player1PassButton.click();
+
+    // Wait for chain to resolve
+    await page.waitForTimeout(1000);
+
+    // After both players pass, chain resolves. Switch back to Player 0
+    await player0Tab.click();
 
     // ============================================
     // TEST ENDING THE TURN
