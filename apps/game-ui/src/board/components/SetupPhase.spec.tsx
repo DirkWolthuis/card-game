@@ -20,6 +20,20 @@ vi.mock('@game/data', () => ({
       cardIds: Array(20).fill('card-2'),
     },
   ],
+  getSelectablePreconstructedDecks: () => [
+    {
+      id: 'aggro-red',
+      name: 'Aggressive Red',
+      description: 'Fast-paced deck focused on dealing direct damage',
+      cardIds: Array(20).fill('card-1'),
+    },
+    {
+      id: 'control-white',
+      name: 'Control White',
+      description: 'Defensive deck focused on healing and controlling the board',
+      cardIds: Array(20).fill('card-2'),
+    },
+  ],
 }));
 
 describe('SetupPhase', () => {
