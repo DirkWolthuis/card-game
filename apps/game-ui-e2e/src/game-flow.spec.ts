@@ -24,18 +24,17 @@ test.describe('Game Flow E2E Tests', () => {
     // Wait for name to be set
     await expect(page.locator('text=Name set: Player Zero')).toBeVisible();
 
-    // Select two decks for Player 0
-    // Get the first two available decks
-    const deckButtons = page.locator('[data-testid^="deck-"]');
-    const firstDeck = deckButtons.first();
-    const secondDeck = deckButtons.nth(1);
+    // Select two decks for Player 0 - avoid E2E test deck for this general flow test
+    // Use specific deck IDs to ensure consistent behavior
+    const aggroRedDeck = page.getByTestId('deck-aggro-red');
+    const controlWhiteDeck = page.getByTestId('deck-control-white');
     
-    await firstDeck.click();
-    await secondDeck.click();
+    await aggroRedDeck.click();
+    await controlWhiteDeck.click();
 
     // Verify decks are selected (both should have blue border)
-    await expect(firstDeck).toHaveClass(/border-blue-500/);
-    await expect(secondDeck).toHaveClass(/border-blue-500/);
+    await expect(aggroRedDeck).toHaveClass(/border-blue-500/);
+    await expect(controlWhiteDeck).toHaveClass(/border-blue-500/);
 
     // Click ready button
     const readyButton = page.getByTestId('ready-button');
@@ -65,12 +64,12 @@ test.describe('Game Flow E2E Tests', () => {
     await page.getByTestId('set-name-button').click();
     await expect(page.locator('text=Name set: Player One')).toBeVisible();
 
-    // Select two decks for Player 1 (select different ones)
-    const thirdDeck = deckButtons.nth(2);
-    const fourthDeck = deckButtons.nth(3);
+    // Select two decks for Player 1 (select different ones from Player 0)
+    const balancedGreenDeck = page.getByTestId('deck-balanced-green');
+    const comboBlueDeck = page.getByTestId('deck-combo-blue');
     
-    await thirdDeck.click();
-    await fourthDeck.click();
+    await balancedGreenDeck.click();
+    await comboBlueDeck.click();
 
     // Click ready button for Player 1
     await expect(readyButton).toBeEnabled();
@@ -134,6 +133,10 @@ test.describe('Game Flow E2E Tests', () => {
       
       // Switch back to Player 0
       await player0Tab.click();
+      
+      // Wait for chain to fully resolve and return to mainStage
+      // Give the game state time to update after chain resolution
+      await page.waitForTimeout(2000);
     }
     
     // ============================================
@@ -184,11 +187,18 @@ test.describe('Game Flow E2E Tests', () => {
     // TEST ENDING THE TURN
     // ============================================
     
+    // Ensure we're back in mainStage before ending turn
+    // Wait for any pending state updates to complete
+    await page.waitForTimeout(1000);
+    
     // Find and click the end turn button
     const endTurnButton = page.getByTestId('end-turn-button');
     await expect(endTurnButton).toBeVisible();
     await expect(endTurnButton).toBeEnabled();
     await endTurnButton.click();
+
+    // Wait for turn transition to complete
+    await page.waitForTimeout(1000);
 
     // Verify the button is now disabled (it's not our turn anymore)
     await expect(endTurnButton).toBeDisabled();

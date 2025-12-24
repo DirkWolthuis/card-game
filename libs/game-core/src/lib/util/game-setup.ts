@@ -101,8 +101,10 @@ export const buildPlayerStateFromDecks = (
     deckCardIds.push(...deck.cardIds);
   }
 
-  // Shuffle the deck using the seeded random API
-  const shuffledDeckCardIds = random.Shuffle(deckCardIds);
+  // Skip shuffling for E2E test deck to maintain predictable card order
+  // The E2E test deck is specifically ordered for testing purposes
+  const isE2ETestDeck = deckIds.includes('e2e-test-deck');
+  const shuffledDeckCardIds = isE2ETestDeck ? deckCardIds : random.Shuffle(deckCardIds);
 
   const entities = createEntitiesForPlayer(shuffledDeckCardIds, playerId);
   const { handIds, deckIds: remainingDeckIds } = splitStartingHand(
