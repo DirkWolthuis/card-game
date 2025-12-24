@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { GameState, MoveType } from '@game/models';
-import { getAllPreconstructedDecks } from '@game/data';
+import { getSelectablePreconstructedDecks } from '@game/data';
 import type { BoardProps } from 'boardgame.io/react';
 
 interface SetupPhaseProps extends BoardProps<GameState> {
@@ -15,7 +15,7 @@ export function SetupPhase({ playerID, G, moves }: SetupPhaseProps) {
     return <div>Loading setup...</div>;
   }
 
-  const allDecks = getAllPreconstructedDecks();
+  const allDecks = getSelectablePreconstructedDecks();
   const selectedDeckIds = playerSetup.selectedDeckIds;
   const isReady = playerSetup.isReady;
   const canReady = playerSetup.name && selectedDeckIds.length === 2;

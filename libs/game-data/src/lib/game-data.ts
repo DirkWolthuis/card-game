@@ -7,6 +7,25 @@ import {
   AbilityType,
 } from '@game/models';
 
+/**
+ * Get environment variable value that works in both Vite (browser) and Node.js (tests) environments.
+ */
+const getEnvVar = (name: string): string | undefined => {
+  // Node.js environment (tests, server) - check this first
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env[name];
+  }
+  
+  // Browser environment with Vite
+  // Use globalThis to avoid import.meta syntax errors in Jest
+  const globalEnv = (globalThis as any).import_meta_env;
+  if (globalEnv) {
+    return globalEnv[name] as string | undefined;
+  }
+  
+  return undefined;
+};
+
 export const getAllCards = (): Card[] => {
   return CARD_DATABASE;
 };
@@ -17,6 +36,22 @@ export const getCardById = (cardId: string): Card | undefined => {
 
 export const getAllPreconstructedDecks = (): PreconstructedDeck[] => {
   return PRECONSTRUCTED_DECKS;
+};
+
+/**
+ * Get all preconstructed decks available for selection.
+ * In E2E mode (VITE_E2E_MODE=true), includes the E2E test deck.
+ * Otherwise, filters out the E2E test deck from the list.
+ */
+export const getSelectablePreconstructedDecks = (): PreconstructedDeck[] => {
+  const isE2EMode = getEnvVar('VITE_E2E_MODE') === 'true';
+  
+  if (isE2EMode) {
+    return PRECONSTRUCTED_DECKS;
+  }
+  
+  // Filter out the E2E test deck in non-E2E mode
+  return PRECONSTRUCTED_DECKS.filter(deck => deck.id !== 'e2e-test-deck');
 };
 
 export const getPreconstructedDeckById = (

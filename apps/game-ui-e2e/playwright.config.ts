@@ -24,7 +24,7 @@ export default defineConfig({
   },
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'pnpm exec nx run game-ui:preview',
+    command: 'VITE_E2E_MODE=true VITE_GAME_SEED=e2e-test pnpm exec nx run game-ui:build && pnpm exec nx run game-ui:preview',
     url: 'http://localhost:3333',
     reuseExistingServer: true,
     cwd: workspaceRoot,

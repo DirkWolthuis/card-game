@@ -86,7 +86,8 @@ const buildPlayerState = (
  */
 export const buildPlayerStateFromDecks = (
   playerId: string,
-  deckIds: string[]
+  deckIds: string[],
+  random: { Shuffle: <T>(deck: T[]) => T[] }
 ): PlayerState => {
   // Combine card IDs from both selected decks
   const deckCardIds: string[] = [];
@@ -100,7 +101,10 @@ export const buildPlayerStateFromDecks = (
     deckCardIds.push(...deck.cardIds);
   }
 
-  const entities = createEntitiesForPlayer(deckCardIds, playerId);
+  // Shuffle the deck using the seeded random API
+  const shuffledDeckCardIds = random.Shuffle(deckCardIds);
+
+  const entities = createEntitiesForPlayer(shuffledDeckCardIds, playerId);
   const { handIds, deckIds: remainingDeckIds } = splitStartingHand(
     entities,
     STARTING_HAND_SIZE

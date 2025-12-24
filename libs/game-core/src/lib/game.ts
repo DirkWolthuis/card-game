@@ -16,6 +16,16 @@ import {
   checkGameEnd,
   isPlayerEliminated,
 } from './util/game-state-utils';
+import { getEnvVar } from './util/env';
+
+/**
+ * Get the game seed from environment variable or generate a random one.
+ * The seed can be set via VITE_GAME_SEED environment variable for reproducible games.
+ * For E2E tests, set VITE_GAME_SEED="e2e-test" to get a predictable no-shuffle seed.
+ */
+const getGameSeed = (): string | undefined => {
+  return getEnvVar('VITE_GAME_SEED');
+};
 
 export const GameEngine: Game<
   GameState,
@@ -32,6 +42,7 @@ export const GameEngine: Game<
   }
 > = {
   name: 'card-game',
+  seed: getGameSeed(),
   setup: ({ ctx }) => {
     const setupData = initializeSetupData(ctx.playOrder);
     return { players: {}, setupData };

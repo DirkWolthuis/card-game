@@ -102,8 +102,12 @@ describe('GameEngine - Setup Phase', () => {
         playOrder: ['0', '1'],
       };
 
+      const mockRandom = {
+        Shuffle: <T>(deck: T[]) => deck, // Identity function for testing
+      };
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setupPhase.onEnd?.({ G: gameState, ctx: mockCtx } as any);
+      setupPhase.onEnd?.({ G: gameState, ctx: mockCtx, random: mockRandom } as any);
 
       // Check that players were created with proper deck sizes (2 decks * 20 cards = 40 cards)
       expect(gameState.players['0']).toBeDefined();

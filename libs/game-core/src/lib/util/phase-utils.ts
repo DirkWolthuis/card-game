@@ -22,9 +22,11 @@ export const shouldEndSetupPhase = ({ G }: { G: GameState }): boolean => {
 export const onSetupPhaseEnd = ({
   G,
   ctx,
+  random,
 }: {
   G: GameState;
   ctx: { playOrder: string[] };
+  random: { Shuffle: <T>(deck: T[]) => T[] };
 }): void => {
   // Build player states from selected decks
   if (!G.setupData) return;
@@ -38,7 +40,8 @@ export const onSetupPhaseEnd = ({
     if (playerSetup.selectedDeckIds.length === 2) {
       G.players[playerId] = buildPlayerStateFromDecks(
         playerId,
-        playerSetup.selectedDeckIds
+        playerSetup.selectedDeckIds,
+        random
       );
     }
   }

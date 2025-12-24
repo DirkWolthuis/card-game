@@ -107,7 +107,11 @@ describe('phase-utils', () => {
         playOrder: ['0', '1'],
       };
 
-      onSetupPhaseEnd({ G: gameState, ctx: mockCtx } as any);
+      const mockRandom = {
+        Shuffle: <T>(deck: T[]) => deck, // Identity function for testing
+      };
+
+      onSetupPhaseEnd({ G: gameState, ctx: mockCtx, random: mockRandom } as any);
 
       expect(gameState.players['0']).toBeDefined();
       expect(gameState.players['1']).toBeDefined();
@@ -124,7 +128,11 @@ describe('phase-utils', () => {
         playOrder: ['0', '1'],
       };
 
-      onSetupPhaseEnd({ G: gameState, ctx: mockCtx } as any);
+      const mockRandom = {
+        Shuffle: <T>(deck: T[]) => deck,
+      };
+
+      onSetupPhaseEnd({ G: gameState, ctx: mockCtx, random: mockRandom } as any);
 
       expect(gameState.players).toEqual({});
     });
