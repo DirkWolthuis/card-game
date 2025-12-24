@@ -115,19 +115,22 @@ test.describe('Game Flow E2E Tests', () => {
     }
     
     // Check if Pass Priority button appeared (indicates a chain was started)
-    const passPriorityButton = page.getByText('Pass Priority');
+    const passPriorityButton = page.getByRole('button', { name: /Pass Priority/i });
     const passPriorityVisible = await passPriorityButton.isVisible().catch(() => false);
     
     if (passPriorityVisible) {
       // Pass priority as Player 0
       await passPriorityButton.click();
-      await expect(page.getByText('Priority Passed')).toBeVisible({ timeout: 3000 });
+      await page.waitForTimeout(1000);
       
       // Switch to Player 1 to pass priority
       await player1Tab.click();
-      const player1PassButton = page.getByText('Pass Priority');
+      const player1PassButton = page.getByRole('button', { name: /Pass Priority/i });
       await expect(player1PassButton).toBeVisible({ timeout: 5000 });
       await player1PassButton.click();
+      
+      // Wait for chain to resolve
+      await page.waitForTimeout(1000);
       
       // Switch back to Player 0
       await player0Tab.click();

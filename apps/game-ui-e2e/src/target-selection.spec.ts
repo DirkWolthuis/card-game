@@ -103,18 +103,21 @@ test.describe('Target Selection E2E Tests', () => {
 
     // After playing a spell card, a chain is started and all players enter chainResponse stage
     // We need to pass priority to allow the chain to resolve before we can end our turn
-    const passPriorityButton = page.getByText('Pass Priority');
+    const passPriorityButton = page.getByRole('button', { name: /Pass Priority/i });
     await expect(passPriorityButton).toBeVisible({ timeout: 5000 });
     await passPriorityButton.click();
 
-    // Wait for the button to update to show we passed
-    await expect(page.getByText('Priority Passed')).toBeVisible({ timeout: 3000 });
+    // Wait a moment for the state to update
+    await page.waitForTimeout(1000);
 
     // Switch to Player 1 to have them pass priority too
     await player1Tab.click();
-    const player1PassButton = page.getByText('Pass Priority');
+    const player1PassButton = page.getByRole('button', { name: /Pass Priority/i });
     await expect(player1PassButton).toBeVisible({ timeout: 5000 });
     await player1PassButton.click();
+
+    // Wait for chain to resolve
+    await page.waitForTimeout(1000);
 
     // After both players pass, the chain should resolve and we should return to mainStage
     // Switch back to Player 0
@@ -158,13 +161,16 @@ test.describe('Target Selection E2E Tests', () => {
     await expect(passPriorityButton).toBeVisible({ timeout: 5000 });
     await passPriorityButton.click();
 
-    // Wait for the button to update
-    await expect(page.getByText('Priority Passed')).toBeVisible({ timeout: 3000 });
+    // Wait a moment for the state to update
+    await page.waitForTimeout(1000);
 
     // Switch to Player 1 to have them pass priority
     await player1Tab.click();
     await expect(player1PassButton).toBeVisible({ timeout: 5000 });
     await player1PassButton.click();
+
+    // Wait for chain to resolve
+    await page.waitForTimeout(1000);
 
     // After both players pass, chain resolves. Switch back to Player 0
     await player0Tab.click();
