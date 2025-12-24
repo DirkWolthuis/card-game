@@ -6,5 +6,5 @@ export * from './lib/util/game-setup';
 export * from './lib/util/phase-utils';
 export * from './lib/moves/turn-moves';
 export * from './lib/actions/action-validation';
-export * from './lib/chain/chain-manager';
 export * from './lib/moves/chain-moves';
+export * from './lib/util/env';

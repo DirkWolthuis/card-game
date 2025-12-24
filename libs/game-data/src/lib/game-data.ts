@@ -6,25 +6,7 @@ import {
   PreconstructedDeck,
   AbilityType,
 } from '@game/models';
-
-/**
- * Get environment variable value that works in both Vite (browser) and Node.js (tests) environments.
- */
-const getEnvVar = (name: string): string | undefined => {
-  // Node.js environment (tests, server) - check this first
-  if (typeof process !== 'undefined' && process.env) {
-    return process.env[name];
-  }
-  
-  // Browser environment with Vite
-  // Use globalThis to avoid import.meta syntax errors in Jest
-  const globalEnv = (globalThis as any).import_meta_env;
-  if (globalEnv) {
-    return globalEnv[name] as string | undefined;
-  }
-  
-  return undefined;
-};
+import { getEnvVar } from '@game/core';
 
 export const getAllCards = (): Card[] => {
   return CARD_DATABASE;

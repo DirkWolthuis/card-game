@@ -4,10 +4,11 @@ import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 import tailwindcss from '@tailwindcss/vite';
+import { join } from 'path';
 
 export default defineConfig(({ mode }) => {
-  // Load env file based on mode
-  const env = loadEnv(mode, process.cwd(), 'VITE_');
+  // Load env file based on mode from the app directory
+  const env = loadEnv(mode, __dirname, 'VITE_');
   
   return {
     root: __dirname,

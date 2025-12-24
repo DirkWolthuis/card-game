@@ -24,6 +24,8 @@ export default defineConfig({
   },
   /* Run your local dev server before starting the tests */
   webServer: {
+    // Note: Environment variables in commands work on Unix-like systems (Linux, macOS).
+    // For Windows compatibility, consider using cross-env or set variables in test files.
     command: 'VITE_E2E_MODE=true VITE_GAME_SEED=e2e-test pnpm exec nx run game-ui:build && pnpm exec nx run game-ui:preview',
     url: 'http://localhost:3333',
     reuseExistingServer: true,
