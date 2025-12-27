@@ -9,6 +9,7 @@ xxx
 ### Game setup
 
 #### Resource deck
+In addition there is a pre-constructed shared resource deck. Cards from this deck are used to fill the marketplace. 
 
 #### Market & Market interaction
 
