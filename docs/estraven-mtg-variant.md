@@ -2,11 +2,21 @@
 
 ## Goals of this format variant
 
-xxx
+This format is an experiment to see how specific rule changes will influence the pace and feel of a Magic game. A version of these rules were written as a stand-alone game, and by using the Magic: the Gathering game as an engine, it is more easy to test them. This format tries to achieve the following:
+
+- Create a closed environment that feels more like a board game and less complex for new players
+- Give players and format developers a platform for more storytelling in their games / decks
+- To make the mana system less frustrating and more balanced
+- Give creatures and combat more weight, by restricting it futher
+- Emphasy the strategic use of resources. A new tention added to the game is how quickly do I want to burn trough cards in hand, with the risk of decking myself
+- Reduce the importance of card advandage
+- Provide a build in way to steal cards
 
 ## Rules
 
 ### Game setup
+
+This format supports 1v1. Players start with 20 life total and decided who takes first turn by whatever method they like.
 
 #### Deck selection
 
@@ -48,4 +58,8 @@ All cards in hand gain the ability: `Pitch -- Exile {cardname}: Add {C}. Activat
 
 #### Restrictions
 
-#### Legends / Leaders/Champions
+In the 'declare attackers' step of the combat phase, players are only allowed to select one creature to attack. In the 'declare blockers' step players are only allowed to select one blocker.
+
+#### Legendary creatures
+
+Legendary creatures loose all abilities associated with attacking and blocking and gain the 'Leader' type. Leaders are permanents that have a power and toughness value, and enter the battlefield with health counters equal to their toughness value. They give the controlling player the ability to declare additional attackers / blockers based on their power / toughness values. They can be targeted by spells normally based on their creature type. Additionally they can be targeted by attacking creatures in the same way as planes walkers and their health counter is reduced by incoming damage. If all counters are removed, the leader dies. When it dies, players loose the ability to declare additional attackers / blockers. When a player controls more than one leader, the ability to declare additional attackers / blockers stacks.
