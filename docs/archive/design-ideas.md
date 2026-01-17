@@ -1,1 +1,0 @@
-- Dennis' bluff mechanic / card type
